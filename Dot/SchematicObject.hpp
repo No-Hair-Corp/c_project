@@ -14,6 +14,7 @@ class SchematicObject {
         list<SchematicObject*> outputs;
 
     public:
+        // =======  CONSTRUCTOR / DESTRUCTOR =======
         SchematicObject();
         ~SchematicObject();
 };
