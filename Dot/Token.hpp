@@ -17,6 +17,8 @@ class Token {
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         Token(string value, string type, Token *next_token, Token *previous_token,
             unsigned int line, unsigned int column);
+        Token(string value, string type, Token *next_token, unsigned int line,
+            unsigned int column);
         ~Token();
 
 
