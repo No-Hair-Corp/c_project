@@ -2,24 +2,25 @@
 
  string Dot::specialCharacter = ">/\\[]=";
  string Dot::anyWordStarter = "\"";
- string Dot::keyword[3] = ["label", "sel", "digraph"];
- string Dot::forbidennCharacter; = "\'`";
+ string Dot::keyword[3] = {"label", "sel", "digraph"};
+ string Dot::forbiddenCharacter = "\'`";
 
 Dot::Dot(string file_path):
-file_path(file_path), first_token(*NULL) {
+file_path(file_path), first_token(NULL) {
     
 }
 
-Dot::get_filePath(){
+string Dot::get_filePath(){
     return this->file_path;
 }
 
-Dot::get_firstToken(){
+Token* Dot::get_firstToken(){
     return this->first_token;
 }
 
-Dot::lexer(){
+int Dot::lexer(){
     ifstream input_file(this->get_filePath());
+    string line;
     char c;
     string buffer;
     unsigned int line_number = 0;
@@ -38,45 +39,44 @@ Dot::lexer(){
 
                 if (checkType(c, specialCharacter)){
 
-                    if (checkFirstToken()){
-                        currentToken = new Token firstToken(str(c), "specialCharacter", *NULL, *NULL, line_number, column_number);
+                    if (checkFirstToken(currentToken)){
+                        currentToken = new Token(to_string(c), "specialCharacter", NULL, NULL, line_number, column_number);
                     } else {
-                        currentToken = new Token (str(c), "specialCharacter", &previousToken, *NULL, line_number, column_number);
+                        currentToken = new Token(to_string(c), "specialCharacter", previousToken, NULL, line_number, column_number);
                     }
-                    i++;
-                } else if(checkType(buffer, keyword[])){
-                    if (checkFirstToken()){
-                        currentToken = new Token firstToken(buffer, "anyWord", *NULL, *NULL, line_number, column_number);
+                    column_number++;
+                } else if(checkType(buffer, keyword)){
+                    if (checkFirstToken(currentToken)){
+                        currentToken = new Token(buffer, "anyWord", NULL, NULL, line_number, column_number);
                     } else {
-                        currentToken = new Token (buffer, "anyWord", &previousToken, *NULL, line_number, column_number);
+                        currentToken = new Token(buffer, "anyWord", previousToken, NULL, line_number, column_number);
                     }
-                    i++;
+                    //i++;
                 } else {
                     if (c == '"'){
                         
                     }
                 }
-                *previousToken = &currentToken;
+                *previousToken = *currentToken;
                 }
             }
             column_number++;
         }
         line_number++;
-    }
-
 }
 
-Dot::checkType(char c, string specialCharacter){
-    if specialCharacer.find(c) != npos {
+
+bool Dot::checkType(char c, const string specialCharacter){
+    if (specialCharacter.find(c) != string::npos) {
         return true;
     } else {
         return false;
     }
 }
 
-Dot::checkType(string keyword, string keyword[]){ /// vérifier pour la tailledu tableau 
-    for(int i=0; i<=3; i++){
-        if (!(strcmp(keyword, keyword[i]))){
+bool Dot::checkType(string& word, const string keyword[]){ /// vérifier pour la tailledu tableau 
+    for(int i=0; i<3; i++){
+        if (word == keyword[i]){
             return true;
         }
     }
@@ -84,8 +84,8 @@ Dot::checkType(string keyword, string keyword[]){ /// vérifier pour la tailledu
 }
 
 
-bool checkFirstToken(Token *token){
-    if (*token->getPreviousToken() == *NULL){
+bool checkFirstToken(Token* token){
+    if (token->getPreviousToken() == NULL){
         return true;
     } else {
         return false;

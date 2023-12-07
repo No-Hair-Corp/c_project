@@ -34,9 +34,9 @@ class Dot {
 
         // =======  OTHER FUNCTIONS =======
         int lexer(void);
-        bool checkType(char c, string container);
-        bool checkType(string word, string keyword[]);
-        bool checkFirstToken(Token *token);
+        bool checkType(char c, const string container);
+        bool checkType(string& word, const string keyword[]);
+        bool checkFirstToken(Token* token);
 
 
         /** @brief Run the lexer, and initiate first_token
