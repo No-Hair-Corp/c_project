@@ -49,14 +49,14 @@ int Dot::lexer() {
 
                 if (checkType(c, specialCharacter)){
 
-                    if (checkFirstToken(currentToken)){
+                    if (currentToken->isFirst()){
                         currentToken = new Token(to_string(c), "specialCharacter", NULL, NULL, line_number, column_number);
                     } else {
                         currentToken = new Token(to_string(c), "specialCharacter", previousToken, NULL, line_number, column_number);
                     }
                     column_number++;
                 } else if(checkType(buffer, keyword)){
-                    if (checkFirstToken(currentToken)){
+                    if (currentToken->isFirst()){
                         currentToken = new Token(buffer, "anyWord", NULL, NULL, line_number, column_number);
                     } else {
                         currentToken = new Token(buffer, "anyWord", previousToken, NULL, line_number, column_number);
@@ -92,14 +92,4 @@ bool Dot::checkType(string& word, const string keyword[]) { /// vérifier pour l
     }
     return false;
 }
-
-
-bool Dot::checkFirstToken(Token* token) {
-    if (token->getPreviousToken() == NULL){
-        return true;
-    } else {
-        return false;
-    }
-}
-
 
