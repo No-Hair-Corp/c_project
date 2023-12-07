@@ -25,9 +25,9 @@ class Token {
 
         // =======  GETTERS / SETTERS =======
 
-        /** @brief Renvoie le nombre de testcases créés
-         * @return unsigned int: nombre de testcases créés **/
-        static Token* getPreviousToken(void);
+        /** @brief Renvoie le token qui précède le token occurant
+         * @return Token*: pointeur vers le token **/
+        Token* getPreviousToken(void);
 
 };
 

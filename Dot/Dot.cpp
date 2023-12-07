@@ -1,24 +1,34 @@
 #include "Dot.hpp"
 
+// ======= TOKEN CONTAINER ========
  string Dot::specialCharacter = ">/\\[]=";
  string Dot::anyWordStarter = "\"";
  string Dot::keyword[3] = {"label", "sel", "digraph"};
  string Dot::forbiddenCharacter = "\'`";
 
+
+
+// =======  CONSTRUCTOR / DESTRUCTOR =======
 Dot::Dot(string file_path):
 file_path(file_path), first_token(NULL) {
     
 }
 
-string Dot::get_filePath(){
+
+
+// =======  GETTERS / SETTERS =======
+string Dot::get_filePath() {
     return this->file_path;
 }
 
-Token* Dot::get_firstToken(){
+Token* Dot::get_firstToken() {
     return this->first_token;
 }
 
-int Dot::lexer(){
+
+
+// =======  OTHER FUNCTIONS =======
+int Dot::lexer() {
     ifstream input_file(this->get_filePath());
     string line;
     char c;
@@ -66,7 +76,7 @@ int Dot::lexer(){
 }
 
 
-bool Dot::checkType(char c, const string specialCharacter){
+bool Dot::checkType(char c, const string specialCharacter) {
     if (specialCharacter.find(c) != string::npos) {
         return true;
     } else {
@@ -74,7 +84,7 @@ bool Dot::checkType(char c, const string specialCharacter){
     }
 }
 
-bool Dot::checkType(string& word, const string keyword[]){ /// vérifier pour la tailledu tableau 
+bool Dot::checkType(string& word, const string keyword[]) { /// vérifier pour la tailledu tableau 
     for(int i=0; i<3; i++){
         if (word == keyword[i]){
             return true;
@@ -84,7 +94,7 @@ bool Dot::checkType(string& word, const string keyword[]){ /// vérifier pour la
 }
 
 
-bool checkFirstToken(Token* token){
+bool Dot::checkFirstToken(Token* token) {
     if (token->getPreviousToken() == NULL){
         return true;
     } else {

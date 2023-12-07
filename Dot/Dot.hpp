@@ -14,7 +14,6 @@ class Dot {
 
     public:
         // ======= TOKEN CONTAINER ========
-
         //string anyWordLetter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
         static string specialCharacter;
         static string anyWordStarter;
@@ -24,13 +23,15 @@ class Dot {
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         Dot(string file_path);
-        ~Dot();
+        //~Dot();
 
 
 
         // =======  GETTERS / SETTERS =======
         string get_filePath();
         Token* get_firstToken();
+
+
 
         // =======  OTHER FUNCTIONS =======
         int lexer(void);
