@@ -6,7 +6,6 @@ using namespace std;
 
 int main() {
 
-    Dot dotParser("database/dot/test1.dot");
 
 
     // === Token Function ===
@@ -22,9 +21,13 @@ int main() {
         TC_Token.check(!secondToken.isFirst());
 
 
+    // === Dot Lexer ===
+    Test TC_Dot_Lexer("Dot Lexer"); // create test case for Lexer
+        // Setup
+        Dot dotParser("database/dot/test1.dot");
+        dotParser.lexer();
+        Token* firstToken = dotParser.getFirstToken();
 
-
-    Test dotLexer("Dot Lexer"); // create test case for Lexer
     // // run the lexer for the test dot (0 means error while lexing)
     // dotLexer.check(!dotParser.launchLexer());
     
@@ -34,6 +37,3 @@ int main() {
 
 
 }
-
-
-

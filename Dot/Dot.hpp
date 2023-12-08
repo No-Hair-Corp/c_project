@@ -44,6 +44,11 @@ class Dot {
          * @return unsigned int: status code **/
         int launchLexer(void);
 
+        /** @brief Run the parser
+         * @return int: status code **/
+        int Dot::parse(void);
+
+
 };
 
 #endif

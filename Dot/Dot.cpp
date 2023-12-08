@@ -76,6 +76,11 @@ int Dot::lexer() {
 }
 
 
+int Dot::parse() {
+    
+}
+
+
 bool Dot::checkType(char c, const string specialCharacter) {
     if (specialCharacter.find(c) != string::npos) {
         return true;
