@@ -1,32 +1,31 @@
-#ifndef _SIGNALS_H
-#define _SIGNALS_H
+#ifndef _SIGNALS_H_
+#define _SIGNALS_H_
 
-#include "RSJparser.tcc"
 #include <fstream>
 #include <iostream>
+#include <list>
 #include "Stimulus.hpp"
 
 using namespace std;
 
 class Signals {
 
-private:
+    private:
+        int clock_counts;
+        list<Stimulus*> signals;
 
-  int clock_counts;
-  stimulus signal[];
+    public:
+        // =======  CONSTRUCTOR / DESTRUCTOR =======
+        Signals(int clock_counts);
+        // Signals(int clock_counts, Stimulus signal[]);
+        ~Signals();
 
-public:
-
-  Signals(int clock_counts, stimulus signal[]);
-
-  ~Signals();
-
-  int get_clock_counts();
-  stimulus* get_signals();
-
-  void set_clock_counts(int);
-  void set_signal(stimulus*);
-
+        // =======  GETTERS / SETTERS =======
+        unsigned getClockCounts() const;
+        void setClockCounts(unsigned int clk_count);
+        
+        int addSignal(Stimulus &signal);
+        // Stimulus* getSignals();
 };
 
 #endif

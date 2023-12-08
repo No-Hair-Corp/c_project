@@ -1,36 +1,29 @@
-#ifndef _STIMULUS_H
-#define _STIMULUS_H
+#ifndef _STIMULUS_H_
+#define _STIMULUS_H_
 
-#include "RSJparser.tcc"
 #include <fstream>
 #include <iostream>
 
 using namespace std;
 
 class Stimulus {
+    private:
 
-private:
+        string name;
+        string value;
 
-  string name;
-  string value;
-  //int data[];
-  //int size_data;
+    public:
+        // =======  CONSTRUCTOR / DESTRUCTOR =======
+        Stimulus(string name, string value);
+        ~Stimulus();
 
-public:
 
-  Stimulus(string name, string value)// int data[], int size_data);
-
-  ~Stimulus();
-
-  string get_name();
-  char get_value();
-  //int* get_data();
-  //int get_size_data();
-
-  void set_name(string);
-  void set_value(string);
-  //void set_data(int*);
-  //void set_size_data(int);
+        // =======  GETTERS / SETTERS =======
+        string getName(void) const;
+        void setName(string &name);
+        
+        string getValue(void) const;
+        void setValue(string &value);
 
 };
 

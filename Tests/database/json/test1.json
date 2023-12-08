@@ -1,6 +1,15 @@
 {
     signal: [
         { name: "clk",  wave: "P......" },
+        ['Master',
+            ['ctrl',
+                {name: 'write', wave: '01.0....'},
+                {name: 'read',  wave: '0...1..0'}
+            ],
+            {  name: 'addr',  wave: 'x3.x4..x', data: 'A1 A2'},
+            {  name: 'addr',  wave: 'x3.x4..x', data: 'A1 A2'},
+            {  name: 'wdata', wave: 'x3.x....', data: 'D1'   },
+        ],
         { name: "wire", wave: "0.1..0." }
     ],
     head:{
