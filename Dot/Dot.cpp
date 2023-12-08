@@ -2,8 +2,8 @@
 
 // ======= TOKEN CONTAINER ========
  string Dot::specialCharacter = ">/\\[]=";
- string Dot::anyWordStarter = "\"";
- string Dot::keyword[3] = {"label", "sel", "digraph"};
+ string Dot::stringStarter = "\"";
+ string Dot::keywords[3] = {"label", "sel", "digraph"};
  string Dot::forbiddenCharacter = "\'`";
 
 
@@ -17,11 +17,11 @@ file_path(file_path), first_token(NULL) {
 
 
 // =======  GETTERS / SETTERS =======
-string Dot::get_filePath() {
+string Dot::getFilePath() {
     return this->file_path;
 }
 
-Token* Dot::get_firstToken() {
+Token* Dot::getFirstToken() {
     return this->first_token;
 }
 
@@ -29,67 +29,85 @@ Token* Dot::get_firstToken() {
 
 // =======  OTHER FUNCTIONS =======
 int Dot::lexer() {
-    ifstream input_file(this->get_filePath());
+    ifstream input_file(this->getFilePath());
     string line;
     char c;
-    string buffer;
+    string buffer = "";
     unsigned int line_number = 0;
     unsigned int column_number = 0;
-    Token *previousToken;
+    
+    Token *previousToken = NULL;
     Token * currentToken;
 
-    if (!input_file){
+    if (!input_file)
         return 1;
 
-    } else {
 
-        while(getline(input_file, line)){
-            column_number = 0;
-            while(line[column_number] != 0){
+    while(getline(input_file, line)){
+        column_number = 0;
+        while(line[column_number] != 0){
 
-                if (checkType(c, specialCharacter)){
+            if (checkType(c, specialCharacter)){
+                currentToken = new Token(to_string(c), "specialCharacter", previousToken, NULL, line_number, column_number);
+                column_number++;
 
-                    if (currentToken->isFirst()){
-                        currentToken = new Token(to_string(c), "specialCharacter", NULL, NULL, line_number, column_number);
-                    } else {
-                        currentToken = new Token(to_string(c), "specialCharacter", previousToken, NULL, line_number, column_number);
-                    }
-                    column_number++;
-                } else if(checkType(buffer, keyword)){
-                    if (currentToken->isFirst()){
-                        currentToken = new Token(buffer, "anyWord", NULL, NULL, line_number, column_number);
-                    } else {
-                        currentToken = new Token(buffer, "anyWord", previousToken, NULL, line_number, column_number);
-                    }
-                    //i++;
-                } else {
-                    if (c == '"'){
-                        
-                    }
-                }
-                *previousToken = *currentToken;
-                }
+            // } else if(checkType(buffer, keyword)){
+            //     if (currentToken->isFirst()){
+            //         currentToken = new Token(buffer, "anyWord", NULL, NULL, line_number, column_number);
+            //     } else {
+            //         currentToken = new Token(buffer, "anyWord", previousToken, NULL, line_number, column_number);
+            //     }
+            } else if (c == '"'){
+
             }
-            column_number++;
+
+            if (previousToken==NULL) this->first_token = currentToken; // TODO: use setter
+            else previousToken->setNextToken(currentToken); 
+            previousToken = currentToken;
         }
         line_number++;
+        }
+    return 0;
+}
+
+
+int Dot::parse() {
+    
 }
 
 
 bool Dot::checkType(char c, const string specialCharacter) {
-    if (specialCharacter.find(c) != string::npos) {
-        return true;
-    } else {
-        return false;
-    }
+    return (specialCharacter.find(c) != string::npos);
 }
 
-bool Dot::checkType(string& word, const string keyword[]) { /// vérifier pour la tailledu tableau 
+bool Dot::checkType(string& word) {
     for(int i=0; i<3; i++){
-        if (word == keyword[i]){
+        if (word == Dot::keywords[i]){
             return true;
         }
     }
     return false;
+}
+
+int registerString(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString){
+    while(line[column_number] != '"' && line[column_number - 1] != '\\' ){
+
+        while(line[column_number] != 0){
+            
+            if (line[column_number] != '"' && line[column_number - 1] != '\\' ){
+                return 0;
+            } else {
+                innerString = innerString + line[column_number];
+            }
+            column_number++;
+        }
+        getline(input_file, line);
+        line_number++;
+        column_number = 0;
+        if (!getline(input_file, line)){ //if we don't find any '"' before the end of the file we return 2
+            return 1; 
+        }
+    }
+    return 0;
 }
 
