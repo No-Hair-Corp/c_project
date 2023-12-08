@@ -2,6 +2,7 @@
 #define _TOKEN_H_
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -32,6 +33,8 @@ class Token {
         /** @brief Renvoie le token qui précède le token occurant
          * @return Token*: pointeur vers le token **/
         Token* getPreviousToken(void) const;
+
+        string getType(void) const;
 
         /** @brief Modifie le token qui suit
          * @param Token* next_token: pointeur vers le token suivant **/

@@ -30,6 +30,7 @@ class Dot {
         // =======  GETTERS / SETTERS =======
         string getFilePath();
         Token* getFirstToken();
+        void setFirstToken(Token* currentToken);
 
 
 
@@ -40,8 +41,8 @@ class Dot {
         int lexer(void);
         bool checkType(char c, const string container);
         bool checkType(string& word);
-        string registerString(ifstream* input_file, string* line, unsigned int* column_number, unsigned int* line_number);
-
+        int registerString(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString);
+        int registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString); //TODO: function that handle keywords
 
         
         
