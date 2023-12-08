@@ -53,8 +53,8 @@ int Dot::lexer() {
         while(line[column_number] != 0){
             if (checkType(line[column_number], Dot::forbiddenCharacter )){
                 return 2;
-            } else if (checkType(c, Dot::specialCharacter)){
-                currentToken = new Token(to_string(c), "specialCharacter", previousToken, NULL, line_number, column_number);
+            } else if (checkType(line[column_number], Dot::specialCharacter)){
+                currentToken = new Token(to_string(line[column_number]), "specialCharacter", previousToken, NULL, line_number, column_number);
                 return 3;
                 column_number++;
 
@@ -68,6 +68,7 @@ int Dot::lexer() {
             }
 
             if (previousToken==NULL){
+                cout << "break 4" << endl;
                 this->setFirstToken(currentToken);
             }
 
@@ -124,6 +125,7 @@ int Dot::parse() {
     if(current_token->getType() == "keyword") {
 
     }
+    return 0;
 }
 
 void Dot::throwParseError(const string &error_message) {

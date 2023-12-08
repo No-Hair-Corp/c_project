@@ -33,8 +33,6 @@ class Token {
         Token* getPreviousToken(void) const;
 
 
-        string getType(void) const;
-
         /** @brief Modifie le token qui suit
          * @param Token* next_token: pointeur vers le token suivant **/
         void setNextToken(Token* next_token);

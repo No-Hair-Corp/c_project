@@ -31,10 +31,6 @@ Token* Token::getPreviousToken(void) const {
     return this->previous_token;
 }
 
-string Token::getType(void) const {
-    return this->type;
-}
-
 void Token::setNextToken(Token* next_token) {
     this->next_token = next_token;
 }
