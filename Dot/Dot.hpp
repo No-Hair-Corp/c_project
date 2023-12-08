@@ -16,8 +16,8 @@ class Dot {
         // ======= TOKEN CONTAINER ========
         //string anyWordLetter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
         static string specialCharacter;
-        static string anyWordStarter;
-        static string keyword[];
+        static string stringStarter;
+        static string keywords[];
         static string forbiddenCharacter;
 
 
@@ -28,21 +28,23 @@ class Dot {
 
 
         // =======  GETTERS / SETTERS =======
-        string get_filePath();
-        Token* get_firstToken();
+        string getFilePath();
+        Token* getFirstToken();
 
 
 
         // =======  OTHER FUNCTIONS =======
-        int lexer(void);
-        bool checkType(char c, const string container);
-        bool checkType(string& word, const string keyword[]);
-        // bool checkFirstToken(Token* token);
-
 
         /** @brief Run the lexer, and initiate first_token
          * @return unsigned int: status code **/
-        int launchLexer(void);
+        int lexer(void);
+        bool checkType(char c, const string container);
+        bool checkType(string& word);
+        string registerString(ifstream* input_file, string* line, unsigned int* column_number, unsigned int* line_number);
+
+
+        
+        
 
         /** @brief Run the parser
          * @return int: status code **/
