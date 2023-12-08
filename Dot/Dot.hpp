@@ -2,6 +2,7 @@
 #define _DOT_H_
 
 #include "Token.hpp"
+#include <iostream>
 #include <fstream>
 #include <string>
 
@@ -42,13 +43,18 @@ class Dot {
         bool checkType(string& word);
         string registerString(ifstream* input_file, string* line, unsigned int* column_number, unsigned int* line_number);
 
-
-        
-        
-
         /** @brief Run the parser
          * @return int: status code **/
-        int Dot::parse(void);
+        int parse(void);
+
+        /** @brief Print error message and sotp the program
+         * @param string error_message: error message to be printed **/
+        void throwParseError(const string &error_message);
+        /** @brief Print error message and sotp the program
+         * @param string error_message: error message to be printed
+         * @param int line: line of error
+         * @param int column: column of error **/
+        void throwParseError(const string &error_message, unsigned int line, unsigned int column);
 
 
 };

@@ -26,7 +26,7 @@ int main() {
         // Setup
         Dot dotParser("database/dot/test1.dot");
         dotParser.lexer();
-        Token* firstToken = dotParser.getFirstToken();
+        Token* firstDotToken = dotParser.getFirstToken();
 
     // // run the lexer for the test dot (0 means error while lexing)
     // dotLexer.check(!dotParser.launchLexer());

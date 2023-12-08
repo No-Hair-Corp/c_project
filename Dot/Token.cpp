@@ -15,6 +15,14 @@ value(value), type(type), next_token(next_token), previous_token(NULL), line(lin
 
 
 // =======  GETTERS / SETTERS =======
+string Token::getValue(void) const {
+    return this->value;
+}
+
+string Token::getType(void) const {
+    return this->type;
+}
+
 void Token::setPreviousToken(Token* previous_token) {
     this->previous_token = previous_token;
 }
@@ -26,6 +34,7 @@ Token* Token::getPreviousToken(void) const {
 void Token::setNextToken(Token* next_token) {
     this->next_token = next_token;
 }
+
 
 
 

@@ -24,17 +24,13 @@ class Token {
 
 
         // =======  GETTERS / SETTERS =======
+        string getValue(void) const;
 
-        /** @brief Modifie le token qui précède
-         * @param Token* next_token: pointeur vers le token précédent **/
+        string getType(void) const;
+
         void setPreviousToken(Token* previous_token);
-
-        /** @brief Renvoie le token qui précède le token occurant
-         * @return Token*: pointeur vers le token **/
         Token* getPreviousToken(void) const;
 
-        /** @brief Modifie le token qui suit
-         * @param Token* next_token: pointeur vers le token suivant **/
         void setNextToken(Token* next_token);
 
 
