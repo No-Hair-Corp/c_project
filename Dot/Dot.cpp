@@ -116,3 +116,19 @@ int Dot::registerString(ifstream& input_file, string& line, unsigned int& column
     return 0;
 }
 
+
+
+int Dot::parse() {
+    Token* current_token = this->first_token;
+
+    if(current_token->getType() == "keyword") {
+
+    }
+}
+
+void Dot::throwParseError(const string &error_message) {
+    cout << "Error: " << error_message << endl; 
+}
+void Dot::throwParseError(const string &error_message, unsigned int line, unsigned int column) {
+     cout << "Error at line " << line << ", column " <<  column << ": " << error_message << endl; 
+}

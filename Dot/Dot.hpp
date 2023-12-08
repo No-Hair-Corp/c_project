@@ -2,6 +2,7 @@
 #define _DOT_H_
 
 #include "Token.hpp"
+#include <iostream>
 #include <fstream>
 #include <string>
 
@@ -41,11 +42,23 @@ class Dot {
         int lexer(void);
         bool checkType(char c, const string container);
         bool checkType(string& word);
+
         int registerString(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString);
         int registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString); //TODO: function that handle keywords
 
-        
-        
+        /** @brief Run the parser
+         * @return int: status code **/
+        int parse(void);
+
+        /** @brief Print error message and sotp the program
+         * @param string error_message: error message to be printed **/
+        void throwParseError(const string &error_message);
+        /** @brief Print error message and sotp the program
+         * @param string error_message: error message to be printed
+         * @param int line: line of error
+         * @param int column: column of error **/
+        void throwParseError(const string &error_message, unsigned int line, unsigned int column);
+
 
 };
 
