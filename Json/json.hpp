@@ -4,11 +4,11 @@
 #include "RSJparser.tcc"
 #include <fstream>
 #include <iostream>
-#include "signals.hpp"
+#include "Signals.hpp"
 
 using namespace std;
 
-class json {
+class Json {
 
 private:
   
@@ -18,26 +18,34 @@ private:
 
 public:
 
-  json(string json_pathOrNoun, RSJresource jsonArray, signals signal);
+  Json(string json_pathOrNoun, RSJresource jsonArray, signals signal);
 
-  ~json();
+  ~Json();
 
   string get_json_pathOrNoun();
   RSJresource get_jsonArray();
   signals get_signal();
 
   void set_json_pathOrNoun(string);
-  void set_jsonArray(RSJresource);
   void set_signal(signals);
 
   int loadJson(string);
+
   void removeUseless();
-  void removeSpace();
-  void manageName();
+
+  void verifyLength();
+
+  void getName(RSJresource);
+
+  string getValue(RSJresource);
+  void manageValue(string);
+
   void manageClkP();
   void manageClkN();
-  void manageData();
+
+  
   void managePeriod();
+
   int convertToSignals();
 
 };

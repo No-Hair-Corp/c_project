@@ -1,35 +1,54 @@
-#include "stimulus.hpp"
+#include "Stimulus.hpp"
 
 
 // ===== Constructeur de stimulus =====
 
-stimulus::stimulus(string name, string value, int data[], int size_data):
-name(name), value(value), data(data), size_data(size_data){
+Stimulus::Stimulus(string name, string value, int data[], int size_data):
+name(name), value(value)){// data(data), size_data(size_data){
   cout << "Constructeur de stimulus" << endl;
 }
 
 
 // ===== Destructeur de stimulus =====
 
-stimulus::~stimulus(){
+Stimulus::~Stimulus(){
   cout << "Destructeur de stimulus" << endl;
 }
 
 
 // ===== Getters =====
 
-stimulus::get_name(){
+Stimulus::get_name(){
   return this->name;
 }
 
-stimulus::get_value(){
+Stimulus::get_value(){
   return this->value;
 }
 
-stimulus::get_data(){
+/*Stimulus::get_data(){
   return this->data;
+}*/
+
+/*Stimulus::get_size_data(){
+  return this->size_data;
+}*/
+
+
+// ===== Setters =====
+
+Stimulus::set_name(string name){
+  this->name=name;
 }
 
-stimulus::get_size_data(){
-  return this->size_data;
+Stimulus::set_value(string value){
+  this->value=value;
 }
+
+/*Stimulus::set_data(int data[]){
+  this->data=data;
+}
+
+Stimulus::get_size_data(int size_data){
+  this->size_data=size_data;
+}*/

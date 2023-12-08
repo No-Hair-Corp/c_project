@@ -1,9 +1,9 @@
-#include "signals.hpp"
+#include "Signals.hpp"
 
 
 // ===== Constructeur de signals =====
 
-signals::signals(int clok_counts, stimulus signal[]):
+Signals::Signals(int clock_counts, stimulus signal[]):
 clock_counts(clock_counts), signal(signal){
   cout << "Constructeur de signals" << endl;
 }
@@ -11,17 +11,28 @@ clock_counts(clock_counts), signal(signal){
 
 // ===== Destructeur de signals =====
 
-signals::~signals(){
+Signals::~Signals(){
   cout << "Destructeur de signals" << endl;
 }
 
 
 // ===== Getters =====
 
-signals::get_clock_counts(){
+Signals::get_clock_counts(){
   return this->clock_counts;
 }
 
-signals::get_signal(){
+Signals::get_signal(){
   return this->signal;
+}
+
+
+// ===== Setters =====
+
+Signals::set_clock_counts(int clock_counts){
+  this->clock_counts=clock_counts;
+}
+
+Signals::set_signal(stimulus signal[]){
+  this->signal=signal;
 }
