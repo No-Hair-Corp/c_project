@@ -31,6 +31,7 @@ class Token {
 
         void setPreviousToken(Token* previous_token);
         Token* getPreviousToken(void) const;
+        Token* getNextToken(void) const;
 
 
         /** @brief Modifie le token qui suit

@@ -36,6 +36,7 @@ int Dot::lexer() {
     ifstream input_file(this->getFilePath());
     string line;
     char c;
+    string buffer = "";
     unsigned int line_number = 0;
     unsigned int column_number = 0;
     
@@ -47,37 +48,45 @@ int Dot::lexer() {
 
 
     while(getline(input_file, line)){
-        cout << "break 3" << endl;
         column_number = 0;
-        cout << line << endl;
         while(line[column_number] != 0){
+
             if (checkType(line[column_number], Dot::forbiddenCharacter )){
                 return 2;
+
             } else if (checkType(line[column_number], Dot::specialCharacter)){
-                currentToken = new Token(to_string(line[column_number]), "specialCharacter", previousToken, NULL, line_number, column_number);
-                return 3;
+                currentToken = new Token(to_string(line[column_number]), "SpecialCharacter", previousToken, NULL, line_number, column_number);
+
+
+            } else if (checkType(line[column_number], Dot::stringStarter)){
                 column_number++;
-
-
-            } else if (checkType(c, Dot::stringStarter)){
-                string buffer = "";
+                buffer = "";
                 Dot::registerString(input_file, line, column_number,line_number, buffer);
-                //TODO: keyword handle
-            } else{
+                currentToken = new Token(buffer, "AnyWords", previousToken, NULL, line_number, column_number);
 
+
+            } else {
+                buffer = "";
+                Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
+                if (checkType(buffer)){
+                    currentToken = new Token(buffer, "KeyWords", previousToken, NULL, line_number, column_number);
+                } else {
+                    currentToken = new Token(buffer, "AnyWords", previousToken, NULL, line_number, column_number);
+                }
             }
 
             if (previousToken==NULL){
-                cout << "break 4" << endl;
                 this->setFirstToken(currentToken);
+            } else {
+                previousToken->setNextToken(currentToken);
+                previousToken = currentToken;
             }
-
-            else previousToken->setNextToken(currentToken); 
-            previousToken = currentToken;
+            column_number++;
         }
 
         line_number++;
     }
+    input_file.close();
     return 0;
 }
 
@@ -96,10 +105,8 @@ bool Dot::checkType(string& word) {
 }
 
 int Dot::registerString(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString){
-    while(line[column_number] != '"' && line[column_number - 1] != '\\' ){
-        cout << "break1" << endl;
+    while(line[column_number] && line[column_number - 1] != '\\' ){
         while(line[column_number] != 0){
-            cout << "break2" << endl;
             if (line[column_number] != '"' && line[column_number - 1] != '\\' ){
                 return 0;
             } else {
@@ -133,4 +140,24 @@ void Dot::throwParseError(const string &error_message) {
 }
 void Dot::throwParseError(const string &error_message, unsigned int line, unsigned int column) {
      cout << "Error at line " << line << ", column " <<  column << ": " << error_message << endl; 
+}
+
+int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString){
+    while(specialCharacter.find(line[column_number]) != string::npos && line[column_number - 1] != '\\'){
+        while(line[column_number] != 0){
+            if (specialCharacter.find(line[column_number]) != string::npos && line[column_number - 1] != '\\'){
+                return 0;
+            } else {
+                innerString = innerString + line[column_number];
+            }
+            column_number++;
+        }
+        getline(input_file, line);
+        line_number++;
+        column_number = 0;
+        if (!getline(input_file, line)){ //if we don't find any '"' before the end of the file we return 2
+            return 1; 
+        }
+    }
+    return 0;
 }
