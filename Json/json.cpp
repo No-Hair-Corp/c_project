@@ -1,9 +1,9 @@
-#include "json.hpp"
+#include "Json.hpp"
 
 
 // ===== Constructeur de json =====
 
-json::json(string json_pathOrNoun, RSJresource jsonArray, signals signal):
+Json::Json(string json_pathOrNoun, RSJresource jsonArray, signals signal):
 json_path(json_pathOrNoun), jsonArray(jsonArray), Signal(signal){
   cout << "Constructeur de json" << endl;
 }
@@ -11,29 +11,47 @@ json_path(json_pathOrNoun), jsonArray(jsonArray), Signal(signal){
 
 // ===== Destructeur de json =====
 
-json::~json(){
+Json::~Json(){
   cout << "Destructeur de json" << endl;
 }
 
 
 // ===== Getters =====
 
-json::get_json_pathOrNoun(){
+Json::get_json_pathOrNoun(){
   return this->json_pathOrNoun;
 }
 
-json::get_jsonArray(){
+Json::get_jsonArray(){
   return this->jsonArray;
 }
 
-json::get_signal(){
+Json::get_signal(){
   return this->signal;
+}
+
+
+// ===== Setters =====
+
+Json::set_json_pathOrNoun(string json_pathOrNoun){
+  this->json_pathOrNoun=json_pathOrNoun;
+}
+
+Json::set_signal(signals signal){
+  this->signal=signal;
 }
 
 
 // ===== Load json file =====
 
-json::loadJson(string json_pathOrNoun){
+Json::loadJson(string json_pathOrNoun){
   ifstream my_fstream (json_pathOrNoun);
-  RSJresource my_resource (my_fstream);
+  this->jsonArray(my_fstream);
+}
+
+
+// ===== Get value =====
+
+Json::getValue(RSJresource jsonArray, int i){
+  jsonArray["signal"][i]["wave"].as<string>("error");
 }

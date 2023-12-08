@@ -4,11 +4,11 @@
 #include "RSJparser.tcc"
 #include <fstream>
 #include <iostream>
-#include "stimulus.hpp"
+#include "Stimulus.hpp"
 
 using namespace std;
 
-class signals {
+class Signals {
 
 private:
 
@@ -17,9 +17,9 @@ private:
 
 public:
 
-  signals(int clok_counts, stimulus signal[]);
+  Signals(int clock_counts, stimulus signal[]);
 
-  ~signals();
+  ~Signals();
 
   int get_clock_counts();
   stimulus* get_signals();
