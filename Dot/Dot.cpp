@@ -46,24 +46,19 @@ int Dot::lexer() {
     }
 
     while(getline(input_file, line)){
-        // cout << line << endl;
         column_number = 0;
         while(line[column_number] != '\0'){
-            // cout << "break1" << endl;
             if (checkType(line[column_number], Dot::forbiddenCharacter )){
                 return 2;
 
             } else if (checkType(line[column_number], Dot::specialCharacter)){
-                // cout << line[column_number] << endl;
                 if (CheckArrow(line, column_number)){
                     column_number+=2;
                     currentToken = new Token("->", "SpecialCharacter", previousToken, NULL, line_number, column_number);
 
                 } else {
-                    // cout << line[column_number] << endl;
                     buffer = line[column_number];
                     currentToken = new Token(buffer, "SpecialCharacter", previousToken, NULL, line_number, column_number);
-                    // cout << currentToken->getValue();
                     column_number++;
                 }
 
@@ -76,25 +71,19 @@ int Dot::lexer() {
 
 
             } else {
-                // cout << "break2" << endl;
                 buffer = "";
-                // cout << line[column_number] << endl;
-                // cout << column_number << endl;
                 Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
-                // cout << line[column_number] << endl;
                 if (checkType(buffer)){
                     currentToken = new Token(buffer, "KeyWords", previousToken, NULL, line_number, column_number);
                 } else {
                     currentToken = new Token(buffer, "UnknownKeyWords", previousToken, NULL, line_number, column_number);
+                    
                 }
             }
 
             if (previousToken==NULL){
-                // cout << line[column_number] << endl;
                 this->setFirstToken(currentToken);
             } else {
-                // cout << line[column_number] << endl;
-                // cout << currentToken->getPreviousToken()->getType() << endl; //TODO: COMPRENDRE PK LE DERNIER CARACTERE N'APPARAIT PAS AU FINAL
                 previousToken->setNextToken(currentToken);
             }
             previousToken = currentToken;
@@ -103,7 +92,7 @@ int Dot::lexer() {
     }
     input_file.close();
     return 0;
-} 
+}
 
 
 bool Dot::checkType(char c, const string specialCharacter) {
@@ -161,20 +150,21 @@ void Dot::throwParseError(const string &error_message, unsigned int line, unsign
 
 
 int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString) {
-    // cout << line << endl;
-    // cout << column_number << endl;
     while (specialCharacter.find(line[column_number]) == string::npos && (column_number == 0 || line[column_number - 1] != '\\')) {
-        // cout << "break3" << endl;
         while (line[column_number] != '\0') {
-            // cout << "break4" << endl;
             if (specialCharacter.find(line[column_number]) != string::npos && (column_number == 0 || line[column_number - 1] != '\\')) {
-                // cout << line[column_number] << endl;
                 return 0;  // End of the keyword is found
             } else {
-                innerString.push_back(line[column_number]);  // Use push_back for efficient string concatenation
-                column_number++;
-                // cout << line[column_number] << endl;
-            }
+                    if (line[column_number] != ' '){
+                        innerString.push_back(line[column_number]);  // Use push_back for efficient string concatenation
+                        column_number++;
+                        if (checkType(innerString)){
+                            return 0;
+                        }
+                    } else {
+                        column_number++;
+                    }
+            }    
             
         }
 
@@ -190,9 +180,6 @@ int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& colu
 }
 
 bool Dot::CheckArrow(string& line, int column_number){
-    // cout << line << endl;
-    // cout << line[column_number] << endl;
-    // cout << column_number << endl;
-    return (line[column_number] == '>' && column_number != 0  && line[column_number - 1] == '-'); //&& line[column_number + 1] != 0
+    return (line[column_number] == '-' && line[column_number + 1] != '\0'  && line[column_number + 1] == '>'); //&& line[column_number + 1] != 0
 }
 
