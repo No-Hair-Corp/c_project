@@ -1,16 +1,16 @@
 {
     signal: [
-        { name: "clk",  wave: "P......" },
+        { name: "clk",  wave: "P......." },
         ['Master',
             ['ctrl',
                 {name: 'write', wave: '01.0....'},
-                {name: 'read',  wave: '0...1..0'}
+                {name: 'read',  wave: '0', period: 8}
             ],
-            {  name: 'addr',  wave: 'x3.x4..x', data: 'A1 A2'},
-            {  name: 'addr',  wave: 'x3.x4..x', data: 'A1 A2'},
-            {  name: 'wdata', wave: 'x3.x....', data: 'D1'   },
+            {  name: 'addr',  wave: 'x0.x1..x', phase: 0.5},
+            {  name: "ad'dr",  wave: 'x1.x0..x',  node: '.....ef....' },
+            {  name: 'wdata', wave: '0.1.', period:2   },
         ],
-        { name: "wire", wave: "0.1..0." }
+        { name: "wire", wave: "0.1..0.." }
     ],
     head:{
         text:'WaveDrom example',

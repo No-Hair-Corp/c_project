@@ -2,10 +2,12 @@
 #define _JSON_H_
 
 #include "RSJparser.tcc"
-#include <map>
+#include <regex>
+#include <set>
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <cctype>
 #include "Signals.hpp"
 
 using namespace std;
@@ -34,7 +36,13 @@ class Json {
          * éléments inutiles **/
         void simplifyJson(RSJresource &array);
 
+        /** @brief Vérifie les durée de clock de tous les signaux, and prepare
+         * signals for the simulator **/
+        int consistencyAndPrepare(void);
 
+        /** @brief Simplifie les valeurs des signaux pour la simulation et les
+         * ajoute à `signals`. **/
+        int simplifyWaves(void);
 
 };
 

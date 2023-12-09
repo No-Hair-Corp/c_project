@@ -12,19 +12,24 @@ class Signals {
 
     private:
         int clock_counts;
-        list<Stimulus*> signals;
+        bool has_clock_duplication;
+        vector<Stimulus*> signals;
 
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
-        Signals(int clock_counts);
+        Signals(int clock_counts, bool has_clock = false);
         // Signals(int clock_counts, Stimulus signal[]);
         ~Signals();
 
         // =======  GETTERS / SETTERS =======
         unsigned getClockCounts() const;
         void setClockCounts(unsigned int clk_count);
+
+        bool getHasClockDuplication() const;
+        void setHasClockDuplication(bool has_clock_duplication);
         
-        int addSignal(Stimulus &signal);
+        vector<Stimulus*> getSignals(void) const;
+        int addSignal(Stimulus *signal);
         // Stimulus* getSignals();
 };
 

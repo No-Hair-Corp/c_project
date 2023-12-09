@@ -8,6 +8,7 @@ name(name), value(value) {
 }
 
 Stimulus::~Stimulus(){
+  // TODO : Free memory ?
 }
 
 
@@ -25,11 +26,3 @@ string Stimulus::getValue() const {
 void Stimulus::setValue(string &value) {
   this->value = value;
 }
-
-/*Stimulus::set_data(int data[]){
-  this->data=data;
-}
-
-Stimulus::get_size_data(int size_data){
-  this->size_data=size_data;
-}*/
