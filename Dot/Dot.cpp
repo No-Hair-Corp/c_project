@@ -54,6 +54,7 @@ int Dot::lexer() {
                 return 2;
 
             } else if (checkType(line[column_number], Dot::specialCharacter)){
+                // cout << line[column_number] << endl;
                 if (CheckArrow(line, column_number)){
                     column_number+=2;
                     currentToken = new Token("->", "SpecialCharacter", previousToken, NULL, line_number, column_number);
@@ -62,6 +63,7 @@ int Dot::lexer() {
                     // cout << line[column_number] << endl;
                     buffer = line[column_number];
                     currentToken = new Token(buffer, "SpecialCharacter", previousToken, NULL, line_number, column_number);
+                    // cout << currentToken->getValue();
                     column_number++;
                 }
 
@@ -88,8 +90,11 @@ int Dot::lexer() {
             }
 
             if (previousToken==NULL){
+                // cout << line[column_number] << endl;
                 this->setFirstToken(currentToken);
             } else {
+                // cout << line[column_number] << endl;
+                // cout << currentToken->getPreviousToken()->getType() << endl; //TODO: COMPRENDRE PK LE DERNIER CARACTERE N'APPARAIT PAS AU FINAL
                 previousToken->setNextToken(currentToken);
             }
             previousToken = currentToken;
