@@ -42,9 +42,11 @@ class Dot {
         int lexer(void);
         bool checkType(char c, const string container);
         bool checkType(string& word);
+        bool CheckArrow(string& line, int column_number);
 
         int registerString(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString);
-        int registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString); //TODO: function that handle keywords
+        int registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString);
+        
 
         /** @brief Run the parser
          * @return int: status code **/
