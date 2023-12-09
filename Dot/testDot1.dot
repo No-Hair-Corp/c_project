@@ -1,0 +1,20 @@
+digraph FA{
+A[label=" in
+put "];
+B[label=" input "];
+Cin[label=" input "];
+S[label=" output "];
+Cout[label=" output "];
+G1[label=" xor "];
+G2[label=" xor "];
+G5[label=" or "];
+G3[label=" and "];
+G4[label=" and "];
+A->G1->G2->S;
+B->G1;
+Cin->G2;
+G1->G3->G5->Cout;
+Cin->G3;
+A->G4->G5;
+B->GA;
+}
