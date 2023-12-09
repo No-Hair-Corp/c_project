@@ -29,6 +29,10 @@ class Token {
 
         string getType(void) const;
 
+        unsigned int getLine();
+
+        unsigned int getColumn();
+
         void setPreviousToken(Token* previous_token);
         Token* getPreviousToken(void) const;
         Token* getNextToken(void) const;

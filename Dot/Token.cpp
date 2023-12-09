@@ -39,6 +39,14 @@ void Token::setNextToken(Token* next_token) {
     this->next_token = next_token;
 }
 
+unsigned int Token::getLine(){
+    return this->line;
+}
+
+unsigned int Token::getColumn(){
+    return this->column;
+}
+
 
 
 // =======  OTHER FUNCTIONS =======

@@ -20,6 +20,7 @@ class Dot {
         static string stringStarter;
         static string keywords[];
         static string forbiddenCharacter;
+        static char lineCharacter[];
 
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
@@ -42,6 +43,7 @@ class Dot {
         int lexer(void);
         bool checkType(char c, const string container);
         bool checkType(string& word);
+        bool checkType(char c);
         bool CheckArrow(string& line, int column_number);
 
         int registerString(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString);
@@ -60,8 +62,6 @@ class Dot {
          * @param int line: line of error
          * @param int column: column of error **/
         void throwParseError(const string &error_message, unsigned int line, unsigned int column);
-
-
 };
 
 #endif

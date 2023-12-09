@@ -5,6 +5,7 @@ string Dot::specialCharacter = "->/\\[]=;{}";
 string Dot::stringStarter = "\"";
 string Dot::keywords[3] = {"label", "sel", "digraph"};
 string Dot::forbiddenCharacter = "\'`";
+char Dot::lineCharacter[3] = {'\t', '\n', '\r'};
 
 // ======= CONSTRUCTOR / DESTRUCTOR =======
 
@@ -68,20 +69,20 @@ int Dot::lexer() { //TODO: understand ghost UnknownCharacter ???
                 buffer = "";
                 // Register the string and create a token
                 Dot::registerString(input_file, line, column_number, line_number, buffer);
-                currentToken = new Token(buffer, "AnyWords", previousToken, NULL, line_number, column_number);
+                currentToken = new Token(buffer, "AnyWords", previousToken, NULL, line_number, column_number-1);
                 column_number++;
+            } else if (checkType(line[column_number])) {
+                column_number++;
+                continue;
+            
             } else {
                 buffer = "";
                 // Register keywords and create tokens
                 Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
                 if (checkType(buffer)) {
-                    currentToken = new Token(buffer, "KeyWords", previousToken, NULL, line_number, column_number);
+                    currentToken = new Token(buffer, "KeyWords", previousToken, NULL, line_number, column_number-1);
                 } else {
-                    if (currentToken->getType() != ""){
-                        currentToken = new Token(buffer, "UnknownKeyWords", previousToken, NULL, line_number, column_number);
-                    } else {
-                        column_number++;
-                    }
+                    currentToken = new Token(buffer, "UnknownKeyWords", previousToken, NULL, line_number, column_number-1);
                 }
             }
 
@@ -109,6 +110,15 @@ bool Dot::checkType(char c, const string specialCharacter) {
 bool Dot::checkType(string& word) {
     for (int i = 0; i < 3; i++) {
         if (word == keywords[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Dot::checkType(char c){
+    for (int i = 0; i < 3; i++) {
+        if (c == lineCharacter[i]) {
             return true;
         }
     }
