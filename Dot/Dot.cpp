@@ -32,7 +32,7 @@ void Dot::setFirstToken(Token* currentToken) {
 // ======= OTHER FUNCTIONS =======
 
 // Lexer function to tokenize the input file
-int Dot::lexer() {
+int Dot::lexer() { //TODO: understand ghost UnknownCharacter ???
     ifstream input_file(this->getFilePath());
     string line;
     string buffer = "";
@@ -77,7 +77,11 @@ int Dot::lexer() {
                 if (checkType(buffer)) {
                     currentToken = new Token(buffer, "KeyWords", previousToken, NULL, line_number, column_number);
                 } else {
-                    currentToken = new Token(buffer, "UnknownKeyWords", previousToken, NULL, line_number, column_number);
+                    if (currentToken->getType() != ""){
+                        currentToken = new Token(buffer, "UnknownKeyWords", previousToken, NULL, line_number, column_number);
+                    } else {
+                        column_number++;
+                    }
                 }
             }
 
@@ -118,8 +122,12 @@ int Dot::registerString(ifstream& input_file, string& line, unsigned int& column
             if (line[column_number] == '"' && (column_number == 0 || line[column_number - 1] != '\\')) {
                 return 0; // End of the string is found
             } else {
-                innerString.push_back(line[column_number]); // Use push_back for efficient string concatenation
-                column_number++;
+                if (line[column_number] != '\n' && line[column_number] != '\r' ){
+                    innerString.push_back(line[column_number]); // Use push_back for efficient string concatenation
+                    column_number++;
+                } else {
+                    column_number++;
+                }
             }
         }
 
@@ -160,7 +168,7 @@ int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& colu
             if (specialCharacter.find(line[column_number]) != string::npos && (column_number == 0 || line[column_number - 1] != '\\')) {
                 return 0; // End of the keyword is found
             } else {
-                if (line[column_number] != ' ') {
+                if (line[column_number] != ' ' && line[column_number] != '\n' && line[column_number] != '\r' ) {
                     innerString.push_back(line[column_number]); // Use push_back for efficient string concatenation
                     column_number++;
                     if (checkType(innerString)) {
