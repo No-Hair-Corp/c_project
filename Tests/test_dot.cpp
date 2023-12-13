@@ -6,10 +6,7 @@ using namespace std;
 
 int main() {
 
-
-
     // === Token Function ===
-
     Test TC_Token("Token Functions");
         //  == checkFirstToken ==
         // Setup
@@ -21,9 +18,7 @@ int main() {
         TC_Token.check(firstToken.isFirst());
         TC_Token.check(!secondToken.isFirst());
 
-
     // === Dot Lexer ===
-
     Test TC_Check_Type("Check Type"); // create test case for Check type
         
         // == checkType ==
@@ -61,6 +56,7 @@ int main() {
 
         // Test
 
+    return 0;
 }
 
 

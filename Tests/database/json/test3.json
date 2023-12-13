@@ -1,0 +1,4 @@
+{ sign: [
+    { name: "clk",  wave: "P......" },
+    { name: "wire", wave: "0.1..0." }
+]}

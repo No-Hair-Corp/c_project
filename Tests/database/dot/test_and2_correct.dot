@@ -9,4 +9,5 @@ digraph            testand2
     PUT"];
     
     A->
-    GATE -> O;B -> GATE;}
+    GATE -> O;B ->//GATE;}
+    GATE;}
