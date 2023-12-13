@@ -1,0 +1,23 @@
+digraph testand1 {
+    A [label="A"];
+    B [label="B"];
+    GATE1 [label="AND2"];
+    O1 [label="OUTPUT1"];
+
+    C [label="C"];
+    D [label="D"];
+    GATE2 [label="OR2"];
+    O2 [label="OUTPUT2"];
+
+    GATE3 [label="XOR2"];
+    O3 [label="OUTPUT3"];
+
+    A->GATE1->O1;
+    B->GATE1;
+
+    C->GATE2->O2;
+    D->GATE2;
+    
+    O1->GATE3->O3;
+    O2->GATE3;
+}

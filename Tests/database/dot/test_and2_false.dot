@@ -1,0 +1,7 @@
+digraph testand3 {
+    A [[label="A"];
+    B [label="B";
+    GATE [label=="AND2"];
+    O [labe="OUTPUT"];
+    A-->GAT->O;
+    B>GATE;
