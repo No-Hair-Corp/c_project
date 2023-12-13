@@ -16,7 +16,7 @@ class Dot {
 
     public:
         // ======= TOKEN CONTAINER ========
-        //string anyWordLetter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
+        //TODO: make 
         static string specialCharacter;
         static string stringStarter;
         static string keywords[];
