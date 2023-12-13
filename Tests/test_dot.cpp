@@ -6,7 +6,7 @@ using namespace std;
 
 int main() {
 
-    // === Token Function ===
+    // === Token Functions ===
     Test TC_Token("Token Functions");
         //  == checkFirstToken ==
         // Setup
@@ -19,43 +19,54 @@ int main() {
         TC_Token.check(!secondToken.isFirst());
 
     // === Dot Lexer ===
-    Test TC_Check_Type("Check Type"); // create test case for Check type
+    // === Check Functions ===
+    Test TC_Check("Check Functions"); // create test case for Check functions
         
-        // == checkType ==
+        // == checkType checkKeywords CheckArrow ==
         // Setup
 
         Dot file1("/database/Dot/test_and2_true");
 
-        string specialCharacter = ">/\\[]=";
-        string stringStarter = "\"";
-        string keywords[3] = {"label", "sel", "digraph"};
-        string forbiddenCharacter = "\'`";
+        //string specialCharacter = ">/\\[]=";
+        //string stringStarter = "\"";
+        //string keywords[5] = {"label", "sel", "digraph", "strict", "graph"};
+        //string forbiddenCharacter = "\'`";
 
         char c1 = '[';
         char c2 = '\"';
         char c3 = '`';
+
         string keyword1 = "label";
         string keyword2 = "bonjour";
 
+        string one = "A->B";
+        string two = "A--B";
+        string three = "A-B";
+
         // Test
-        TC_Check_Type.check(file1.checkType(c1, specialCharacter));
-        TC_Check_Type.check(file1.checkType(c2, stringStarter));
-        TC_Check_Type.check(file1.checkType(c3, forbiddenCharacter));
-        TC_Check_Type.check(file1.checkType(keyword1));
-        TC_Check_Type.check(!file1.checkType(keyword2));
+        TC_Check.check(file1.checkType(c1, Dot::specialCharacter));
+        TC_Check.check(file1.checkType(c2, Dot::stringStarter));
+        TC_Check.check(file1.checkType(c3, Dot::forbiddenCharacter));
+        TC_Check.check(file1.checkKeywords(keyword1,5));
+        TC_Check.check(!file1.checkKeywords(keyword2,5));
+        TC_Check.check(file1.CheckArrow(one,1));
+        TC_Check.check(file1.CheckArrow(two,1));
+        TC_Check.check(!file1.CheckArrow(three,1));
     
     Test TC_Register("Register Functions");
 
         // == registerString ==
         // Setup
+        
 
         // Test
         TC_Register.check(file1.registerString())
+
         // == registerKeyword ==
         // Setup
 
         // Test
-
+*/
     return 0;
 }
 
