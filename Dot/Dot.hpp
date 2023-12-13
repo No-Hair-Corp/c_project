@@ -45,6 +45,7 @@ class Dot {
         bool checkType(char c, const string container);
         bool checkKeywords(string& word, int n);
         bool CheckArrow(string& line, int column_number);
+        int jumpComments(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number);
 
         int registerString(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString);
         int registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString);

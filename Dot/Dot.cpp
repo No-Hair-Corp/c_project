@@ -62,10 +62,12 @@ int Dot::lexer() { //TODO: understand ghost UnknownCharacter ???
                 if (CheckArrow(line, column_number)) {
                     buffer = {line[column_number], line[column_number+1]};
                     column_number += 2;
-                    currentToken = new Token(buffer, "SpecialCharacter", previousToken, NULL, line_number, column_number);
+                    currentToken = new Token(buffer, "SpecialCharacter", previousToken, NULL, line_number + 1, column_number + 1);
+                } else if (line[column_number] == '/' || line[column_number] == '#' ){
+                    jumpComments(input_file, line, column_number, line_number);
                 } else {
                     buffer = line[column_number];
-                    currentToken = new Token(buffer, "SpecialCharacter", previousToken, NULL, line_number, column_number);
+                    currentToken = new Token(buffer, "SpecialCharacter", previousToken, NULL, line_number + 1, column_number + 1);
                     column_number++;
                 }
             } else if (checkType(line[column_number], Dot::stringStarter)) {
@@ -73,7 +75,7 @@ int Dot::lexer() { //TODO: understand ghost UnknownCharacter ???
                 buffer = "";
                 // Register the string and create a token
                 Dot::registerString(input_file, line, column_number, line_number, buffer);
-                currentToken = new Token(buffer, "AnyWords", previousToken, NULL, line_number, column_number-1);
+                currentToken = new Token(buffer, "AnyWords", previousToken, NULL, line_number + 1, column_number);
                 column_number++;
             } else if (checkType(line[column_number], Dot::lineCharacter)) {
                 column_number++;
@@ -84,9 +86,9 @@ int Dot::lexer() { //TODO: understand ghost UnknownCharacter ???
                 // Register keywords and create tokens
                 Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
                 if (checkKeywords(buffer, KEYWORDSIZE)) {
-                    currentToken = new Token(buffer, "KeyWords", previousToken, NULL, line_number, column_number-1);
+                    currentToken = new Token(buffer, "KeyWords", previousToken, NULL, line_number + 1, column_number);
                 } else {
-                    currentToken = new Token(buffer, "UnknownKeyWords", previousToken, NULL, line_number, column_number-1);
+                    currentToken = new Token(buffer, "AnyWords", previousToken, NULL, line_number + 1, column_number);
                 }
             }
 
@@ -155,7 +157,7 @@ int Dot::registerString(ifstream& input_file, string& line, unsigned int& column
 int Dot::parse() {
     Token* current_token = this->first_token;
     
-    if (current_token->getValue() == )
+    //if (current_token->getValue() == )
 
     // TODO: Implement parsing logic based on token types
 
@@ -207,4 +209,39 @@ bool Dot::CheckArrow(string& line, int column_number) {
     } else if (line[column_number] == '-' && line[column_number + 1] != '\0' && line[column_number + 1] == '-') {
         return 1;
     } else return 0;
+}
+
+
+int Dot::jumpComments(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number){
+    if ((line[column_number] == '/' && line[column_number + 1] == '/') || line[column_number] == '#'){
+        while (line[column_number] != '\0'){
+            column_number++;
+        }
+    } else if (line[column_number] == '/' && line[column_number + 1] == '*'){
+
+        while(line[column_number] != '*' && line[column_number + 1] != '/'){
+
+            while(line[column_number] != '\0'){
+
+                if (line[column_number] == '*' && line[column_number + 1] == '/'){
+
+                    column_number++;
+                    return 0;
+                } else {
+                    column_number++;
+                }
+            } 
+            
+            if (!getline(input_file, line)) {
+                return 1; // End of file is reached
+            }
+            line_number++;
+            column_number = 0;
+        }
+            
+    } else {
+        column_number++;
+        return 0;
+    }
+    return 0;
 }
