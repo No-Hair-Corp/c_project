@@ -13,7 +13,9 @@ file_path(file_path) {
     this->json_dict = new RSJresource(json_file);
     this->json_dict->parse();
 
-    this->assertJsonIntegrity(); // check json is correct, exit program otherwise
+    if(this->assertJsonIntegrity()) { // check json is correct, exit program otherwise
+        exit(1);
+    }
     this->simplifyJson((*json_dict)["signal"]); // remove signals group
 
     // No usable signal found
@@ -31,7 +33,6 @@ file_path(file_path) {
     // }
 }
 
-
 Json::~Json(){
     // TODO : free memory ?
 }
@@ -39,21 +40,49 @@ Json::~Json(){
 
 
 // =======  GETTERS / SETTERS =======
+const string& Json::getFilePath(void) const {
+    return this->file_path;
+}
+int Json::setFilePath(string& new_file_path) {
+    // TODO: check if file exists
+    this->file_path = new_file_path;
+
+    return 0;
+}
+
+RSJresource* Json::getJsonDict(void) const {
+    return this->json_dict;
+}
+
+vector<RSJresource> Json::getJsonCleanArray(void) const {
+    return this->json_clean_array;
+}
+
+Signals* Json::getSignals(void) const {
+    return this->signals;
+}
+int Json::setSignals(Signals *new_signals) {
+    this->signals = new_signals;
+
+    return 0;
+}
 
 
 
 // ======= OTHER FUNCTIONS =======
-void Json::assertJsonIntegrity(void) {
+int Json::assertJsonIntegrity(void) {
     // Checks that file as "signal" main structure
     if(!(*json_dict)["signal"].exists()) {
         cout << "Error: WaveDrom file should include `signal` key." <<  endl;
-        exit(1);
+        return 1;
     }
 
     if((*json_dict)["signal"].size() < 0) {
         cout << "Error: WaveDrom should contains at least 1 signal." <<  endl;
-        exit(1);
+        return 1;
     }
+
+    return 0;
 }
 
 void Json::simplifyJson(RSJresource &array) {
@@ -81,15 +110,25 @@ int Json::consistencyAndPrepare(void) {
             cout << "Error: Signal n°" << i <<  " should have a field `name`." << endl;
             exit(1);
         }
-        string signal_name = regex_replace(signal["name"].as_str(), removeSideQuotes, "$2");
+        string signal_name = regex_replace(signal["name"].as_str(), removeSideQuotes, "$2"); // remove surrounding quotes
         json_clean_array.at(i-1).as_object()["name"] = signal_name; // update origin (signal is just a copy)
 
         if(!signal["wave"].exists()) {
             cout << "Error: Signal \"" << signal_name <<  "\" should have a field `wave`." << endl;
             exit(1);
         }
-        string signal_wave = regex_replace(signal["wave"].as_str(), removeSideQuotes, "$2");
-        json_clean_array.at(i-1).as_object()["wave"] = signal_wave; // update origin (signal is just a copy)
+        string signal_wave = regex_replace(signal["wave"].as_str(), removeSideQuotes, "$2"); // remove surrounding quotes
+
+        // check for `|`
+        if (signal_wave.find('|') != std::string::npos) {
+            cout << "Warning: `|` character is not managed. It will be removed from the signal." << endl;
+        }
+
+        // remove `|` from signal
+        signal_wave.erase(remove(signal_wave.begin(), signal_wave.end(), '|'), signal_wave.end());
+
+        // update origin (signal is just a copy)
+        json_clean_array.at(i-1).as_object()["wave"] = signal_wave; 
 
         // verify that wave field isn't empty
         if(signal_wave.length() == 0) {
@@ -152,9 +191,8 @@ int Json::consistencyAndPrepare(void) {
 int Json::simplifyWaves(void) {
     // Allowed chars : ".pn10lh"
     // TODO: decide what to do with :
-    //      - x: undefined -> keep ?;   - z: high impedance -> ?
+    //      - z: high impedance -> ?
     //      - u: dotted high -> ?;      - s: dotted low -> ?
-    //      - |: cut -> ?
 
     for (RSJresource signal: json_clean_array) {
         string wave = signal["wave"].as_str(); // simplify var name
