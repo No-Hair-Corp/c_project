@@ -1,11 +1,14 @@
 #include "Dot.hpp"
 
+#define KEYWORDSIZE 5
+
+
 // Special characters that are recognized in the Dot language
-string Dot::specialCharacter = "->/\\[]=;{}";
+string Dot::specialCharacter = "->/\\[]=;{}#";
 string Dot::stringStarter = "\"";
-string Dot::keywords[3] = {"label", "sel", "digraph"};
+string Dot::keywords[KEYWORDSIZE] = {"label", "sel", "digraph", "strict", "graph"};
 string Dot::forbiddenCharacter = "\'`";
-char Dot::lineCharacter[3] = {'\t', '\n', '\r'};
+string Dot::lineCharacter = "\t\n\r "; 
 
 // ======= CONSTRUCTOR / DESTRUCTOR =======
 
@@ -49,16 +52,18 @@ int Dot::lexer() { //TODO: understand ghost UnknownCharacter ???
     // Iterate through each line in the input file
     while (getline(input_file, line)) {
         column_number = 0;
-
+        //TODO: HANDLE COMMENTS 
         // Iterate through each character in the line
         while (line[column_number] != '\0') {
             if (checkType(line[column_number], Dot::forbiddenCharacter)) {
                 return 2; // Error: Forbidden character found
             } else if (checkType(line[column_number], Dot::specialCharacter)) {
-                // Check if the current character is part of the "->" arrow
+                // Check if the current character is part of the "->" or "--" arrow
                 if (CheckArrow(line, column_number)) {
+                    buffer = {line[column_number], line[column_number+1]};
+                    cout << buffer << endl;
                     column_number += 2;
-                    currentToken = new Token("->", "SpecialCharacter", previousToken, NULL, line_number, column_number);
+                    currentToken = new Token(buffer, "SpecialCharacter", previousToken, NULL, line_number, column_number);
                 } else {
                     buffer = line[column_number];
                     currentToken = new Token(buffer, "SpecialCharacter", previousToken, NULL, line_number, column_number);
@@ -71,7 +76,7 @@ int Dot::lexer() { //TODO: understand ghost UnknownCharacter ???
                 Dot::registerString(input_file, line, column_number, line_number, buffer);
                 currentToken = new Token(buffer, "AnyWords", previousToken, NULL, line_number, column_number-1);
                 column_number++;
-            } else if (checkType(line[column_number])) {
+            } else if (checkType(line[column_number], Dot::lineCharacter)) {
                 column_number++;
                 continue;
             
@@ -79,7 +84,7 @@ int Dot::lexer() { //TODO: understand ghost UnknownCharacter ???
                 buffer = "";
                 // Register keywords and create tokens
                 Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
-                if (checkType(buffer)) {
+                if (checkKeywords(buffer, KEYWORDSIZE)) {
                     currentToken = new Token(buffer, "KeyWords", previousToken, NULL, line_number, column_number-1);
                 } else {
                     currentToken = new Token(buffer, "UnknownKeyWords", previousToken, NULL, line_number, column_number-1);
@@ -107,23 +112,18 @@ bool Dot::checkType(char c, const string specialCharacter) {
 }
 
 // Function to check if a word is one of the predefined keywords
-bool Dot::checkType(string& word) {
-    for (int i = 0; i < 3; i++) {
-        if (word == keywords[i]) {
+bool Dot::checkKeywords(string& word, int n) {
+    string copy = word;
+    transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
+
+    for (int i = 0; i < n; i++) {
+        if (copy == keywords[i]) {
             return true;
         }
     }
     return false;
 }
 
-bool Dot::checkType(char c){
-    for (int i = 0; i < 3; i++) {
-        if (c == lineCharacter[i]) {
-            return true;
-        }
-    }
-    return false;
-}
 
 // Function to register a string enclosed in double quotes
 int Dot::registerString(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString) {
@@ -181,11 +181,9 @@ int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& colu
                 if (line[column_number] != ' ' && line[column_number] != '\n' && line[column_number] != '\r' ) {
                     innerString.push_back(line[column_number]); // Use push_back for efficient string concatenation
                     column_number++;
-                    if (checkType(innerString)) {
-                        return 0;
-                    }
                 } else {
                     column_number++;
+                    return 0;
                 }
             }
         }
@@ -203,5 +201,9 @@ int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& colu
 
 // Function to check if the characters form an arrow (->)
 bool Dot::CheckArrow(string& line, int column_number) {
-    return (line[column_number] == '-' && line[column_number + 1] != '\0' && line[column_number + 1] == '>');
+    if (line[column_number] == '-' && line[column_number + 1] != '\0' && line[column_number + 1] == '>') {
+        return 1;
+    } else if (line[column_number] == '-' && line[column_number + 1] != '\0' && line[column_number + 1] == '-') {
+        return 1;
+    } else return 0;
 }

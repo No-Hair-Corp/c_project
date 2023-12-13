@@ -18,10 +18,10 @@ int main() {
     file1.lexer();
     Token* current = file1.getFirstToken();
     while (current->Token::getNextToken() != NULL) {
-        cout << "Token :"<< current->Token::getType() << ", Value: "<< current->Token::getValue() <<endl;
+        cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
         current = current->getNextToken();
     }
-    cout << "Token :"<< current->Token::getType() << ", Value: "<< current->Token::getValue() <<endl;
+    cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
 
     // string one = "A->B";
     // string two = "A-";
