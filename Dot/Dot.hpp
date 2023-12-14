@@ -2,6 +2,7 @@
 #define _DOT_H_
 
 #include "Token.hpp"
+#include "SchematicObject.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -19,7 +20,8 @@ class Dot {
         //TODO: make 
         static string specialCharacter;
         static string stringStarter;
-        static string keywords[];
+        static string statementKeywords[];
+        static string starterKeywords[];
         static string forbiddenCharacter;
         static string lineCharacter;
 
@@ -43,7 +45,7 @@ class Dot {
          * @return unsigned int: status code **/
         int lexer(void);
         bool checkType(char c, const string container);
-        bool checkKeywords(string& word, int n);
+        bool checkKeywords(string& word, int n, string Keywords[]);
         bool CheckArrow(string& line, int column_number);
         int jumpComments(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number);
 
