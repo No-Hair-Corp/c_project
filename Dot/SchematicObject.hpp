@@ -2,7 +2,8 @@
 #define _SCHEMATIC_OBJECT_H_
 
 #include <string>
-#include <list>
+#include <vector>
+
 
 using namespace std;
 
@@ -10,12 +11,12 @@ class SchematicObject {
     private:
         string gate_type;
         string gate_id;
-        list<SchematicObject*> inputs;
-        list<SchematicObject*> outputs;
+        vector<string> inputList;
+        vector<string> outputList;
 
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
-        SchematicObject(string gate_type);
+        SchematicObject();
         ~SchematicObject();
 
 
@@ -24,10 +25,10 @@ class SchematicObject {
         void setGateType(const string& type);
         string getGateId() const;
         void setGateId(const string& id);
-        list<SchematicObject*>& getInputs();
-        void setInputs(const list<SchematicObject*>& in);
-        list<SchematicObject*>& getOutputs();
-        void setOutputs(const list<SchematicObject*>& out);
+        const vector<string>& getInputs() const;
+        void setInputs(const string& input);
+        const vector<string>& getOutputs() const;
+        void setOutputs(const string& input);
 
 
 };

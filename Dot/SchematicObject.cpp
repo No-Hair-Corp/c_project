@@ -2,7 +2,7 @@
 
 
 // Constructor: initializes an empty SchematicObject in order to fill it after
-SchematicObject::SchematicObject(string gate_type): gate_type(gate_type), gate_id(""), inputs(), outputs() {}
+SchematicObject::SchematicObject(): gate_type(""), gate_id(""), inputList(), outputList() {}
 
 // Getters et setters pour gate_type
 string SchematicObject::getGateType() const {
@@ -23,23 +23,23 @@ void SchematicObject::setGateId(const string& id) {
 }
 
 // Getters et setters pour inputs
-list<SchematicObject*>& SchematicObject::getInputs() {
-    return this->inputs;
-}
+const vector<string>& SchematicObject::getInputs() const{
+        return this->inputList;
+    }
 
-void SchematicObject::setInputs(const list<SchematicObject*>& in) {
-        this->inputs = in;
+void SchematicObject::setInputs(const string& input) {
+        this->inputList.push_back(input);
     }
 
 
 // Getters et setters pour outputs
-list<SchematicObject*>& SchematicObject::getOutputs() {
-    return this->outputs;
-}
+const vector<string>& SchematicObject::getOutputs() const{
+        return this->outputList;
+    }
 
-void SchematicObject::setOutputs(const list<SchematicObject*>& out) {
-    outputs = out;
-}
+void SchematicObject::setOutputs(const std::string& input) {
+        this->outputList.push_back(input);
+    }
 
 
     
