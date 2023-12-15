@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum token_type {Assignment, SpecialCharacter, AnyWords, StatementKeyWords, StarterKeyWords};
+enum token_type {Assignment, SpecialCharacter, AnyWords, StatementKeyWords, StarterKeyWords, stringType};
 
 class Token {
     private:

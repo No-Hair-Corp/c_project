@@ -2,8 +2,9 @@
 #define _SCHEMATIC_OBJECT_H_
 
 #include <string>
+#include <list>
+#include <map>
 #include <vector>
-
 
 using namespace std;
 
@@ -11,7 +12,7 @@ class SchematicObject {
     private:
         string gate_type;
         string gate_id;
-        vector<string> inputList;//TODO: use list
+        map<string, string> inputList;
         vector<string> outputList;
 
     public:
@@ -25,10 +26,10 @@ class SchematicObject {
         void setGateType(const string& type);
         string getGateId() const;
         void setGateId(const string& id);
-        const vector<string>& getInputs() const;
-        void setInputs(const string& input);
+        const map<string, string>& getInputs() const;
+        void addInputs(const string& key, const string& inputs);
         const vector<string>& getOutputs() const;
-        void setOutputs(const string& input);
+        void addOutputs(const string& outputs);
 
 
 };

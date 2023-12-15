@@ -23,12 +23,12 @@ void SchematicObject::setGateId(const string& id) {
 }
 
 // Getters et setters pour inputs
-const vector<string>& SchematicObject::getInputs() const{
+const map<string, string>& SchematicObject::getInputs() const{
         return this->inputList;
     }
 
-void SchematicObject::setInputs(const string& input) {
-        this->inputList.push_back(input);
+void SchematicObject::addInputs(const string& key, const string& inputs) {
+        this->inputList[key] = inputs;
     }
 
 
@@ -37,8 +37,8 @@ const vector<string>& SchematicObject::getOutputs() const{
         return this->outputList;
     }
 
-void SchematicObject::setOutputs(const std::string& input) {
-        this->outputList.push_back(input);
+void SchematicObject::addOutputs(const string& outputs) {
+        this->outputList.push_back(outputs);
     }
 
 

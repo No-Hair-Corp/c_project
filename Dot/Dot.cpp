@@ -76,7 +76,7 @@ int Dot::lexer() {
                 buffer = "";
                 // Register the string and create a token
                 Dot::registerString(input_file, line, column_number, line_number, buffer);
-                currentToken = new Token(buffer, AnyWords, previousToken, NULL, line_number + 1, column_number);
+                currentToken = new Token(buffer, stringType, previousToken, NULL, line_number + 1, column_number);
                 column_number++;
             } else if (checkType(line[column_number], Dot::lineCharacter)) {
                 column_number++;
@@ -159,21 +159,26 @@ int Dot::registerString(ifstream& input_file, string& line, unsigned int& column
 // Function to throw a parse error without position information
 void Dot::throwParseError(const string& error_message) {
     cout << "Error: " << error_message << endl;
+    exit(1);
 }
 
 // Function to throw a parse error with position information
 void Dot::throwParseError(const string& error_message, unsigned int line, unsigned int column) {
     cout << "Error at line " << line << ", column " << column << ": " << error_message << endl;
+    exit(1);
 }
 
 // Function to register keywords in the input file
 int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString) {
-    while (specialCharacter.find(line[column_number]) == string::npos && (column_number == 0 || line[column_number - 1] != '\\')) {
+    cout << line[column_number] << endl;
+    cout << line_number << endl;
+    cout << column_number << endl;
+    while (specialCharacter.find(line[column_number]) == string::npos) {
         while (line[column_number] != '\0') {
-            if (specialCharacter.find(line[column_number]) != string::npos && (column_number == 0 || line[column_number - 1] != '\\')) {
+            if (specialCharacter.find(line[column_number]) != string::npos) {
                 return 0; // End of the keyword is found
             } else {
-                if (line[column_number] != ' ' && line[column_number] != '\n' && line[column_number] != '\r' ) {
+                if (!checkType(line[column_number], lineCharacter)) {
                     innerString.push_back(line[column_number]); // Use push_back for efficient string concatenation
                     column_number++;
                 } else {
@@ -182,13 +187,6 @@ int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& colu
                 }
             }
         }
-
-        if (!getline(input_file, line)) {
-            return 1; // End of file is reached
-        }
-
-        line_number++;
-        column_number = 0; // Reset column_number for the new line
     }
 
     return 0; // Successful completion
@@ -250,7 +248,6 @@ int Dot::parse() {
         switch (current_state)
         {
             case default_state:{
-                temp_schem = new SchematicObject();
                 string copy = current_token->getValue();
                 transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
                 if (copy == "strict"){
@@ -258,7 +255,7 @@ int Dot::parse() {
                 } else if (copy == "digraph" || copy == "graph"){
                     next_state= graph_type;
                 } else {
-                    throwParseError("Synthax error: No starter keywords", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: No starter keywords", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -269,7 +266,7 @@ int Dot::parse() {
                 if (copy == "digraph" || copy == "graph"){
                     next_state = graph_type;
                 } else {
-                    throwParseError("Synthax error: \"digraph\" or \"graph\" needed after \"stric\" keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: \"digraph\" or \"graph\" needed after \"stric\" keyword", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -279,7 +276,7 @@ int Dot::parse() {
                 } else if (current_token->getValue() == "{") {
                     next_state = open_accolade;
                 } else {
-                    throwParseError("Synthax error: Missing word or '{' after starter keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing word or '{' after starter keyword", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -287,26 +284,31 @@ int Dot::parse() {
                 if (current_token->getValue() == "{"){
                     next_state = open_accolade;
                 } else {
-                    throwParseError("Synthax error: Missing '{'", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing '{'", current_token->getLine(), current_token->getColumn());
                 }
             }
 
             case open_accolade:{
                 if(current_token->getType() == AnyWords){
+                    temp_schem = new SchematicObject();
                     next_state = choose_declaration ;
                 } else {
-                    throwParseError("Synthax error: Missing word after '{'", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing word after '{'", current_token->getLine(), current_token->getColumn());
                 }
             }
 
             case choose_declaration:{
                 if(current_token->getValue() == "["){
-                    temp_schem->setGateId(current_token->getPreviousToken()->getValue());
+                    if (!(this->schematicObjectsList.count(current_token->getValue()))){
+                        temp_schem->setGateId(current_token->getPreviousToken()->getValue());
+                    } else {
+                        throwParseError("Syntax error: Gate Id already used", current_token->getLine(), current_token->getColumn());
+                    }
                     next_state = statement;
                 } else if (current_token->getType() == Assignment) {
                     next_state = link;
                 } else {
-                   throwParseError("Synthax error: Missing word after '[' or '->", current_token->getLine(), current_token->getColumn());
+                   throwParseError("Syntax error: Missing word after '[' or '->", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -314,7 +316,7 @@ int Dot::parse() {
                 if(current_token->getType() == StatementKeyWords){
                     next_state = equal;
                 } else {
-                    throwParseError("Synthax error: Missing '=' after statement keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing '=' after statement keyword", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -323,7 +325,7 @@ int Dot::parse() {
                     temp_schem->setGateType(current_token->getValue());
                     next_state = statement_value;
                 } else {
-                    throwParseError("Synthax error: Missing value after '='", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing value after '='", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -333,7 +335,7 @@ int Dot::parse() {
                 } else if (current_token->getValue() == "]"){
                     next_state = statement_end;
                 } else {
-                    throwParseError("Synthax error: Missing ']' or wrong value", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing ']' or wrong value", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -343,7 +345,7 @@ int Dot::parse() {
                 } else if (current_token->getValue() == ";") {
                     next_state = open_accolade;
                 } else {
-                    throwParseError("Synthax error: Missing ';' or new erroneous statement", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing ';' or new erroneous statement", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -354,7 +356,7 @@ int Dot::parse() {
                     //temp_schem->setInputs();
                     next_state = link_end;
                 } else {
-                    throwParseError("Synthax error: Missing '->'", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing '->'", current_token->getLine(), current_token->getColumn());
                 }
             }
 
@@ -366,7 +368,7 @@ int Dot::parse() {
                 } else if (current_token->getValue() == "->"){
                     next_state = link;
                 } else {
-                    throwParseError("Synthax error: Missing '->' or ';', or new erroneous statement", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing '->' or ';', or new erroneous statement", current_token->getLine(), current_token->getColumn());
                 }
             }
 

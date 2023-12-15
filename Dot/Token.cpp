@@ -2,7 +2,7 @@
 
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
-Token::Token(string value, token_type type, Token *previous_token, Token *next_token, unsigned int line, unsigned int column):
+Token::Token(string value,  token_type type, Token *previous_token, Token *next_token, unsigned int line, unsigned int column):
 value(value), type(type), previous_token(previous_token), next_token(next_token), line(line), column(column) {
 
 }

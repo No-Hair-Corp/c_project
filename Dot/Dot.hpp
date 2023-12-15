@@ -7,7 +7,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
-#include <map>
+
 
 using namespace std;
 
@@ -15,7 +15,7 @@ class Dot {
     private:
         string file_path;
         Token* first_token;
-        map<string, SchematicObject*> schematicObjects;
+        map<string, SchematicObject*> schematicObjectsList;
 
     public:
         // ======= TOKEN CONTAINER ========
