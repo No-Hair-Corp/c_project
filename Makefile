@@ -31,10 +31,10 @@ output/%.o: Tests/%.cpp
 
 
 # RULES
-tests: output/test_dot.o output/Test.o $(DOT_OBJS)
-	g++ $(OPTIONS) $? -o output/test_dot 
+test_dot: output/test_dot.o output/Test.o $(DOT_OBJS)
+	g++ $(OPTIONS) $? -o output/test_dot
 
-test_json: output/test_json.o $(JSON_OBJS)
+test_json: output/test_json.o output/Test.o $(JSON_OBJS)
 	g++ $(OPTIONS) $? -o output/test_json
 
 clean:

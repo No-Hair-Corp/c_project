@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <iostream>
-#include <list>
+#include <vector>
 #include "Stimulus.hpp"
 
 using namespace std;

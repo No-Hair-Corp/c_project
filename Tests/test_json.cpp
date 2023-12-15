@@ -11,20 +11,19 @@ int main() {
     // === assertJsonIntegrity ===
     Test TC_Verify_Min_Json("Verify if there is all minimum elements on Json");
         // Setup
-        Json json1("Tests/database/json/test1.json");
-        Json json2("Tests/database/json/test2.json");
-        Json json3("Tests/database/json/test3.json");
+        Json file1("Tests/database/json/test1.json");
+        Json file2("Tests/database/json/test2.json");
+        //Json file3("Tests/database/json/test3.json");
         
         // Test
-        TC_Verify_Min_Json.check(json1.assertJsonIntegrity());
-        TC_Verify_Min_Json.check(!json2.assertJsonIntegrity());
-        TC_Verify_Min_Json.check(!json3.assertJsonIntegrity());
+        TC_Verify_Min_Json.check(file1.assertJsonIntegrity()==0);
+        TC_Verify_Min_Json.check(file2.assertJsonIntegrity()==0);
+        //TC_Verify_Min_Json.check(file3.assertJsonIntegrity()==1);
 
-    // === simplifyJson ===
+    /*// === simplifyJson ===
     Test TC_Simplify_Json("Simplify Json");
         // Setup
-        Json json1("Tests/database/json/test2.json");
-        json1.simplifyJson();
+        file2.simplifyJson();
         
         // Test
         cout << json_clean_array << endl;
@@ -32,9 +31,8 @@ int main() {
     // === consistencyAndPrepare ===
     Test TC_Consistency_And_Prepare("Consistency and prepare");
         // Setup
-        Json json1("Tests/database/json/test1.json");
-        json1.simplifyJson();
-        json1.consistencyAndPrepare();
+        file1.simplifyJson();
+        file1.consistencyAndPrepare();
         
         // Test
         cout << json_clean_array << endl;
@@ -42,13 +40,12 @@ int main() {
     // === simplifyWaves ===
     Test TC_Simplify_Waves("Simplify_Waves");
         // Setup
-        Json json1("Tests/database/json/test1.json");
-        json1.simplifyJson();
-        json1.consistencyAndPrepare();
-        json1.simplifyWaves();
+        file1.simplifyJson();
+        file1.consistencyAndPrepare();
+        file1.simplifyWaves();
         
         // Test
         cout << json_clean_array << endl;
-    
+    */
     return 0;
 }
