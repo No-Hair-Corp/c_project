@@ -2,12 +2,12 @@
 
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
-Token::Token(string value, string type, Token *previous_token, Token *next_token, unsigned int line, unsigned int column):
+Token::Token(string value, token_type type, Token *previous_token, Token *next_token, unsigned int line, unsigned int column):
 value(value), type(type), previous_token(previous_token), next_token(next_token), line(line), column(column) {
 
 }
 
-Token::Token(string value, string type, Token *next_token, unsigned int line, unsigned int column):
+Token::Token(string value, token_type type, Token *next_token, unsigned int line, unsigned int column):
 value(value), type(type), next_token(next_token), previous_token(NULL), line(line), column(column) {
 
 }
@@ -19,7 +19,7 @@ string Token::getValue(void) const {
     return this->value;
 }
 
-string Token::getType(void) const {
+token_type Token::getType(void) const {
     return this->type;
 }
 
@@ -29,6 +29,13 @@ void Token::setPreviousToken(Token* previous_token) {
 
 Token* Token::getPreviousToken(void) const {
     return this->previous_token;
+}
+Token* Token::getPreviousToken(unsigned int n) const {
+    Token* prev_token = this->getPreviousToken();
+    for(unsigned int i=1; i<n; i++){
+        prev_token = this->getPreviousToken();
+    }
+    return prev_token;
 }
 
 Token* Token::getNextToken(void) const {

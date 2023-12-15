@@ -6,19 +6,22 @@
 
 using namespace std;
 
+enum token_type {Assignment, SpecialCharacter, AnyWords, StatementKeyWords, StarterKeyWords};
+
 class Token {
     private:
         string value;
-        string type;
+        token_type type;
         Token *previous_token, *next_token;
         unsigned int line;
         unsigned int column;
 
     public:
+
         // =======  CONSTRUCTOR / DESTRUCTOR =======
-        Token(string value, string type, Token *previous_token, Token *next_token,
+        Token(string value, token_type type, Token *previous_token, Token *next_token,
             unsigned int line, unsigned int column);
-        Token(string value, string type, Token *next_token, unsigned int line,
+        Token(string value, token_type, Token *next_token, unsigned int line,
             unsigned int column);
         //~Token();
 
@@ -27,7 +30,7 @@ class Token {
         // =======  GETTERS / SETTERS =======
         string getValue(void) const;
 
-        string getType(void) const;
+        token_type getType(void) const;
 
         unsigned int getLine();
 
@@ -35,6 +38,7 @@ class Token {
 
         void setPreviousToken(Token* previous_token);
         Token* getPreviousToken(void) const;
+        Token* getPreviousToken(unsigned int n) const;
         Token* getNextToken(void) const;
 
 

@@ -11,7 +11,7 @@ class SchematicObject {
     private:
         string gate_type;
         string gate_id;
-        vector<string> inputList;
+        vector<string> inputList;//TODO: use list
         vector<string> outputList;
 
     public:
