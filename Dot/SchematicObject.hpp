@@ -14,6 +14,7 @@ class SchematicObject {
         string gate_id;
         map<string, string> inputList;
         vector<string> outputList;
+        map<string, string> additionnalOptions;
 
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
@@ -30,8 +31,8 @@ class SchematicObject {
         void addInputs(const string& key, const string& inputs);
         const vector<string>& getOutputs() const;
         void addOutputs(const string& outputs);
-
-
+        const map<string, string> getAdditionnalOptions() const;
+        void addAdditionnalOptions(const string& key, const string& options);
 };
 
 #endif

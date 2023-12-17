@@ -41,5 +41,14 @@ void SchematicObject::addOutputs(const string& outputs) {
         this->outputList.push_back(outputs);
     }
 
+const map<string, string> SchematicObject::getAdditionnalOptions() const{
+    return this->additionnalOptions;
+}
+void SchematicObject::addAdditionnalOptions(const string& key, const string& options){
+    this->additionnalOptions[key] = options;
+}
+
+
+
 
     
