@@ -1,6 +1,6 @@
 #include "Dot.hpp"
 
-#define STATEMENTKEYWORDSIZE 1677
+#define STATEMENTKEYWORDSIZE 176
 #define STARTERKEYWORDSIZE 3
 
 // Special characters that are recognized in the Dot language
@@ -86,6 +86,7 @@ int Dot::lexer() {
                 buffer = "";
                 // Register keywords and create tokens
                 Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
+                cout << "1" << endl;
                 if (checkKeywords(buffer, STATEMENTKEYWORDSIZE, statementKeywords)) {
                     currentToken = new Token(buffer, StatementKeyWords, previousToken, NULL, line_number + 1, column_number);
                 } else if (checkKeywords(buffer, STATEMENTKEYWORDSIZE, starterKeywords)){
@@ -118,9 +119,10 @@ bool Dot::checkType(char c, const string specialCharacter) {
 // Function to check if a word is one of the predefined keywords
 bool Dot::checkKeywords(string& word, int n, string Keywords[]) {
     string copy = word;
-    transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
-
+    transform(copy.begin(), copy.end(), copy.begin(), ::tolower);   
+    cout << "2" << endl;
     for (int i = 0; i < n; i++) {
+        cout << "test: " << i << endl;
         if (copy == Keywords[i]) {
             return true;
         }
@@ -170,9 +172,6 @@ void Dot::throwParseError(const string& error_message, unsigned int line, unsign
 
 // Function to register keywords in the input file
 int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number, string& innerString) {
-    cout << line[column_number] << endl;
-    cout << line_number << endl;
-    cout << column_number << endl;
     while (specialCharacter.find(line[column_number]) == string::npos) {
         while (line[column_number] != '\0') {
             if (specialCharacter.find(line[column_number]) != string::npos) {
@@ -246,6 +245,7 @@ int Dot::parse() {
     map<string, vector<string>> tempLink;
 
     do {
+        
         switch (current_state)
         {
             case default_state:{
@@ -258,6 +258,8 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: No starter keywords", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "default_state" << endl;
+                break;
             }
 
 
@@ -267,8 +269,10 @@ int Dot::parse() {
                 if (copy == "digraph" || copy == "graph"){
                     next_state = graph_type;
                 } else {
-                    throwParseError("Syntax error: \"digraph\" or \"graph\" needed after \"stric\" keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: \"digraph\" or \"graph\" needed after \"strict\" keyword", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "strict" << endl;
+                break;
             }
 
             case graph_type:{
@@ -279,6 +283,8 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing word or '{' after starter keyword", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "graph_type" << endl;
+                break;
             }
 
             case name:{
@@ -287,6 +293,8 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '{'", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "name" << endl;
+                break;
             }
 
             case open_accolade:{
@@ -296,6 +304,8 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing word after '{'", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "open_accolade" << endl;
+                break;
             }
 
             case choose_declaration:{
@@ -311,6 +321,8 @@ int Dot::parse() {
                 } else {
                    throwParseError("Syntax error: Missing word after '[' or '->", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "choose_declaration" << endl;
+                break;
             }
 
             case statement:{
@@ -319,6 +331,8 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Unknown keyword", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "statement" << endl;
+                break;
             }
 
             case assignment:{
@@ -327,14 +341,18 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '=' after statement keyword", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "assignment" << endl;
+                break;
             }
 
 
             case equal:{
                 if(current_token->getType() == stringType){
-                    if (current_token->getPreviousToken(2)->getType() != StatementKeyWords){
-                        if (!(temp_schem->getAdditionnalOptions().count(current_token->getPreviousToken(2)->getValue()))){
-                            temp_schem->addAdditionnalOptions(current_token->getPreviousToken(2)->getValue(), current_token->getValue());
+                    if (current_token->getPreviousToken(3)->getType() != StatementKeyWords){
+                        cout << current_token->getPreviousToken(6)->getValue() <<endl;
+                        cout << current_token->getPreviousToken()->getPreviousToken()->getValue() << endl;
+                        if (!(temp_schem->getAdditionnalOptions().count(current_token->getPreviousToken(3)->getValue()))){
+                            temp_schem->addAdditionnalOptions(current_token->getPreviousToken(3)->getValue(), current_token->getValue());
                         } else {
                             throwParseError("Syntax error: SchematicsObject option already used", current_token->getLine(), current_token->getColumn());
                         }
@@ -345,6 +363,8 @@ int Dot::parse() {
                     throwParseError("Syntax error: Missing '\"' after '=' statement", current_token->getLine(), current_token->getColumn());
                 }
                 next_state = statement_value;
+                cout << "equal" << endl;
+                break;
             }
 
             case statement_value:{
@@ -355,6 +375,8 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing ']' or unknown keyword", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "statement_value" << endl;
+                break;
             }
 
             case statement_end:{
@@ -365,6 +387,8 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing ';' or new erroneous statement", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "statement_end" << endl;
+                break;
             }
 
             case link:{
@@ -374,6 +398,8 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '->'", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "link" << endl;
+                break;
             }
 
             case link_end:{
@@ -386,14 +412,17 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '->' or ';', or new erroneous statement", current_token->getLine(), current_token->getColumn());
                 }
+                cout << "link_end" << endl;
+                break;
             }
 
             default:{
+                cout << "default" << endl;
                 return -1;
             }
-            current_token = current_token->getNextToken();
         }
         current_state = next_state;
+        cout << "Value: " << current_token -> getValue() << " , Type: "<< current_token -> getType() << endl;
     } while ( (current_token = current_token->getNextToken()) );
 
     

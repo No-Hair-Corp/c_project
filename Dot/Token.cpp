@@ -31,11 +31,12 @@ Token* Token::getPreviousToken(void) const {
     return this->previous_token;
 }
 Token* Token::getPreviousToken(unsigned int n) const {
-    Token* prev_token = this->getPreviousToken();
+    Token* token = this->previous_token;
     for(unsigned int i=1; i<n; i++){
-        prev_token = this->getPreviousToken();
+        cout << token->getValue() << endl;
+        token = this->previous_token;
     }
-    return prev_token;
+    return token;
 }
 
 Token* Token::getNextToken(void) const {

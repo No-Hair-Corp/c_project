@@ -1,4 +1,13 @@
-digraph FA{
-A[label=" input "];
-A -- B;
-B -- A;
+Digraph testand1 {
+    A [label="input1"]; #input A
+    B [label="input2"]; //input B
+    C [label="input3"]; //input B
+    GATE1 [label="AND2" sel="sel2"];
+    E2 [label="OR2"];
+    O1 [label="OUTPUT1"];
+    O2 [label="OUTPUT1"];
+    A->GATE1->O1;
+    B->GATE1;
+    O1->GATE2->O2;
+    C->GATE2;
+}

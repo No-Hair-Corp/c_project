@@ -17,12 +17,13 @@ int main() {
 
     file1.lexer();
     Token* current = file1.getFirstToken();
-    while (current->Token::getNextToken() != NULL) {
-        cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+    while (current->getNextToken() != NULL) {
+        cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
         current = current->getNextToken();
     }
-    cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+    cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
 
+    file1.parse();
     // string one = "A->B";
     // string two = "A-";
     // string three = "A-B";
