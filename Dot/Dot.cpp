@@ -1,12 +1,12 @@
 #include "Dot.hpp"
 
-#define STATEMENTKEYWORDSIZE 176
+#define STATEMENTKEYWORDSIZE 67
 #define STARTERKEYWORDSIZE 3
 
 // Special characters that are recognized in the Dot language
 string Dot::specialCharacter = "->/\\[]=;{}#";
 string Dot::stringStarter = "\"";
-string Dot::statementKeywords[STATEMENTKEYWORDSIZE] = {"_background","area","arrowhead","arrowsize","arrowtail","bb","beautify","bgcolor","center","charset","class","cluster","clusterrank","color","colorscheme","comment","compound","concentrate","constraint","Damping","decorate","defaultdist","dim","dimen","dir","diredgeconstraints","distortion","dpi","edgehref","edgetarget","edgetooltip","edgeURL","epsilon","esep","fillcolor","fixedsize","fontcolor","fontname","fontnames","fontpath","fontsize","forcelabels","gradientangle","group","head_lp","headclip","headhref","headlabel","headport","headtarget","headtooltip","headURL","height","href","id","image","imagepath","imagepos","imagescale","inputscale","K","label","label_scheme","labelangle","labeldistance","labelfloat","labelfontcolor","labelfontname","labelfontsize","labelhref","labeljust","labelloc","labeltarget","labeltooltip","labelURL","landscape","layer","layerlistsep","layers","layerselect","layersep","layout","len","levels","levelsgap","lhead","lheight","linelength","lp","ltail","lwidth","margin","maxiter","mclimit","mindist","minlen","mode","model","newrank","nodesep","nojustify","normalize","notranslate","nslimit","nslimit1","oneblock","ordering","orientation","outputorder","overlap","overlap_scaling","overlap_shrink","pack","packmode","pad","page","pagedir","pencolor","penwidth","peripheries","pin","pos","quadtree","quantum","rank","rankdir","ranksep","ratio","rects","regular","remincross","repulsiveforce","resolution","root","rotate","rotation","samehead","sametail","samplepoints","scale","searchsize","sep","shape","shapefile","showboxes","sides","size","skew","smoothing","sortv","splines","start","style","stylesheet","tail_lp","tailclip","tailhref","taillabel","tailport","tailtarget","tailtooltip","tailURL","target","TBbalance","tooltip","truecolor","URL","vertices","viewport","voro_margin","weight","width","xdotversion","xlabel","xlp","z"};
+string Dot::statementKeywords[STATEMENTKEYWORDSIZE] = {"_background","area","arrowhead","arrowsize","arrowtail","bb","beautify","bgcolor","center","charset","class","cluster","clusterrank","color","colorscheme","comment","compound","concentrate","constraint","Damping","decorate","defaultdist","dim","dimen","dir","diredgeconstraints","distortion","dpi","edgehref","edgetarget","edgetooltip","edgeURL","epsilon","esep","fillcolor","fixedsize","fontcolor","fontname","fontnames","fontpath","fontsize","forcelabels","gradientangle","group","head_lp","headclip","headhref","headlabel","headport","headtarget","headtooltip","headURL","height","href","id","image","imagepath","imagepos","imagescale","inputscale","K","label","label_scheme","labelangle","labeldistance","labelfloat","labelfontcolor"}; //,"labelfontname","labelfontsize","labelhref","labeljust","labelloc","labeltarget","labeltooltip","labelURL","landscape","layer","layerlistsep","layers","layerselect","layersep","layout","len","levels","levelsgap","lhead","lheight","linelength","lp","ltail","lwidth","margin","maxiter","mclimit","mindist","minlen","mode","model","newrank","nodesep","nojustify","normalize","notranslate","nslimit","nslimit1","oneblock","ordering","orientation","outputorder","overlap","overlap_scaling","overlap_shrink","pack","packmode","pad","page","pagedir","pencolor","penwidth","peripheries","pin","pos","quadtree","quantum","rank","rankdir","ranksep","ratio","rects","regular","remincross","repulsiveforce","resolution","root","rotate","rotation","samehead","sametail","samplepoints","scale","searchsize","sep","shape","shapefile","showboxes","sides","size","skew","smoothing","sortv","splines","start","style","stylesheet","tail_lp","tailclip","tailhref","taillabel","tailport","tailtarget","tailtooltip","tailURL","target","TBbalance","tooltip","truecolor","URL","vertices","viewport","voro_margin","weight","width","xdotversion","xlabel","xlp","z"};
 string Dot::starterKeywords[STARTERKEYWORDSIZE] = {"digraph", "strict", "graph"};
 string Dot::forbiddenCharacter = "\'`";
 string Dot::lineCharacter = "\t\n\r "; 
@@ -85,14 +85,15 @@ int Dot::lexer() {
             } else {
                 buffer = "";
                 // Register keywords and create tokens
+                unsigned int temp_col = column_number;
                 Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
                 cout << "1" << endl;
                 if (checkKeywords(buffer, STATEMENTKEYWORDSIZE, statementKeywords)) {
-                    currentToken = new Token(buffer, StatementKeyWords, previousToken, NULL, line_number + 1, column_number);
-                } else if (checkKeywords(buffer, STATEMENTKEYWORDSIZE, starterKeywords)){
-                    currentToken = new Token(buffer, StarterKeyWords, previousToken, NULL, line_number + 1, column_number);
+                    currentToken = new Token(buffer, StatementKeyWords, previousToken, NULL, line_number + 1, temp_col);
+                } else if (checkKeywords(buffer, STARTERKEYWORDSIZE, starterKeywords)){
+                    currentToken = new Token(buffer, StarterKeyWords, previousToken, NULL, line_number + 1, temp_col);
                 } else {
-                    currentToken = new Token(buffer, AnyWords, previousToken, NULL, line_number + 1, column_number);
+                    currentToken = new Token(buffer, AnyWords, previousToken, NULL, line_number + 1, temp_col);
                 }
             }
 
@@ -205,6 +206,7 @@ int Dot::jumpComments(ifstream& input_file, string& line, unsigned int& column_n
     if ((line[column_number] == '/' && line[column_number + 1] == '/') || line[column_number] == '#'){
         getline(input_file, line);
         column_number=0;
+        line_number++;
     } else if (line[column_number] == '/' && line[column_number + 1] == '*'){
 
         while(line[column_number] != '*' && line[column_number + 1] != '/'){
@@ -298,9 +300,13 @@ int Dot::parse() {
             }
 
             case open_accolade:{
+                cout << current_token->getType() << endl;
+                cout << current_token->getValue() << endl;
                 if(current_token->getType() == AnyWords){
                     temp_schem = new SchematicObject();
                     next_state = choose_declaration ;
+                } else if (current_token->getValue() == "}") {
+                    return 0;
                 } else {
                     throwParseError("Syntax error: Missing word after '{'", current_token->getLine(), current_token->getColumn());
                 }
@@ -348,11 +354,9 @@ int Dot::parse() {
 
             case equal:{
                 if(current_token->getType() == stringType){
-                    if (current_token->getPreviousToken(3)->getType() != StatementKeyWords){
-                        cout << current_token->getPreviousToken(6)->getValue() <<endl;
-                        cout << current_token->getPreviousToken()->getPreviousToken()->getValue() << endl;
-                        if (!(temp_schem->getAdditionnalOptions().count(current_token->getPreviousToken(3)->getValue()))){
-                            temp_schem->addAdditionnalOptions(current_token->getPreviousToken(3)->getValue(), current_token->getValue());
+                    if (current_token->getPreviousToken(2)->getType() != StatementKeyWords){
+                        if (!(temp_schem->getAdditionnalOptions().count(current_token->getPreviousToken(2)->getValue()))){
+                            temp_schem->addAdditionnalOptions(current_token->getPreviousToken(2)->getValue(), current_token->getValue());
                         } else {
                             throwParseError("Syntax error: SchematicsObject option already used", current_token->getLine(), current_token->getColumn());
                         }
@@ -439,5 +443,5 @@ int Dot::parse() {
         cout << "Clé : " << it->first << ", Valeur : " << it->second << endl;
     }
 
-    return 0;//TODO: function that verify link and add input output
+    return 0;//TODO: function that verify link and add input output and error decalage
 }

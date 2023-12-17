@@ -33,8 +33,7 @@ Token* Token::getPreviousToken(void) const {
 Token* Token::getPreviousToken(unsigned int n) const {
     Token* token = this->previous_token;
     for(unsigned int i=1; i<n; i++){
-        cout << token->getValue() << endl;
-        token = this->previous_token;
+        token = token->previous_token;
     }
     return token;
 }
