@@ -25,9 +25,12 @@ file_path(file_path) {
     }
     cout << "Debug: Found " << this->json_clean_array.size() << " potential signals." << endl; 
 
-    this->consistencyAndPrepare(); // check signals, exit program if errors
-    this->simplifyWaves(); // convert wave to easier value ("1.0." -> "1100"...)
-
+    if(this->consistencyAndPrepare()) { // check signals, exit program if errors
+        exit(1);
+    }
+    if(this->simplifyWaves()) {  // convert wave to easier value ("1.0." -> "1100"...)
+        exit(1);
+    }
     // for (Stimulus* signal: this->signals->getSignals()) {
     //     cout << signal->getName() << ":\t" << signal->getValue() << endl; 
     // }
@@ -108,14 +111,14 @@ int Json::consistencyAndPrepare(void) {
         // verify presence of field name
         if(!signal["name"].exists()) {
             cout << "Error: Signal n°" << i <<  " should have a field `name`." << endl;
-            exit(1);
+            return 1;
         }
         string signal_name = regex_replace(signal["name"].as_str(), removeSideQuotes, "$2"); // remove surrounding quotes
         json_clean_array.at(i-1).as_object()["name"] = signal_name; // update origin (signal is just a copy)
 
         if(!signal["wave"].exists()) {
             cout << "Error: Signal \"" << signal_name <<  "\" should have a field `wave`." << endl;
-            exit(1);
+            return 1;
         }
         string signal_wave = regex_replace(signal["wave"].as_str(), removeSideQuotes, "$2"); // remove surrounding quotes
 
@@ -133,7 +136,7 @@ int Json::consistencyAndPrepare(void) {
         // verify that wave field isn't empty
         if(signal_wave.length() == 0) {
             cout << "Error: Signal's \"" << signal_name <<  "\" can't have an empty `wave` field." << endl;
-            exit(1);
+            return 1;
         }
 
         // if there is a P,p,n or an n in the signal -> we switch to clock duplication mode
@@ -145,7 +148,7 @@ int Json::consistencyAndPrepare(void) {
         // checks that there is no several signals with the same name
         if(signal_names.count(signal_name)) {
             cout << "Error: Several signals named \"" << signal_name << "\", this is not allowed." << endl;
-            exit(1);
+            return 1;
         }
         signal_names.insert(signal_name);
 
@@ -159,7 +162,7 @@ int Json::consistencyAndPrepare(void) {
         if(!tmp_clock_counts) tmp_clock_counts = signal_clock_counts;
         else if(tmp_clock_counts != signal_clock_counts) {
             cout << "Error: Signal \"" << signal_name << "\" has a different `wave` length than previous signals. All the signals should have the same `wave` length (period ratio taken in account)." << endl;
-            exit(1);
+            return 1;
         }
 
         // Simulator is not made to manage phase shift of signals, warns the user that option will be skipped 
@@ -170,7 +173,7 @@ int Json::consistencyAndPrepare(void) {
         // Simulator is not made to manage data shift of signals, warns the user that option will be skipped 
         if(signal["data"].exists()) {
             cout << "Error: Signals' data option is not *yet* managed. Signal \"" << signal_name << "\" cannot be treated." << endl;
-            exit(1);
+            return 1;
         }
         // TODO: Manage data bus; Like with custom formatting: (maybe in `Json::simplifyWaves()`)
         //     name: 'addr',  data: 'x3, xa' // x-> hexa; d/nothing-> decimal; b->binary
@@ -202,7 +205,7 @@ int Json::simplifyWaves(void) {
         for(unsigned int i = 0; i < wave.length(); i++) {
             if(i == 0 && wave[i] ==  '.') {
                 cout << "Error: Signal \"" << signal["name"].as_str() << "\" start with a `.`. This is forbidden." << endl;
-                exit(1);
+                return 1;
             }
 
             unsigned int duplicate_factor = (this->signals->getHasClockDuplication())? 2 : 1; // double chars if has clock
@@ -238,7 +241,7 @@ int Json::simplifyWaves(void) {
                 
                 default:
                     cout << "Error: In signal \"" << signal["name"].as_str() << "\", foribdden character `" << wave[i] << "`." << endl;
-                    exit(1);
+                    return 1;
                     break;
             }
 
