@@ -68,13 +68,16 @@ int Dot::lexer() {
                     buffer = {line[column_number], line[column_number+1]};
                     column_number += 2;
                     currentToken = new Token(buffer, Assignment, previousToken, NULL, line_number + 1, column_number + 1);
+
                 } else if (line[column_number] == '/' || line[column_number] == '#' ){
                     jumpComments(input_file, line, column_number, line_number);
+
                 } else {
                     buffer = line[column_number];
                     currentToken = new Token(buffer, SpecialCharacter, previousToken, NULL, line_number + 1, column_number + 1);
                     column_number++;
                 }
+
             } else if (checkType(line[column_number], Dot::stringStarter)) {
                 column_number++;
                 buffer = "";
@@ -82,6 +85,7 @@ int Dot::lexer() {
                 Dot::registerString(input_file, line, column_number, line_number, buffer);
                 currentToken = new Token(buffer, stringType, previousToken, NULL, line_number + 1, column_number);
                 column_number++;
+
             } else if (checkType(line[column_number], Dot::lineCharacter)) {
                 column_number++;
                 continue;
@@ -203,7 +207,7 @@ bool Dot::CheckArrow(string& line, int column_number) {
 }
 
 
-int Dot::jumpComments(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number){
+int Dot::jumpComments(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number){ //TODO:handle comments at the last line
     if ((line[column_number] == '/' && line[column_number + 1] == '/') || line[column_number] == '#'){
         getline(input_file, line);
         column_number=0;
@@ -248,6 +252,10 @@ int Dot::parse() {
     map<string, vector<string>> tempLink;
 
     do {
+
+        if (current_token->getNextToken() == nullptr && current_token->getValue() != "}" ){
+            throwParseError("Syntax error: Missing '}'", current_token->getLine(), current_token->getColumn());
+        }
         
         switch (current_state)
         {
@@ -284,7 +292,7 @@ int Dot::parse() {
                 } else if (current_token->getValue() == "{") {
                     next_state = open_accolade;
                 } else {
-                    throwParseError("Syntax error: Missing word or '{' after starter keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing '{' after starter keyword", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "graph_type" << endl;
                 break;
@@ -306,9 +314,8 @@ int Dot::parse() {
                     next_state = choose_declaration ;
                 } else if (current_token->getValue() == "}") {
                     break;
-                    cout << "Parser est arrivé à la fin du fichier" << endl;
                 } else {
-                    throwParseError("Syntax error: Missing word after '{'", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: need to start with a new statement or link", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "open_accolade" << endl;
                 break;
@@ -325,7 +332,7 @@ int Dot::parse() {
                 } else if (current_token->getType() == Assignment) {
                     next_state = link;
                 } else {
-                   throwParseError("Syntax error: Missing word after '[' or '->", current_token->getLine(), current_token->getColumn());
+                   throwParseError("Syntax error: Missing '[' or '->'", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "choose_declaration" << endl;
                 break;
@@ -335,7 +342,7 @@ int Dot::parse() {
                 if(current_token->getType() == StatementKeyWords || current_token->getType() == AnyWords){
                     next_state = assignment;
                 } else {
-                    throwParseError("Syntax error: Unknown keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: missing keyword before '='", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "statement" << endl;
                 break;
@@ -353,7 +360,7 @@ int Dot::parse() {
 
 
             case equal:{
-                if(current_token->getType() == stringType){
+                if(current_token->getType() == stringType || current_token->getType() == AnyWords){
                     if (current_token->getPreviousToken(2)->getType() != StatementKeyWords){
                         if (!(temp_schem->getAdditionnalOptions().count(current_token->getPreviousToken(2)->getValue()))){
                             temp_schem->addAdditionnalOptions(current_token->getPreviousToken(2)->getValue(), current_token->getValue());
@@ -364,7 +371,7 @@ int Dot::parse() {
                         temp_schem->setGateType(current_token->getValue());
                     }
                 } else {
-                    throwParseError("Syntax error: Missing '\"' after '=' statement", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing value after '=' statement", current_token->getLine(), current_token->getColumn());
                 }
                 next_state = statement_value;
                 //cout << "equal" << endl;
@@ -401,7 +408,7 @@ int Dot::parse() {
                     tempLink[current_token->getValue()].push_back(current_token->getPreviousToken(2)->getValue());
                     next_state = link_end;
                 } else {
-                    throwParseError("Syntax error: Missing '->'", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Missing gate after '->'", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "link" << endl;
                 break;
@@ -427,44 +434,15 @@ int Dot::parse() {
             }
         }
         current_state = next_state;
-        //cout << "Value: " << current_token -> getValue() << " , Type: "<< current_token -> getType() << endl;
+        //cout << "Current token: "<< current_token->getValue() << " Next Token: " << current_token->getNextToken()->getValue() << endl;
+        
     } while ( (current_token = current_token->getNextToken()) );
-
-    // cout << "SO.size() is " << this->schematicObjectsList.size() << endl;
-    // cout << "affichage liste finale: " << endl;
-    // for (auto const& x : this->schematicObjectsList)
-    // {
-    //     std::cout << x.first  // string (key)
-    //             << ':' 
-    //             << x.second->getGateType() // string's value 
-    //             << endl;
-        // for(auto const& y: x.second){
-        //     for(auto const& w : y->getInputs()){
-        //         cout << "Input Name: " << w.first << " , Source: " << w.second
-        //     }
-        // }
     
-
     checkExistence(this->schematicObjectsList, tempLink);
     checkExistence(this->schematicObjectsList);
     fillIoList(tempLink);
-    
-    // cout << "Liste de link: " << endl;
-    // for (map<string, vector<string>>::const_iterator it = tempLink.begin(); it != tempLink.end(); ++it) {
-    //     cout << "Clé : " << it->first << ", Valeur : "<< endl;
-    //     for (const auto& element : it->second) {
-    //     std::cout << element << std::endl;
-    //     }
-    // }
 
-    // cout << "Liste d'additionnal options: " << endl;
-    // cout << "Additionaloutputs.size() is " << temp_schem->getAdditionnalOptions().size() << endl;
-    // for (map<string, string>::const_iterator it = temp_schem->getAdditionnalOptions().begin(); it != temp_schem->getAdditionnalOptions().end(); ++it) {
-    //     cout << "Clé : " << it->first << ", Valeur : " << it->second << endl;
-    // }
-
-    
-    return 0;//TODO: function that verify link and add input output and error decalage
+    return 0;
 }
 
 
@@ -483,6 +461,7 @@ bool Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList, ma
     return true;
 }
 
+
 bool Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList){
     for (auto const& x : schematicObjectsList){
         for (auto const& y : x.second->getAdditionnalOptions()){
@@ -493,6 +472,7 @@ bool Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList){
     }
     return true;
 }
+
 
 bool Dot::fillIoList(map<string, vector<string>>& tempLink){
     for (auto const& link : tempLink){

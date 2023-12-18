@@ -14,16 +14,19 @@ int main() {
     // cout << file1.checkType(c3, Dot::forbiddenCharacter) << endl;
     // cout << file1.checkType(keyword1) << endl;
     // cout << file1.checkType(keyword2) << endl;
-
+    cout << "lexer" << endl;
     file1.lexer();
-    // Token* current = file1.getFirstToken();
-    // while (current->getNextToken() != NULL) {
-    //     cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-    //     current = current->getNextToken();
-    // }
-    // cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-
+    cout << "lexer done" << endl;
+    Token* current = file1.getFirstToken();
+    while (current->getNextToken() != NULL) {
+        cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+        current = current->getNextToken();
+    }
+    cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+    
+    cout << "parser" << endl;
     file1.parse();
+    cout << "parser done" << endl;
 
 
     cout << file1.getSchematicObjectsList().size() << endl;
