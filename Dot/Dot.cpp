@@ -121,9 +121,7 @@ bool Dot::checkType(char c, const string specialCharacter) {
 bool Dot::checkKeywords(string& word, int n, string Keywords[]) {
     string copy = word;
     transform(copy.begin(), copy.end(), copy.begin(), ::tolower);   
-    cout << "2" << endl;
     for (int i = 0; i < n; i++) {
-        cout << "test: " << i << endl;
         if (copy == Keywords[i]) {
             return true;
         }
