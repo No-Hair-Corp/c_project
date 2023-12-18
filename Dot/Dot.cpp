@@ -1,6 +1,6 @@
 #include "Dot.hpp"
 
-#define STATEMENTKEYWORDSIZE 67
+#define STATEMENTKEYWORDSIZE 176
 #define STARTERKEYWORDSIZE 3
 
 // Special characters that are recognized in the Dot language
