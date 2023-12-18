@@ -80,7 +80,7 @@ int Json::assertJsonIntegrity(void) {
         return 1;
     }
 
-    if((*json_dict)["signal"].size() < 0) {
+    if((*json_dict)["signal"].size() < 1) {
         cout << "Error: WaveDrom should contains at least 1 signal." <<  endl;
         return 1;
     }
@@ -99,10 +99,10 @@ void Json::simplifyJson(RSJresource &array) {
         }
     }
 }
+
 void Json::eraseJsonCleanArray(void) {
     this->json_clean_array.erase(json_clean_array.begin(),json_clean_array.end());
 }
-
 
 int Json::consistencyAndPrepare(void) {
     std::regex removeSideQuotes("^(\'|\")(.+)(\'|\")$");
@@ -122,7 +122,7 @@ int Json::consistencyAndPrepare(void) {
 
         if(!signal["wave"].exists()) {
             cout << "Error: Signal \"" << signal_name <<  "\" should have a field `wave`." << endl;
-            return 1;
+            return 2;
         }
         string signal_wave = regex_replace(signal["wave"].as_str(), removeSideQuotes, "$2"); // remove surrounding quotes
 
@@ -140,7 +140,7 @@ int Json::consistencyAndPrepare(void) {
         // verify that wave field isn't empty
         if(signal_wave.length() == 0) {
             cout << "Error: Signal's \"" << signal_name <<  "\" can't have an empty `wave` field." << endl;
-            return 1;
+            return 3;
         }
 
         // if there is a P,p,n or an n in the signal -> we switch to clock duplication mode
@@ -152,7 +152,7 @@ int Json::consistencyAndPrepare(void) {
         // checks that there is no several signals with the same name
         if(signal_names.count(signal_name)) {
             cout << "Error: Several signals named \"" << signal_name << "\", this is not allowed." << endl;
-            return 1;
+            return 4;
         }
         signal_names.insert(signal_name);
 
@@ -166,7 +166,7 @@ int Json::consistencyAndPrepare(void) {
         if(!tmp_clock_counts) tmp_clock_counts = signal_clock_counts;
         else if(tmp_clock_counts != signal_clock_counts) {
             cout << "Error: Signal \"" << signal_name << "\" has a different `wave` length than previous signals. All the signals should have the same `wave` length (period ratio taken in account)." << endl;
-            return 1;
+            return 5;
         }
 
         // Simulator is not made to manage phase shift of signals, warns the user that option will be skipped 
@@ -177,7 +177,7 @@ int Json::consistencyAndPrepare(void) {
         // Simulator is not made to manage data shift of signals, warns the user that option will be skipped 
         if(signal["data"].exists()) {
             cout << "Error: Signals' data option is not *yet* managed. Signal \"" << signal_name << "\" cannot be treated." << endl;
-            return 1;
+            return 6;
         }
         // TODO: Manage data bus; Like with custom formatting: (maybe in `Json::simplifyWaves()`)
         //     name: 'addr',  data: 'x3, xa' // x-> hexa; d/nothing-> decimal; b->binary
