@@ -16,14 +16,20 @@ int main() {
     // cout << file1.checkType(keyword2) << endl;
 
     file1.lexer();
-    Token* current = file1.getFirstToken();
-    while (current->getNextToken() != NULL) {
-        cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-        current = current->getNextToken();
-    }
-    cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+    // Token* current = file1.getFirstToken();
+    // while (current->getNextToken() != NULL) {
+    //     cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+    //     current = current->getNextToken();
+    // }
+    // cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
 
     file1.parse();
+
+
+    cout << file1.getSchematicObjectsList().size() << endl;
+    for(auto const& x : file1.getSchematicObjectsList()){
+        x.second->print();
+    }
     // string one = "A->B";
     // string two = "A-";
     // string three = "A-B";

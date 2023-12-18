@@ -48,6 +48,18 @@ void SchematicObject::addAdditionnalOptions(const string& key, const string& opt
     this->additionnalOptions[key] = options;
 }
 
+void SchematicObject::print(){
+        // Implémentation de la méthode print
+        // Assurez-vous d'ajuster cela en fonction de votre classe réelle
+        cout << "GateId: " << getGateId() << " , gateType: " << getGateType() << endl;
+        for (const auto& input : getInputs()) {
+            cout << "InputLabel: " << input.first << " , Source: " << input.second << endl;
+        }
+        for (const auto& output : getOutputs()) {
+            cout << "Output: " << output << endl;
+        }
+    }
+
 
 
 

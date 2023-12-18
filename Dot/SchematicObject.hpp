@@ -5,6 +5,7 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -33,6 +34,7 @@ class SchematicObject {
         void addOutputs(const string& outputs);
         const map<string, string> getAdditionnalOptions() const;
         void addAdditionnalOptions(const string& key, const string& options);
+        void print();
 };
 
 #endif

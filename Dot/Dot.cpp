@@ -34,6 +34,10 @@ void Dot::setFirstToken(Token* currentToken) {
     this->first_token = currentToken;
 }
 
+map<string, SchematicObject*>& Dot::getSchematicObjectsList(){
+    return this->schematicObjectsList;
+}
+
 // ======= OTHER FUNCTIONS =======
 
 // Lexer function to tokenize the input file
@@ -426,18 +430,24 @@ int Dot::parse() {
         //cout << "Value: " << current_token -> getValue() << " , Type: "<< current_token -> getType() << endl;
     } while ( (current_token = current_token->getNextToken()) );
 
-    cout << "SO.size() is " << this->schematicObjectsList.size() << endl;
-    cout << "affichage liste finale: " << endl;
-    for (auto const& x : this->schematicObjectsList)
-    {
-        std::cout << x.first  // string (key)
-                << ':' 
-                << x.second->getGateType() // string's value 
-                << endl;
-    }
+    // cout << "SO.size() is " << this->schematicObjectsList.size() << endl;
+    // cout << "affichage liste finale: " << endl;
+    // for (auto const& x : this->schematicObjectsList)
+    // {
+    //     std::cout << x.first  // string (key)
+    //             << ':' 
+    //             << x.second->getGateType() // string's value 
+    //             << endl;
+        // for(auto const& y: x.second){
+        //     for(auto const& w : y->getInputs()){
+        //         cout << "Input Name: " << w.first << " , Source: " << w.second
+        //     }
+        // }
+    
 
     checkExistence(this->schematicObjectsList, tempLink);
     checkExistence(this->schematicObjectsList);
+    fillIoList(tempLink);
     
     // cout << "Liste de link: " << endl;
     // for (map<string, vector<string>>::const_iterator it = tempLink.begin(); it != tempLink.end(); ++it) {
@@ -484,20 +494,21 @@ bool Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList){
     return true;
 }
 
-bool Dot::fillIoList(map<string, vector<string>>& tempLink, map<string, string> additionnalOptions){
+bool Dot::fillIoList(map<string, vector<string>>& tempLink){
     for (auto const& link : tempLink){
         int it =0;
         for (auto const& Inputs : link.second){
-            while(this->schematicObjectsList[link.first].count("i"+it)){
+            while(this->schematicObjectsList[link.first]->getInputs().count("i"+to_string(it))){
                 it++;
             }
-            this->schematicObjectsList[link.first]->addInputs("i"+it, Inputs);
+            this->schematicObjectsList[link.first]->addInputs("i"+to_string(it), Inputs);
             this->schematicObjectsList[Inputs]->addOutputs(link.first);
         } 
     }
-    for(auto const& Options : additionnalOptions){
-        this->schematicObjectsList[Options.first]->addInputs(Options.first, Options.second);
-
+    for(auto const& SO : this->schematicObjectsList){
+        for(auto const& option : this->schematicObjectsList[SO.first]->getAdditionnalOptions()){
+            this->schematicObjectsList[SO.first]->addInputs(option.first, option.second);
+        }
     }
     return true;
 }

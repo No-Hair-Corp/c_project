@@ -38,6 +38,7 @@ class Dot {
         string getFilePath();
         Token* getFirstToken();
         void setFirstToken(Token* currentToken);
+        map<string, SchematicObject*>& getSchematicObjectsList();
 
 
 
@@ -69,7 +70,7 @@ class Dot {
         void throwParseError(const string &error_message, unsigned int line, unsigned int column);
         bool checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink);
         bool checkExistence(map<string, SchematicObject*>& schematicObjectsList);
-        bool fillIoList(map<string, vector<string>>& tempLink, map<string, string> additionnalOptions);
+        bool fillIoList(map<string, vector<string>>& tempLink);
 };
 
 #endif
