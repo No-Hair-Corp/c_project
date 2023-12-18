@@ -67,6 +67,9 @@ class Dot {
          * @param int line: line of error
          * @param int column: column of error **/
         void throwParseError(const string &error_message, unsigned int line, unsigned int column);
+        bool checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink);
+        bool checkExistence(map<string, SchematicObject*>& schematicObjectsList);
+        bool fillIoList(map<string, vector<string>>& tempLink, map<string, string> additionnalOptions);
 };
 
 #endif

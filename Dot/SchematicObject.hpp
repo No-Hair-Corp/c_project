@@ -12,8 +12,8 @@ class SchematicObject {
     private:
         string gate_type;
         string gate_id;
-        map<string, string> inputList;
-        vector<string> outputList;
+        map<string, string> inputList;  //TODO: i0:U0
+        vector<string> outputList;//TODO:UO
         map<string, string> additionnalOptions;
 
     public:

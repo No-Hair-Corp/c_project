@@ -86,8 +86,7 @@ int Dot::lexer() {
                 buffer = "";
                 // Register keywords and create tokens
                 unsigned int temp_col = column_number;
-                Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
-                cout << "1" << endl;
+                Dot::registerKeywords(input_file, line, column_number, line_number, buffer);    
                 if (checkKeywords(buffer, STATEMENTKEYWORDSIZE, statementKeywords)) {
                     currentToken = new Token(buffer, StatementKeyWords, previousToken, NULL, line_number + 1, temp_col);
                 } else if (checkKeywords(buffer, STARTERKEYWORDSIZE, starterKeywords)){
@@ -258,7 +257,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: No starter keywords", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "default_state" << endl;
+                //cout << "default_state" << endl;
                 break;
             }
 
@@ -271,7 +270,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: \"digraph\" or \"graph\" needed after \"strict\" keyword", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "strict" << endl;
+                //cout << "strict" << endl;
                 break;
             }
 
@@ -283,7 +282,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing word or '{' after starter keyword", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "graph_type" << endl;
+                //cout << "graph_type" << endl;
                 break;
             }
 
@@ -293,28 +292,27 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '{'", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "name" << endl;
+                //cout << "name" << endl;
                 break;
             }
 
             case open_accolade:{
-                cout << current_token->getType() << endl;
-                cout << current_token->getValue() << endl;
                 if(current_token->getType() == AnyWords){
                     temp_schem = new SchematicObject();
                     next_state = choose_declaration ;
                 } else if (current_token->getValue() == "}") {
-                    return 0;
+                    break;
+                    cout << "Parser est arrivé à la fin du fichier" << endl;
                 } else {
                     throwParseError("Syntax error: Missing word after '{'", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "open_accolade" << endl;
+                //cout << "open_accolade" << endl;
                 break;
             }
 
             case choose_declaration:{
                 if(current_token->getValue() == "["){
-                    if (!(this->schematicObjectsList.count(current_token->getValue()))){
+                    if (!(this->schematicObjectsList.count(current_token->getPreviousToken()->getValue()))){
                         temp_schem->setGateId(current_token->getPreviousToken()->getValue());
                     } else {
                         throwParseError("Syntax error: Gate Id already used", current_token->getLine(), current_token->getColumn());
@@ -325,7 +323,7 @@ int Dot::parse() {
                 } else {
                    throwParseError("Syntax error: Missing word after '[' or '->", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "choose_declaration" << endl;
+                //cout << "choose_declaration" << endl;
                 break;
             }
 
@@ -335,7 +333,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Unknown keyword", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "statement" << endl;
+                //cout << "statement" << endl;
                 break;
             }
 
@@ -345,7 +343,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '=' after statement keyword", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "assignment" << endl;
+                //cout << "assignment" << endl;
                 break;
             }
 
@@ -365,7 +363,7 @@ int Dot::parse() {
                     throwParseError("Syntax error: Missing '\"' after '=' statement", current_token->getLine(), current_token->getColumn());
                 }
                 next_state = statement_value;
-                cout << "equal" << endl;
+                //cout << "equal" << endl;
                 break;
             }
 
@@ -373,11 +371,12 @@ int Dot::parse() {
                 if(current_token->getType() == StatementKeyWords || current_token->getType() == AnyWords){
                     next_state = assignment;
                 } else if (current_token->getValue() == "]"){
+                    this->schematicObjectsList[temp_schem->getGateId()]=temp_schem;
                     next_state = statement_end;
                 } else {
                     throwParseError("Syntax error: Missing ']' or unknown keyword", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "statement_value" << endl;
+                //cout << "statement_value" << endl;
                 break;
             }
 
@@ -389,7 +388,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing ';' or new erroneous statement", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "statement_end" << endl;
+                //cout << "statement_end" << endl;
                 break;
             }
 
@@ -400,7 +399,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '->'", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "link" << endl;
+                //cout << "link" << endl;
                 break;
             }
 
@@ -414,32 +413,92 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '->' or ';', or new erroneous statement", current_token->getLine(), current_token->getColumn());
                 }
-                cout << "link_end" << endl;
+                //cout << "link_end" << endl;
                 break;
             }
 
             default:{
-                cout << "default" << endl;
+                //cout << "default" << endl;
                 return -1;
             }
         }
         current_state = next_state;
-        cout << "Value: " << current_token -> getValue() << " , Type: "<< current_token -> getType() << endl;
+        //cout << "Value: " << current_token -> getValue() << " , Type: "<< current_token -> getType() << endl;
     } while ( (current_token = current_token->getNextToken()) );
 
+    cout << "SO.size() is " << this->schematicObjectsList.size() << endl;
+    cout << "affichage liste finale: " << endl;
+    for (auto const& x : this->schematicObjectsList)
+    {
+        std::cout << x.first  // string (key)
+                << ':' 
+                << x.second->getGateType() // string's value 
+                << endl;
+    }
+
+    checkExistence(this->schematicObjectsList, tempLink);
+    checkExistence(this->schematicObjectsList);
     
-    cout << "Liste de link: " << endl;
-    for (map<string, vector<string>>::const_iterator it = tempLink.begin(); it != tempLink.end(); ++it) {
-        cout << "Clé : " << it->first << ", Valeur : "<< endl;
-        for (const auto& element : it->second) {
-        std::cout << element << std::endl;
-        }
-    }
+    // cout << "Liste de link: " << endl;
+    // for (map<string, vector<string>>::const_iterator it = tempLink.begin(); it != tempLink.end(); ++it) {
+    //     cout << "Clé : " << it->first << ", Valeur : "<< endl;
+    //     for (const auto& element : it->second) {
+    //     std::cout << element << std::endl;
+    //     }
+    // }
 
-    cout << "Liste d'additionnal options: " << endl;
-    for (map<string, string>::const_iterator it = temp_schem->getAdditionnalOptions().begin(); it != temp_schem->getAdditionnalOptions().end(); ++it) {
-        cout << "Clé : " << it->first << ", Valeur : " << it->second << endl;
-    }
+    // cout << "Liste d'additionnal options: " << endl;
+    // cout << "Additionaloutputs.size() is " << temp_schem->getAdditionnalOptions().size() << endl;
+    // for (map<string, string>::const_iterator it = temp_schem->getAdditionnalOptions().begin(); it != temp_schem->getAdditionnalOptions().end(); ++it) {
+    //     cout << "Clé : " << it->first << ", Valeur : " << it->second << endl;
+    // }
 
+    
     return 0;//TODO: function that verify link and add input output and error decalage
 }
+
+
+bool Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink){
+    for (auto const& x : tempLink){
+        if (schematicObjectsList.count(x.first)){
+            for (auto const& y : x.second){
+                 if (!schematicObjectsList.count(y)){
+                    throwParseError("This instance doesn't exist: "+ y);
+                 }
+            }
+        } else {
+            throwParseError("This instance doesn't exist: "+ x.first);
+        }
+    }
+    return true;
+}
+
+bool Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList){
+    for (auto const& x : schematicObjectsList){
+        for (auto const& y : x.second->getAdditionnalOptions()){
+            if(!schematicObjectsList.count(y.second)){
+                throwParseError("This instance doesn't exist: "+ y.second);
+            }
+        }
+    }
+    return true;
+}
+
+bool Dot::fillIoList(map<string, vector<string>>& tempLink, map<string, string> additionnalOptions){
+    for (auto const& link : tempLink){
+        int it =0;
+        for (auto const& Inputs : link.second){
+            while(this->schematicObjectsList[link.first].count("i"+it)){
+                it++;
+            }
+            this->schematicObjectsList[link.first]->addInputs("i"+it, Inputs);
+            this->schematicObjectsList[Inputs]->addOutputs(link.first);
+        } 
+    }
+    for(auto const& Options : additionnalOptions){
+        this->schematicObjectsList[Options.first]->addInputs(Options.first, Options.second);
+
+    }
+    return true;
+}
+
