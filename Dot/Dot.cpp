@@ -269,7 +269,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: No starter keywords", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "default_state" << endl;
+                cout << "default_state" << endl;
                 break;
             }
 
@@ -282,7 +282,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: \"digraph\" or \"graph\" needed after \"strict\" keyword", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "strict" << endl;
+                cout << "strict" << endl;
                 break;
             }
 
@@ -294,7 +294,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '{' after starter keyword", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "graph_type" << endl;
+                cout << "graph_type" << endl;
                 break;
             }
 
@@ -304,7 +304,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '{'", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "name" << endl;
+                cout << "name" << endl;
                 break;
             }
 
@@ -317,7 +317,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: need to start with a new statement or link", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "open_accolade" << endl;
+                cout << "open_accolade" << endl;
                 break;
             }
 
@@ -334,7 +334,7 @@ int Dot::parse() {
                 } else {
                    throwParseError("Syntax error: Missing '[' or '->'", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "choose_declaration" << endl;
+                cout << "choose_declaration" << endl;
                 break;
             }
 
@@ -344,7 +344,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: missing keyword before '='", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "statement" << endl;
+                cout << "statement" << endl;
                 break;
             }
 
@@ -354,7 +354,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '=' after statement keyword", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "assignment" << endl;
+                cout << "assignment" << endl;
                 break;
             }
 
@@ -374,7 +374,7 @@ int Dot::parse() {
                     throwParseError("Syntax error: Missing value after '=' statement", current_token->getLine(), current_token->getColumn());
                 }
                 next_state = statement_value;
-                //cout << "equal" << endl;
+                cout << "equal" << endl;
                 break;
             }
 
@@ -387,19 +387,20 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing ']' or unknown keyword", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "statement_value" << endl;
+                cout << "statement_value" << endl;
                 break;
             }
 
             case statement_end:{
                 if(current_token->getType() == AnyWords){
+                    temp_schem = new SchematicObject();
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
                     next_state = open_accolade;
                 } else {
                     throwParseError("Syntax error: Missing ';' or new erroneous statement", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "statement_end" << endl;
+                cout << "statement_end" << endl;
                 break;
             }
 
@@ -410,7 +411,7 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing gate after '->'", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "link" << endl;
+                cout << "link" << endl;
                 break;
             }
 
@@ -424,12 +425,12 @@ int Dot::parse() {
                 } else {
                     throwParseError("Syntax error: Missing '->' or ';', or new erroneous statement", current_token->getLine(), current_token->getColumn());
                 }
-                //cout << "link_end" << endl;
+                cout << "link_end" << endl;
                 break;
             }
 
             default:{
-                //cout << "default" << endl;
+                cout << "default" << endl;
                 return -1;
             }
         }

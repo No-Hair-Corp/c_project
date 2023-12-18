@@ -4,6 +4,8 @@
 // Constructor: initializes an empty SchematicObject in order to fill it after
 SchematicObject::SchematicObject(): gate_type(""), gate_id(""), inputList(), outputList() {}
 
+SchematicObject::~SchematicObject(){}
+
 // Getters et setters pour gate_type
 string SchematicObject::getGateType() const {
     return this->gate_type;
