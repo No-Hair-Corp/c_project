@@ -36,7 +36,7 @@ class Json {
 
         vector<RSJresource> getJsonCleanArray(void) const;
 
-         Signals* getSignals(void) const;
+        Signals* getSignals(void) const;
         int setSignals(Signals *new_signals);
 
 
@@ -46,7 +46,7 @@ class Json {
         /** @brief Vérifie qu'il y a les éléments minimum au wavedrom **/
         int assertJsonIntegrity(void);
 
-        /** @brief Stock le json dans la map `json_clean_array` sans tous les 
+        /** @brief Stock le json dans le vector `json_clean_array` sans tous les 
          * éléments inutiles **/
         void simplifyJson(RSJresource &array);
 
