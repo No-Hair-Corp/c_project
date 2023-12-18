@@ -47,25 +47,15 @@ int main() {
 
         // Test
         TC_Check.check(file.checkType(c1, Dot::specialCharacter));
-        cout << 1 << endl;
         TC_Check.check(file.checkType(c2, Dot::stringStarter));
-        cout << 2 << endl;
         TC_Check.check(file.checkType(c3, Dot::forbiddenCharacter));
-        cout << 3 << endl;
         TC_Check.check(!file.checkType(c1, Dot::forbiddenCharacter));
-        cout << 4 << endl;
         TC_Check.check(file.checkKeywords(keyword1,176,Dot::statementKeywords));
-        cout << 5 << endl;
         TC_Check.check(!file.checkKeywords(keyword2,176,Dot::statementKeywords));
-        cout << 6 << endl;
         TC_Check.check(file.checkKeywords(keyword3,3,Dot::starterKeywords));
-        cout << 7 << endl;
         TC_Check.check(file.CheckArrow(lineCA1,1));
-        cout << 8 << endl;
         TC_Check.check(file.CheckArrow(lineCA2,1));
-        cout << 9 << endl;
         TC_Check.check(!file.CheckArrow(lineCA3,1));
-        cout << 10 << endl;
     
     // === Register Functions ===
     Test TC_Register("Register Functions"); //TODO: passer fonctions en static et en bool
@@ -151,7 +141,7 @@ int main() {
         TC_Jump_Comments.check(file.jumpComments(fileComment6,lineJC6,cn,ln)==1); ln = 0, cn = 0;
 
     // === Lexer Function ===
-    /*Test TC_Lexer("Lexer Function"); //passer fonction en static et en bool
+    Test TC_Lexer("Lexer Function"); //passer fonction en static et en bool
         // == lexer ==
         // Setup
         Dot file1("Tests/database/Dot/test_and2_true.dot");
@@ -171,6 +161,6 @@ int main() {
             current = current->getNextToken();
         }
         cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-*/
+
     return 0;
 }

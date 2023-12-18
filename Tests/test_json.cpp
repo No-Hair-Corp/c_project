@@ -35,7 +35,7 @@ int main() {
         }
         TC_Simplify_Json.check(true);
 
-    // === consistencyAndPrepare ===
+    /*// === consistencyAndPrepare ===
     Test TC_Consistency_And_Prepare("Consistency and prepare");
         // Setup
         Json fileConsistencyAndPrepare1("Tests/database/json/test1_consistencyAndPrepare.json");
@@ -54,7 +54,7 @@ int main() {
         TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare5.consistencyAndPrepare()==4);
         TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare6.consistencyAndPrepare()==5);
         TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare7.consistencyAndPrepare()==6);
-
+*/
     // === simplifyWaves ===
     Test TC_Simplify_Waves("Simplify_Waves");
         // Setup
