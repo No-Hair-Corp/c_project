@@ -1,5 +1,5 @@
 # VARIABLES
-OPTIONS = "-std=c++0x -g"
+OPTIONS = -g -std=c++0x
 
 SRC_DIRS = Dot Simulator Tests Json
 SRCS = $(shell find $(SRC_DIRS) -name "*.cpp")
