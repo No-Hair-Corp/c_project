@@ -99,6 +99,10 @@ void Json::simplifyJson(RSJresource &array) {
         }
     }
 }
+void Json::eraseJsonCleanArray(void) {
+    this->json_clean_array.erase(json_clean_array.begin(),json_clean_array.end());
+}
+
 
 int Json::consistencyAndPrepare(void) {
     std::regex removeSideQuotes("^(\'|\")(.+)(\'|\")$");

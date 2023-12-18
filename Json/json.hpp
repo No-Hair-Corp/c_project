@@ -35,6 +35,7 @@ class Json {
         RSJresource* getJsonDict(void) const;
 
         vector<RSJresource> getJsonCleanArray(void) const;
+        void eraseJsonCleanArray(void);
 
         Signals* getSignals(void) const;
         int setSignals(Signals *new_signals);
