@@ -20,6 +20,7 @@ class SchematicObject {
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         SchematicObject();
+        SchematicObject(string& gateID);
         ~SchematicObject();
 
 

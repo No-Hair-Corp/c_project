@@ -8,7 +8,7 @@ value(value), type(type), previous_token(previous_token), next_token(next_token)
 }
 
 Token::Token(string value, token_type type, Token *next_token, unsigned int line, unsigned int column):
-value(value), type(type), next_token(next_token), previous_token(NULL), line(line), column(column) {
+value(value), type(type), previous_token(NULL), next_token(next_token), line(line), column(column) {
 
 }
 

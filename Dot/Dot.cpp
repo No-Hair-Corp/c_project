@@ -4,7 +4,7 @@
 #define STARTERKEYWORDSIZE 3
 
 // Special characters that are recognized in the Dot language
-string Dot::specialCharacter = "->/\\[]=;{}#";
+string Dot::specialCharacter = "->/\\[]=;{}*#";
 string Dot::stringStarter = "\"";
 string Dot::statementKeywords[STATEMENTKEYWORDSIZE] = {"_background","area","arrowhead","arrowsize","arrowtail","bb","beautify","bgcolor","center","charset","class","cluster","clusterrank","color","colorscheme","comment","compound","concentrate","constraint","Damping","decorate","defaultdist","dim","dimen","dir","diredgeconstraints","distortion","dpi","edgehref","edgetarget","edgetooltip","edgeURL","epsilon","esep","fillcolor","fixedsize","fontcolor","fontname","fontnames","fontpath","fontsize","forcelabels","gradientangle","group","head_lp","headclip","headhref","headlabel","headport","headtarget","headtooltip","headURL","height","href","id","image","imagepath","imagepos","imagescale","inputscale","K","label","label_scheme","labelangle","labeldistance","labelfloat","labelfontcolor"}; //,"labelfontname","labelfontsize","labelhref","labeljust","labelloc","labeltarget","labeltooltip","labelURL","landscape","layer","layerlistsep","layers","layerselect","layersep","layout","len","levels","levelsgap","lhead","lheight","linelength","lp","ltail","lwidth","margin","maxiter","mclimit","mindist","minlen","mode","model","newrank","nodesep","nojustify","normalize","notranslate","nslimit","nslimit1","oneblock","ordering","orientation","outputorder","overlap","overlap_scaling","overlap_shrink","pack","packmode","pad","page","pagedir","pencolor","penwidth","peripheries","pin","pos","quadtree","quantum","rank","rankdir","ranksep","ratio","rects","regular","remincross","repulsiveforce","resolution","root","rotate","rotation","samehead","sametail","samplepoints","scale","searchsize","sep","shape","shapefile","showboxes","sides","size","skew","smoothing","sortv","splines","start","style","stylesheet","tail_lp","tailclip","tailhref","taillabel","tailport","tailtarget","tailtooltip","tailURL","target","TBbalance","tooltip","truecolor","URL","vertices","viewport","voro_margin","weight","width","xdotversion","xlabel","xlp","z"};
 string Dot::starterKeywords[STARTERKEYWORDSIZE] = {"digraph", "strict", "graph"};
@@ -61,7 +61,7 @@ int Dot::lexer() {
         // Iterate through each character in the line
         while (line[column_number] != '\0') {
             if (checkType(line[column_number], Dot::forbiddenCharacter)) {
-                throwParseError("Forbidden caracter used", line_number, column_number); // Error: Forbidden character found
+                throwParseError("Forbidden character used", line_number, column_number); // Error: Forbidden character found
             } else if (checkType(line[column_number], Dot::specialCharacter)) {
                 // Check if the current character is part of the "->" or "--" arrow
                 if (CheckArrow(line, column_number)) {
@@ -83,8 +83,12 @@ int Dot::lexer() {
                 buffer = "";
                 // Register the string and create a token
                 Dot::registerString(input_file, line, column_number, line_number, buffer);
+                if (buffer == ""){
+                    throwParseError("Void string detected", line_number, column_number);
+                } else {
                 currentToken = new Token(buffer, stringType, previousToken, NULL, line_number + 1, column_number);
                 column_number++;
+                }
 
             } else if (checkType(line[column_number], Dot::lineCharacter)) {
                 column_number++;
@@ -285,7 +289,8 @@ int Dot::parse() {
                 if (copy == "digraph" || copy == "graph"){
                     next_state = graph_type;
                 } else {
-                    throwParseError("Syntax error: \"digraph\" or \"graph\" needed after \"strict\" keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: unexpected `"+current_token->getValue()+"` after `strict`, expecting a `digraph` or `graph`.", current_token->getLine(), current_token->getColumn());
+                    //throwParseError("Syntax error: \"digraph\" or \"graph\" needed after \"strict\" keyword", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "strict" << endl;
                 break;
@@ -297,7 +302,7 @@ int Dot::parse() {
                 } else if (current_token->getValue() == "{") {
                     next_state = open_accolade;
                 } else {
-                    throwParseError("Syntax error: Missing '{' after starter keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"` after `digraph` or `graph`, expecting an `{`.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "graph_type" << endl;
                 break;
@@ -307,7 +312,7 @@ int Dot::parse() {
                 if (current_token->getValue() == "{"){
                     next_state = open_accolade;
                 } else {
-                    throwParseError("Syntax error: Missing '{'", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"` after `digraph` or `graph`, expecting an `{`.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "name" << endl;
                 break;
@@ -320,7 +325,7 @@ int Dot::parse() {
                 } else if (current_token->getValue() == "}") {
                     break;
                 } else {
-                    throwParseError("Syntax error: need to start with a new statement or link", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"`, expecting a word.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "open_accolade" << endl;
                 break;
@@ -337,7 +342,7 @@ int Dot::parse() {
                 } else if (current_token->getType() == Assignment) {
                     next_state = link;
                 } else {
-                   throwParseError("Syntax error: Missing '[' or '->'", current_token->getLine(), current_token->getColumn());
+                   throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"`, expecting a `[` or `->`.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "choose_declaration" << endl;
                 break;
@@ -347,7 +352,8 @@ int Dot::parse() {
                 if(current_token->getType() == StatementKeyWords || current_token->getType() == AnyWords){
                     next_state = assignment;
                 } else {
-                    throwParseError("Syntax error: missing keyword before '='", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"` after `[`, expecting a word.", current_token->getLine(), current_token->getColumn());
+                    //throwParseError("Syntax error: missing keyword before '='", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "statement" << endl;
                 break;
@@ -357,7 +363,7 @@ int Dot::parse() {
                 if(current_token->getValue() == "="){
                     next_state = equal;
                 } else {
-                    throwParseError("Syntax error: Missing '=' after statement keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+", expecting an `=`.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "assignment" << endl;
                 break;
@@ -376,7 +382,7 @@ int Dot::parse() {
                         temp_schem->setGateType(current_token->getValue());
                     }
                 } else {
-                    throwParseError("Syntax error: Missing value after '=' statement", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"` after `=`, expecting a word.", current_token->getLine(), current_token->getColumn());
                 }
                 next_state = statement_value;
                 //cout << "equal" << endl;
@@ -390,7 +396,7 @@ int Dot::parse() {
                     this->schematicObjectsList[temp_schem->getGateId()]=temp_schem;
                     next_state = statement_end;
                 } else {
-                    throwParseError("Syntax error: Missing ']' or unknown keyword", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting `]`.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "statement_value" << endl;
                 break;
@@ -403,7 +409,7 @@ int Dot::parse() {
                 } else if (current_token->getValue() == ";") {
                     next_state = open_accolade;
                 } else {
-                    throwParseError("Syntax error: Missing ';' or new erroneous statement", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting new declaration after `]`.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "statement_end" << endl;
                 break;
@@ -414,7 +420,7 @@ int Dot::parse() {
                     tempLink[current_token->getValue()].push_back(current_token->getPreviousToken(2)->getValue());
                     next_state = link_end;
                 } else {
-                    throwParseError("Syntax error: Missing gate after '->'", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting word.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "link" << endl;
                 break;
@@ -422,13 +428,14 @@ int Dot::parse() {
 
             case link_end:{
                 if (current_token->getType() == AnyWords){
+                    temp_schem = new SchematicObject();
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
                     next_state = open_accolade;
                 } else if (current_token->getValue() == "->"){
                     next_state = link;
                 } else {
-                    throwParseError("Syntax error: Missing '->' or ';', or new erroneous statement", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting `->` or new instance.", current_token->getLine(), current_token->getColumn());
                 }
                 //cout << "link_end" << endl;
                 break;
@@ -446,6 +453,7 @@ int Dot::parse() {
     
     checkExistence(this->schematicObjectsList, tempLink);
     checkExistence(this->schematicObjectsList);
+    checkLabel(this->schematicObjectsList);
     fillIoList(tempLink);
 
     return 0;
@@ -499,3 +507,11 @@ bool Dot::fillIoList(map<string, vector<string>>& tempLink){
     return true;
 }
 
+bool Dot::checkLabel(map<string, SchematicObject*>& schematicObjectsList){
+    for (auto const& x : schematicObjectsList){
+        if(x.second->getGateType() == ""){
+            throwParseError("No type declared for instance "+ x.first + ", need to add a label.");
+        }
+    }  
+    return 0; 
+}
