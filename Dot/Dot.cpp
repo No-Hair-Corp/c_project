@@ -61,7 +61,8 @@ int Dot::lexer() {
         // Iterate through each character in the line
         while (line[column_number] != '\0') {
             if (checkType(line[column_number], Dot::forbiddenCharacter)) {
-                return 2; // Error: Forbidden character found
+                return 2;
+                //throwParseError("Forbidden caracter used"); // Error: Forbidden character found
             } else if (checkType(line[column_number], Dot::specialCharacter)) {
                 // Check if the current character is part of the "->" or "--" arrow
                 if (CheckArrow(line, column_number)) {
