@@ -68,10 +68,10 @@ class Dot {
          * @param int line: line of error
          * @param int column: column of error **/
         void throwParseError(const string &error_message, unsigned int line, unsigned int column);
-        bool checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink);
-        bool checkExistence(map<string, SchematicObject*>& schematicObjectsList);
-        bool fillIoList(map<string, vector<string>>& tempLink);
-        bool checkLabel(map<string, SchematicObject*>& schematicObjectsList);
+        int checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink);
+        int checkExistence(map<string, SchematicObject*>& schematicObjectsList);
+        int fillIoList(map<string, vector<string>>& tempLink);
+        int checkLabel(map<string, SchematicObject*>& schematicObjectsList);
 };
 
 #endif
