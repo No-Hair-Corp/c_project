@@ -16,13 +16,13 @@ int main() {
     // cout << file1.checkType(keyword2) << endl;
     // cout << "lexer" << endl;
     file1.lexer();
-    // cout << "lexer done" << endl;
-    // Token* current = file1.getFirstToken();
-    // while (current->getNextToken() != NULL) {
-    //     cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-    //     current = current->getNextToken();
-    // }
-    // cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+    cout << "lexer done" << endl;
+    Token* current = file1.getFirstToken();
+    while (current->getNextToken() != NULL) {
+        cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+        current = current->getNextToken();
+    }
+    cout << "Token: "<< current->getType() << ", Value: "<< current->getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
     
     // cout << "parser" << endl;
     file1.parse();

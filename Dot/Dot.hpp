@@ -72,7 +72,6 @@ class Dot {
         bool checkExistence(map<string, SchematicObject*>& schematicObjectsList);
         bool fillIoList(map<string, vector<string>>& tempLink);
         bool checkLabel(map<string, SchematicObject*>& schematicObjectsList);
-        bool checkOutputList(map<string, SchematicObject*>& schematicObjectsList);
 };
 
 #endif

@@ -9,7 +9,7 @@ string Dot::stringStarter = "\"";
 string Dot::statementKeywords[STATEMENTKEYWORDSIZE] = {"_background","area","arrowhead","arrowsize","arrowtail","bb","beautify","bgcolor","center","charset","class","cluster","clusterrank","color","colorscheme","comment","compound","concentrate","constraint","Damping","decorate","defaultdist","dim","dimen","dir","diredgeconstraints","distortion","dpi","edgehref","edgetarget","edgetooltip","edgeURL","epsilon","esep","fillcolor","fixedsize","fontcolor","fontname","fontnames","fontpath","fontsize","forcelabels","gradientangle","group","head_lp","headclip","headhref","headlabel","headport","headtarget","headtooltip","headURL","height","href","id","image","imagepath","imagepos","imagescale","inputscale","K","label","label_scheme","labelangle","labeldistance","labelfloat","labelfontcolor"}; //,"labelfontname","labelfontsize","labelhref","labeljust","labelloc","labeltarget","labeltooltip","labelURL","landscape","layer","layerlistsep","layers","layerselect","layersep","layout","len","levels","levelsgap","lhead","lheight","linelength","lp","ltail","lwidth","margin","maxiter","mclimit","mindist","minlen","mode","model","newrank","nodesep","nojustify","normalize","notranslate","nslimit","nslimit1","oneblock","ordering","orientation","outputorder","overlap","overlap_scaling","overlap_shrink","pack","packmode","pad","page","pagedir","pencolor","penwidth","peripheries","pin","pos","quadtree","quantum","rank","rankdir","ranksep","ratio","rects","regular","remincross","repulsiveforce","resolution","root","rotate","rotation","samehead","sametail","samplepoints","scale","searchsize","sep","shape","shapefile","showboxes","sides","size","skew","smoothing","sortv","splines","start","style","stylesheet","tail_lp","tailclip","tailhref","taillabel","tailport","tailtarget","tailtooltip","tailURL","target","TBbalance","tooltip","truecolor","URL","vertices","viewport","voro_margin","weight","width","xdotversion","xlabel","xlp","z"};
 string Dot::starterKeywords[STARTERKEYWORDSIZE] = {"digraph", "strict", "graph"};
 string Dot::forbiddenCharacter = "\'`";
-string Dot::lineCharacter = "\t\n\r "; 
+string Dot::lineCharacter = ",\t\n\r "; 
 
 // ======= CONSTRUCTOR / DESTRUCTOR =======
 
@@ -98,7 +98,9 @@ int Dot::lexer() {
                 buffer = "";
                 // Register keywords and create tokens
                 unsigned int temp_col = column_number;
-                Dot::registerKeywords(input_file, line, column_number, line_number, buffer);    
+                Dot::registerKeywords(input_file, line, column_number, line_number, buffer);
+                string copy = buffer;
+                transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
                 if (checkKeywords(buffer, STATEMENTKEYWORDSIZE, statementKeywords)) {
                     currentToken = new Token(buffer, StatementKeyWords, previousToken, NULL, line_number + 1, temp_col);
                 } else if (checkKeywords(buffer, STARTERKEYWORDSIZE, starterKeywords)){
@@ -372,13 +374,15 @@ int Dot::parse() {
 
             case equal:{
                 if(current_token->getType() == stringType || current_token->getType() == AnyWords){
+                    string copy = current_token->getPreviousToken(2)->getValue();
+                    transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
                     if (current_token->getPreviousToken(2)->getType() != StatementKeyWords){
                         if (!(temp_schem->getAdditionnalOptions().count(current_token->getPreviousToken(2)->getValue()))){
                             temp_schem->addAdditionnalOptions(current_token->getPreviousToken(2)->getValue(), current_token->getValue());
                         } else {
                             throwParseError("Syntax error: SchematicsObject option already used", current_token->getLine(), current_token->getColumn());
                         }
-                    } else if (current_token->getPreviousToken(2)->getValue() == "label") {
+                    } else if (copy == "label") {
                         temp_schem->setGateType(current_token->getValue());
                     }
                 } else {
@@ -509,7 +513,9 @@ bool Dot::fillIoList(map<string, vector<string>>& tempLink){
 
 bool Dot::checkLabel(map<string, SchematicObject*>& schematicObjectsList){
     for (auto const& x : schematicObjectsList){
-        if(x.second->getGateType() == ""){
+        string copy = x.second->getGateType();
+        transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
+        if(copy == ""){
             throwParseError("No type declared for instance "+ x.first + ", need to add a label.");
         }
     }  
