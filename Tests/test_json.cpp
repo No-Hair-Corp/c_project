@@ -39,21 +39,21 @@ int main() {
     Test TC_Consistency_And_Prepare("Consistency and prepare");
         // Setup
         Json fileConsistencyAndPrepare1("Tests/database/json/test1_consistencyAndPrepare.json");
-        ////Json fileConsistencyAndPrepare2("Tests/database/json/test2_consistencyAndPrepare.json");
-        ////Json fileConsistencyAndPrepare3("Tests/database/json/test3_consistencyAndPrepare.json");
+        Json fileConsistencyAndPrepare2("Tests/database/json/test2_consistencyAndPrepare.json");
+        Json fileConsistencyAndPrepare3("Tests/database/json/test3_consistencyAndPrepare.json");
         Json fileConsistencyAndPrepare4("Tests/database/json/test4_consistencyAndPrepare.json");
-        //Json fileConsistencyAndPrepare5("Tests/database/json/test5_consistencyAndPrepare.json");
-        ////Json fileConsistencyAndPrepare6("Tests/database/json/test6_consistencyAndPrepare.json");
-        //Json fileConsistencyAndPrepare7("Tests/database/json/test7_consistencyAndPrepare.json");
+        Json fileConsistencyAndPrepare5("Tests/database/json/test5_consistencyAndPrepare.json");
+        Json fileConsistencyAndPrepare6("Tests/database/json/test6_consistencyAndPrepare.json");
+        Json fileConsistencyAndPrepare7("Tests/database/json/test7_consistencyAndPrepare.json");
 
         // Test
         TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare1.consistencyAndPrepare()==0);
-        ////TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare2.consistencyAndPrepare()==1);
-        ////TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare3.consistencyAndPrepare()==2);
+        TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare2.consistencyAndPrepare()==1);
+        TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare3.consistencyAndPrepare()==2);
         TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare4.consistencyAndPrepare()==3);
-        //TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare5.consistencyAndPrepare()==4);
-        ////TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare6.consistencyAndPrepare()==5);
-        //TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare7.consistencyAndPrepare()==6);
+        TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare5.consistencyAndPrepare()==4);
+        TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare6.consistencyAndPrepare()==5);
+        TC_Consistency_And_Prepare.check(fileConsistencyAndPrepare7.consistencyAndPrepare()==6);
 
     // === simplifyWaves ===
     Test TC_Simplify_Waves("Simplify_Waves");

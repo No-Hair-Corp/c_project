@@ -142,7 +142,7 @@ int main() {
 
     // === Lexer Function ===
     Test TC_Lexer("Lexer Function"); //passer fonction en static et en bool
-        /*// == lexer ==
+        // == lexer ==
         // Setup
         Dot file1("Tests/database/Dot/test_and2_true.dot");
         Dot file2("Tests/database/Dot/test_and2_correct.dot");
@@ -153,7 +153,7 @@ int main() {
         TC_Lexer.check(file2.lexer()==0);
         TC_Lexer.check(file3.lexer()==2);
 
-        //Visualisation lexing
+        /*// Visualisation lexing
         file1.lexer();
         Token* current = file1.getFirstToken();
         while (current->Token::getNextToken() != NULL) {
@@ -161,6 +161,7 @@ int main() {
             current = current->getNextToken();
         }
         cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-*/
+        */
+        
     return 0;
 }
