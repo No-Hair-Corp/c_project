@@ -61,7 +61,8 @@ int Dot::lexer() {
         // Iterate through each character in the line
         while (line[column_number] != '\0') {
             if (checkType(line[column_number], Dot::forbiddenCharacter)) {
-                throwParseError("Forbidden character used", line_number, column_number); // Error: Forbidden character found
+                throwParseError("Forbidden character used", line_number, column_number);
+                return 1; // Error: Forbidden character found
             } else if (checkType(line[column_number], Dot::specialCharacter)) {
                 // Check if the current character is part of the "->" or "--" arrow
                 if (CheckArrow(line, column_number)) {
@@ -85,6 +86,7 @@ int Dot::lexer() {
                 Dot::registerString(input_file, line, column_number, line_number, buffer);
                 if (buffer == ""){
                     throwParseError("Void string detected", line_number, column_number);
+                    return 2;
                 } else {
                 currentToken = new Token(buffer, stringType, previousToken, NULL, line_number + 1, column_number);
                 column_number++;
@@ -173,13 +175,11 @@ int Dot::registerString(ifstream& input_file, string& line, unsigned int& column
 // Function to throw a parse error without position information
 void Dot::throwParseError(const string& error_message) {
     cout << "Error: " << error_message << endl;
-    exit(1);
 }
 
 // Function to throw a parse error with position information
 void Dot::throwParseError(const string& error_message, unsigned int line, unsigned int column) {
     cout << "Error at line " << line << ", column " << column << ": " << error_message << endl;
-    exit(1);
 }
 
 // Function to register keywords in the input file
@@ -266,6 +266,7 @@ int Dot::parse() {
 
         if (current_token->getNextToken() == nullptr && current_token->getValue() != "}" ){
             throwParseError("Syntax error: Missing '}'", current_token->getLine(), current_token->getColumn());
+            return 3;
         }
         
         switch (current_state)
@@ -279,6 +280,7 @@ int Dot::parse() {
                     next_state= graph_type;
                 } else {
                     throwParseError("Syntax error: No starter keywords", current_token->getLine(), current_token->getColumn());
+                    return 4;
                 }
                 //cout << "default_state" << endl;
                 break;
@@ -292,7 +294,7 @@ int Dot::parse() {
                     next_state = graph_type;
                 } else {
                     throwParseError("Syntax error: unexpected `"+current_token->getValue()+"` after `strict`, expecting a `digraph` or `graph`.", current_token->getLine(), current_token->getColumn());
-                    //throwParseError("Syntax error: \"digraph\" or \"graph\" needed after \"strict\" keyword", current_token->getLine(), current_token->getColumn());
+                    return 5;
                 }
                 //cout << "strict" << endl;
                 break;
@@ -305,6 +307,7 @@ int Dot::parse() {
                     next_state = open_accolade;
                 } else {
                     throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"` after `digraph` or `graph`, expecting an `{`.", current_token->getLine(), current_token->getColumn());
+                    return 6;
                 }
                 //cout << "graph_type" << endl;
                 break;
@@ -315,6 +318,7 @@ int Dot::parse() {
                     next_state = open_accolade;
                 } else {
                     throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"` after `digraph` or `graph`, expecting an `{`.", current_token->getLine(), current_token->getColumn());
+                    return 7;
                 }
                 //cout << "name" << endl;
                 break;
@@ -328,6 +332,7 @@ int Dot::parse() {
                     break;
                 } else {
                     throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"`, expecting a word.", current_token->getLine(), current_token->getColumn());
+                    return 8;
                 }
                 //cout << "open_accolade" << endl;
                 break;
@@ -339,12 +344,14 @@ int Dot::parse() {
                         temp_schem->setGateId(current_token->getPreviousToken()->getValue());
                     } else {
                         throwParseError("Syntax error: Gate Id already used", current_token->getLine(), current_token->getColumn());
+                        return 9;
                     }
                     next_state = statement;
                 } else if (current_token->getType() == Assignment) {
                     next_state = link;
                 } else {
                    throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"`, expecting a `[` or `->`.", current_token->getLine(), current_token->getColumn());
+                   return 10;
                 }
                 //cout << "choose_declaration" << endl;
                 break;
@@ -355,7 +362,7 @@ int Dot::parse() {
                     next_state = assignment;
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"` after `[`, expecting a word.", current_token->getLine(), current_token->getColumn());
-                    //throwParseError("Syntax error: missing keyword before '='", current_token->getLine(), current_token->getColumn());
+                    return 11;
                 }
                 //cout << "statement" << endl;
                 break;
@@ -366,6 +373,7 @@ int Dot::parse() {
                     next_state = equal;
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+", expecting an `=`.", current_token->getLine(), current_token->getColumn());
+                    return 12;
                 }
                 //cout << "assignment" << endl;
                 break;
@@ -381,12 +389,14 @@ int Dot::parse() {
                             temp_schem->addAdditionnalOptions(current_token->getPreviousToken(2)->getValue(), current_token->getValue());
                         } else {
                             throwParseError("Syntax error: SchematicsObject option already used", current_token->getLine(), current_token->getColumn());
+                            return 13;
                         }
                     } else if (copy == "label") {
                         temp_schem->setGateType(current_token->getValue());
                     }
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"` after `=`, expecting a word.", current_token->getLine(), current_token->getColumn());
+                    return 14;
                 }
                 next_state = statement_value;
                 //cout << "equal" << endl;
@@ -401,6 +411,7 @@ int Dot::parse() {
                     next_state = statement_end;
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting `]`.", current_token->getLine(), current_token->getColumn());
+                    return 15;
                 }
                 //cout << "statement_value" << endl;
                 break;
@@ -414,6 +425,7 @@ int Dot::parse() {
                     next_state = open_accolade;
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting new declaration after `]`.", current_token->getLine(), current_token->getColumn());
+                    return 16;
                 }
                 //cout << "statement_end" << endl;
                 break;
@@ -425,6 +437,7 @@ int Dot::parse() {
                     next_state = link_end;
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting word.", current_token->getLine(), current_token->getColumn());
+                    return 17;
                 }
                 //cout << "link" << endl;
                 break;
@@ -440,6 +453,7 @@ int Dot::parse() {
                     next_state = link;
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting `->` or new instance.", current_token->getLine(), current_token->getColumn());
+                    return 18;
                 }
                 //cout << "link_end" << endl;
                 break;
@@ -464,35 +478,38 @@ int Dot::parse() {
 }
 
 
-bool Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink){
+int Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink){
     for (auto const& x : tempLink){
         if (schematicObjectsList.count(x.first)){
             for (auto const& y : x.second){
                  if (!schematicObjectsList.count(y)){
                     throwParseError("This instance doesn't exist: "+ y);
+                    return 1;
                  }
             }
         } else {
             throwParseError("This instance doesn't exist: "+ x.first);
+            return 2;
         }
     }
-    return true;
+    return 0;
 }
 
 
-bool Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList){
+int Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList){
     for (auto const& x : schematicObjectsList){
         for (auto const& y : x.second->getAdditionnalOptions()){
             if(!schematicObjectsList.count(y.second)){
                 throwParseError("This instance doesn't exist: "+ y.second);
+                return 1;
             }
         }
     }
-    return true;
+    return 0;
 }
 
 
-bool Dot::fillIoList(map<string, vector<string>>& tempLink){
+int Dot::fillIoList(map<string, vector<string>>& tempLink){
     for (auto const& link : tempLink){
         int it =0;
         for (auto const& Inputs : link.second){
@@ -508,15 +525,16 @@ bool Dot::fillIoList(map<string, vector<string>>& tempLink){
             this->schematicObjectsList[SO.first]->addInputs(option.first, option.second);
         }
     }
-    return true;
+    return 0;
 }
 
-bool Dot::checkLabel(map<string, SchematicObject*>& schematicObjectsList){
+int Dot::checkLabel(map<string, SchematicObject*>& schematicObjectsList){
     for (auto const& x : schematicObjectsList){
         string copy = x.second->getGateType();
         transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
         if(copy == ""){
             throwParseError("No type declared for instance "+ x.first + ", need to add a label.");
+            return 1;
         }
     }  
     return 0; 
