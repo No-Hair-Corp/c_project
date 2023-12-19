@@ -1,5 +1,7 @@
 #include "Json.hpp"
 
+// TODO: add Debug/verbose option 
+
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Json::Json(string file_path):
 file_path(file_path) {
@@ -7,29 +9,29 @@ file_path(file_path) {
 
     if(json_file.fail()) {
         cout << "Error: An error happened while opening " << file_path << " please check file's path." <<  endl;
-        exit(1);
+        return; // TODO: store error state in object
     }
 
     this->json_dict = new RSJresource(json_file);
     this->json_dict->parse();
 
     if(this->assertJsonIntegrity()) { // check json is correct, exit program otherwise
-        exit(1);
+        return;
     }
     this->simplifyJson((*json_dict)["signal"]); // remove signals group
 
     // No usable signal found
     if(!this->json_clean_array.size()) {
         cout << "Error: No suitable signal was found in the given JSON. This might be a JSON syntax issue." << endl;
-        exit(1);
+        return;
     }
     cout << "Debug: Found " << this->json_clean_array.size() << " potential signals." << endl; 
 
     if(this->consistencyAndPrepare()) { // check signals, exit program if errors
-        exit(1);
+        return;
     }
     if(this->simplifyWaves()) {  // convert wave to easier value ("1.0." -> "1100"...)
-        exit(1);
+        return;
     }
     // for (Stimulus* signal: this->signals->getSignals()) {
     //     cout << signal->getName() << ":\t" << signal->getValue() << endl; 
