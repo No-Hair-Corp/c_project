@@ -146,7 +146,7 @@ int Json::consistencyAndPrepare(void) {
         }
 
         // if there is a P,p,n or an n in the signal -> we switch to clock duplication mode
-        if(signal_wave.find_first_of("nNpP")) {
+        if(signal_wave.find_first_of("nNpP") != string::npos) {
             has_clock_duplication = true;
             // TODO: uptate `signals`'s clock_counts ? or use `has_clock_duplication`in the needed steps
         }
