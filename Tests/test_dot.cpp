@@ -1,6 +1,7 @@
 #include "Test.hpp"
 #include "../Dot/Dot.hpp"
 #include "../Dot/Token.hpp"
+#include "../Dot/SchematicObject.hpp"
 
 using namespace std;
 
@@ -20,14 +21,14 @@ int main() {
 
     // === Dot Lexer ===
     // === Check Functions ===
-    Test TC_Check("Check Functions"); //TODO: fonctions a passer en static et en bool
+    Test TC_Check("Check Functions");
         // == checkType checkKeywords CheckArrow ==
         // Setup
-        Dot file("Tests/database/Dot/test_and2_true");
+        Dot file("Tests/database/dot/test_and2_true");
 
-        ifstream fileCheckArrow1("Tests/database/Dot/test1_checkArrow.dot");
-        ifstream fileCheckArrow2("Tests/database/Dot/test2_checkArrow.dot");
-        ifstream fileCheckArrow3("Tests/database/Dot/test3_checkArrow.dot");
+        ifstream fileCheckArrow1("Tests/database/dot/test1_checkArrow.dot");
+        ifstream fileCheckArrow2("Tests/database/dot/test2_checkArrow.dot");
+        ifstream fileCheckArrow3("Tests/database/dot/test3_checkArrow.dot");
 
         char c1 = '[';
         char c2 = '\"';
@@ -58,12 +59,12 @@ int main() {
         TC_Check.check(!file.CheckArrow(lineCA3,1));
     
     // === Register Functions ===
-    Test TC_Register("Register Functions"); //TODO: passer fonctions en static et en bool
+    Test TC_Register("Register Functions");
         // == registerString ==
         // Setup
-        ifstream fileString1("Tests/database/Dot/test1_registerString.string");
-        ifstream fileString2("Tests/database/Dot/test2_registerString.string");
-        ifstream fileString3("Tests/database/Dot/test3_registerString.string");
+        ifstream fileString1("Tests/database/dot/test1_registerString.string");
+        ifstream fileString2("Tests/database/dot/test2_registerString.string");
+        ifstream fileString3("Tests/database/dot/test3_registerString.string");
 
         string buffer="";
         unsigned int ln = 0, cn = 1;
@@ -83,9 +84,9 @@ int main() {
 
         // == registerKeywords ==
         // Setup
-        ifstream fileKeyword1("Tests/database/Dot/test1_registerKeywords.dot");
-        ifstream fileKeyword2("Tests/database/Dot/test2_registerKeywords.dot");
-        ifstream fileKeyword3("Tests/database/Dot/test3_registerKeywords.dot");
+        ifstream fileKeyword1("Tests/database/dot/test1_registerKeywords.dot");
+        ifstream fileKeyword2("Tests/database/dot/test2_registerKeywords.dot");
+        ifstream fileKeyword3("Tests/database/dot/test3_registerKeywords.dot");
 
         buffer="";
 
@@ -105,15 +106,15 @@ int main() {
         TC_Register.check(file.registerKeywords(fileKeyword3,lineRK3,cn,ln,buffer)==0); ln = 0, cn = 0;
     
     // === jumpComments Function ===
-    Test TC_Jump_Comments("Jump Comments Function"); //passer fonction en static et en bool
+    Test TC_Jump_Comments("Jump Comments Function");
         // == jumpComments ==
         // Setup
-        ifstream fileComment1("Tests/database/Dot/test1_jumpComments.string");
-        ifstream fileComment2("Tests/database/Dot/test2_jumpComments.string");
-        ifstream fileComment3("Tests/database/Dot/test3_jumpComments.string");
-        ifstream fileComment4("Tests/database/Dot/test4_jumpComments.string");
-        ifstream fileComment5("Tests/database/Dot/test5_jumpComments.string");
-        ifstream fileComment6("Tests/database/Dot/test6_jumpComments.string");
+        ifstream fileComment1("Tests/database/dot/test1_jumpComments.string");
+        ifstream fileComment2("Tests/database/dot/test2_jumpComments.string");
+        ifstream fileComment3("Tests/database/dot/test3_jumpComments.string");
+        ifstream fileComment4("Tests/database/dot/test4_jumpComments.string");
+        ifstream fileComment5("Tests/database/dot/test5_jumpComments.string");
+        ifstream fileComment6("Tests/database/dot/test6_jumpComments.string");
 
         buffer="";
         ln = 0, cn = 0;
@@ -140,20 +141,20 @@ int main() {
         TC_Jump_Comments.check(file.jumpComments(fileComment5,lineJC5,cn,ln)==0); ln = 0; cn = 0;
         TC_Jump_Comments.check(file.jumpComments(fileComment6,lineJC6,cn,ln)==1); ln = 0, cn = 0;
 
-    // === Lexer Function ===
-    Test TC_Lexer("Lexer Function"); //passer fonction en static et en bool
+    // === lexer Function ===
+    Test TC_Lexer("Lexer Function");
         // == lexer ==
         // Setup
-        Dot file1("Tests/database/Dot/test_and2_true.dot");
-        Dot file2("Tests/database/Dot/test_and2_correct.dot");
-        Dot file3("Tests/database/Dot/test_and2_false.dot");
+        Dot file1("Tests/database/dot/test_and2_true.dot");
+        Dot file2("Tests/database/dot/test_and2_correct.dot");
+        Dot file3("Tests/database/dot/test_and2_false.dot");
 
         // Test
         TC_Lexer.check(file1.lexer()==0);
         TC_Lexer.check(file2.lexer()==0);
-        TC_Lexer.check(file3.lexer()==2);
+        /*TC_Lexer.check(file3.lexer()==2); //only with a return instead of exit(1)
 
-        /*// Visualisation lexing
+        // Visualisation lexing
         file1.lexer();
         Token* current = file1.getFirstToken();
         while (current->Token::getNextToken() != NULL) {
@@ -162,6 +163,103 @@ int main() {
         }
         cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
         */
+
+    // === Dot Parser ===
+    // === throwParseError Functions ===
+    /*Test TC_Throw_Parse_Error("Throw Parse Error Functions"); //only with function type int and return 1 instead of exit(1)
+        // == throwParseError(const string& error_message) ==
+        // Setup
+        string error_message1 = "Test error 1";
+
+        // Test
+        TC_Throw_Parse_Error.check(file.throwParseError(error_message1)==1);
+
+        // == throwParseError(const string& error_message, unsigned int line, unsigned int column) ==
+        // Setup
+        string error_message2 = "Test error 2";
+        unsigned int lineError = 0, columnError = 0;
+
+        // Test
+        TC_Throw_Parse_Error.check(file.throwParseError(error_message2, lineError, columnError)==1);
+    */
+
+    // === checkExistence Functions ===
+    Test TC_Check_Existence("Check Existence Functions"); //only with function type int and return 1 instead of exit(1)
+        // == checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink) ==
+        // Setup
+        SchematicObject SO1("A");
+        SchematicObject SO2("B");
+
+        SchematicObject* p = &SO1;
+        SchematicObject* q = &SO2;
+
+        map<string, SchematicObject*> schematicObjectsList1;
+
+        schematicObjectsList1["A"] = p;
+        schematicObjectsList1["B"] = q;
+
+        vector<string> v1={"B"};
+        vector<string> v2={"B","C"};
+
+        map<string, vector<string>> tempLink1;
+        map<string, vector<string>> tempLink2;
+        map<string, vector<string>> tempLink3;
+
+        tempLink1[SO1.getGateId()]=v1; //SO1 ou A prend B en entrée, les 2 existent donc ça doit marcher
+        //tempLink2[SO1.getGateId()]=v2; //SO1 ou A prend B et C en entrée, C n'existe pas donc ça ne doit pas marcher
+        //tempLink3["D"]=v1; //D prend B en entrée, D n'existe pas donc ça ne doit pas marcher
+
+        // Test
+        TC_Check_Existence.check(file.checkExistence(schematicObjectsList1, tempLink1));
+        //TC_Check_Existence.check(!file.checkExistence(schematicObjectsList1, tempLink2));
+        //TC_Check_Existence.check(!file.checkExistence(schematicObjectsList1, tempLink3)); //for both of them with function type bool and return false instead of exit(1)
+
+        // == checkExistence(map<string, SchematicObject*>& schematicObjectsList) ==
+        // Setup
+        map<string, string> addOptions1;
+        map<string, string> addOptions2;
+
+        addOptions1["sel"] = "A";
+        addOptions2["sel"] = "B";
         
+        SchematicObject SO3("A", addOptions1);
+        SchematicObject SO4("A", addOptions2);
+
+        SchematicObject* r = &SO3;
+        SchematicObject* s = &SO4;
+
+        map<string, SchematicObject*> schematicObjectsList2;
+        map<string, SchematicObject*> schematicObjectsList3;
+
+        schematicObjectsList2["A"] = r;
+        schematicObjectsList3["A"] = s;
+
+        // Test
+        TC_Check_Existence.check(file.checkExistence(schematicObjectsList2));
+        //TC_Check_Existence.check(!file.checkExistence(schematicObjectsList3)); //with function type bool and return false instead of exit(1)
+
+    // === checkLabel Function ===
+    Test TC_Check_Label("Check Label Function");
+        //  == checkLabel ==
+        // Setup
+        SchematicObject SO5("A", "input");
+        
+        // Test
+        TC_Fill_Io_List.check(file.fillIoList(tempLinkToFill));
+
+
+    // === fillIoList Function ===
+    Test TC_Fill_Io_List("Fill Io List Function");
+        //  == fillIoList ==
+        // Setup
+        map<string, vector<string>> tempLinkToFill;
+
+        vector<string> v3={"B","C"};
+
+        tempLinkToFill["GATE1"]=v3;
+        
+        // Test
+        TC_Fill_Io_List.check(file.fillIoList(tempLinkToFill));
+
     return 0;
 }

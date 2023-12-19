@@ -2,6 +2,8 @@
 #define _TEST_H_
 
 #include <string>
+#include <map>
+#include <vector>
 
 using namespace std;
 
