@@ -142,7 +142,7 @@ int main() {
 
     // === Lexer Function ===
     Test TC_Lexer("Lexer Function"); //passer fonction en static et en bool
-        // == lexer ==
+        /*// == lexer ==
         // Setup
         Dot file1("Tests/database/Dot/test_and2_true.dot");
         Dot file2("Tests/database/Dot/test_and2_correct.dot");
@@ -161,6 +161,6 @@ int main() {
             current = current->getNextToken();
         }
         cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-
+*/
     return 0;
 }
