@@ -193,6 +193,11 @@ int Dot::registerKeywords(ifstream& input_file, string& line, unsigned int& colu
                 }
             }
         }
+        if(!getline(input_file, line)) {
+            return 1;
+        }
+        line_number++;
+        column_number = 0;
     }
 
     return 0; // Successful completion
