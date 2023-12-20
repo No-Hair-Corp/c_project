@@ -123,7 +123,7 @@ int Dot::lexer() {
     }
 
     input_file.close();
-    return 0; // Successful completion
+    return 0;   // Successful completion
 }
 
 // Function to check if a character is in the set of special characters
@@ -220,7 +220,7 @@ bool Dot::CheckArrow(string& line, int column_number) {
 int Dot::jumpComments(ifstream& input_file, string& line, unsigned int& column_number, unsigned int& line_number){
     if ((line[column_number] == '/' && line[column_number + 1] == '/') || line[column_number] == '#'){
         if(!getline(input_file, line)){
-            return 1;
+            return 0;
         } else {
             column_number=0;
             line_number++;
@@ -241,7 +241,7 @@ int Dot::jumpComments(ifstream& input_file, string& line, unsigned int& column_n
             } 
             
             if (!getline(input_file, line)) {
-                return 2; // End of file is reached
+                return 1; // End of file is reached
             }
             line_number++;
             column_number = 0;
