@@ -13,6 +13,7 @@ using namespace std;
 class Gate {
     private:
         string name;
+        string gate_id;
 
         bool is_sequential;
 
@@ -37,12 +38,20 @@ class Gate {
 
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
-        Gate(string name, unsigned int nb_inputs,unsigned int min_nb_inputs, unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential);
+        Gate(string name, string gate_id, unsigned int nb_inputs,unsigned int min_nb_inputs,
+                unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential);
+
         virtual ~Gate() = 0; // virtual class
 
 
 
         // =======  GETTERS / SETTERS =======
+        const string& getName(void) const;
+
+        const string& getGateId(void) const;
+        void setGateId(const string& new_gate_id);
+
+
         bool getIsSequential(void) const;
 
         unsigned int getNbInputs(void) const;
@@ -63,8 +72,6 @@ class Gate {
         void setLastCalculationClock(int new_clock_count);
         int getLastCalculationClock(void) const;
 
-        const string& getName(void) const;
-
         void addValue(int value);
         int getValue(int clock_count, int* value); //-> if unset, run calculate value
         // unsigned char getPreviousValue(unsigned int delta);
@@ -72,12 +79,13 @@ class Gate {
 
 
 
-        // =======  OTHER FUNCTION =======
+        // =======  OTHER FUNCTIONS =======
         virtual int calculateValue(void) = 0; // -> return errorCode not value ;)
         //      -> recursive, to calculate previous gates
         //      -> take care of sequential, and split of combinatoire blocks
         //      -> by the way if there is sequential better to get from start or end ?
 
+        friend ostream& operator<<(ostream& out, const Gate &gate);
 };
 
 

@@ -20,7 +20,7 @@ class And : public Gate {
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         And();
-        And(map<string, Gate*>* input_nodes, unsigned int nb_inputs);
+        And(string gate_id, map<string, Gate*>* input_nodes, unsigned int nb_inputs);
         ~And();
 
 

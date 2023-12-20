@@ -7,12 +7,12 @@ unsigned int And::max_nb_inputs = 9;
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 And::And():
-Gate("And", And::default_nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
+Gate("And", "", And::default_nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
     this->setInputsNames({"i@"});
 }
 
-And::And(map<string, Gate*>* input_nodes, unsigned int nb_inputs):
-Gate("And", nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
+And::And(string gate_id, map<string, Gate*>* input_nodes, unsigned int nb_inputs):
+Gate("And", gate_id, nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
     this->setInputsNames({"i@"});
     this->setInputNodes(input_nodes);    
 }

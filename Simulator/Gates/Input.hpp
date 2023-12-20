@@ -18,13 +18,13 @@ class Input : public Gate {
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         Input();
-        Input(Stimulus *values);
+        Input(string gate_id, Stimulus *values);
         ~Input();
 
 
 
         // =======  GETTERS / SETTERS =======
-
+        int setValues(Stimulus* signal);
 
 
         // =======  OTHER FUNCTIONS =======

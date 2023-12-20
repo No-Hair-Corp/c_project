@@ -29,9 +29,10 @@ class Simulator {
 
         bool has_sequential;
 
-        static map<string, Gate*> existing_gates;
+        static map<string, function<Gate*()>> existing_gates;
 
         map<string, Gate*> gates_graph;
+        unordered_set<Gate*> output_gates;
         
 
     public:
@@ -44,13 +45,19 @@ class Simulator {
         // =======  GETTERS / SETTERS =======
 
 
-
         // =======  OTHER FUNCTION =======
-        int checkInputs();
-        int checkAllGates(); // -> register if there is sequential stuff, check input/output number consistency, 
+        int checkInputs(void);
+
+        int checkAllGates(void); // -> register if there is sequential stuff, check input/output number consistency, 
                             // ambiguity on naming
+
         int checkInputsNames(Gate *gate, const map<string, string> &inputs);
-        int setLinks();
+
+        int setLinks(void);
+        
+        int runSimulation(void);
+
+        void printSimulation(void);
 
 
 };

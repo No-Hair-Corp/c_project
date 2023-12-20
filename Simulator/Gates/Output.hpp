@@ -20,7 +20,7 @@ class Output : public Gate {
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         Output();
-        Output(map<string, Gate*>* input_nodes);
+        Output(string gate_id, map<string, Gate*>* input_nodes);
         ~Output();
 
 

@@ -20,7 +20,7 @@ class Mux : public Gate {
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         Mux();
-        Mux(map<string, Gate*>* input_nodes, unsigned int nb_inputs);
+        Mux(string gate_id, map<string, Gate*>* input_nodes, unsigned int nb_inputs);
         ~Mux();
 
 

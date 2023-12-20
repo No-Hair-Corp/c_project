@@ -21,7 +21,7 @@ class Not : public Gate {
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         Not();
-        Not(map<string, Gate*>* input_nodes);
+        Not(string gate_id, map<string, Gate*>* input_nodes);
         ~Not();
 
 

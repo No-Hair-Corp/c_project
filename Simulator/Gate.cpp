@@ -2,8 +2,8 @@
 
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
-Gate::Gate(string name, unsigned int nb_inputs,unsigned int min_nb_inputs, unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential):
-name(name), is_sequential(is_sequential), nb_inputs(nb_inputs), min_nb_inputs(min_nb_inputs), default_nb_inputs(default_nb_inputs), max_nb_inputs(max_nb_inputs), last_calculation_clock(-1) {
+Gate::Gate(string name, string gate_id, unsigned int nb_inputs,unsigned int min_nb_inputs, unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential):
+name(name), gate_id(gate_id), is_sequential(is_sequential), nb_inputs(nb_inputs), min_nb_inputs(min_nb_inputs), default_nb_inputs(default_nb_inputs), max_nb_inputs(max_nb_inputs), last_calculation_clock(-1) {
 
 }
 
@@ -12,6 +12,18 @@ Gate::~Gate() {}
 
 
 // =======  GETTERS / SETTERS =======
+const string& Gate::getName(void) const {
+    return this->name;
+}
+
+const string& Gate::getGateId(void) const {
+    return this->gate_id;
+}
+void Gate::setGateId(const string& new_gate_id) {
+    this->gate_id = new_gate_id;
+}
+
+
 bool Gate::getIsSequential(void) const {
     return this->is_sequential;
 }
@@ -56,10 +68,12 @@ void Gate::setInputNodes(map<string, Gate*>* new_input_nodes) {
     this->input_nodes = new_input_nodes;
 } 
 void Gate::addInputNode(const string& input_name, Gate* linked_gate) {
+    if(this->input_nodes == NULL) { // create instance if doens't exist yet
+        this->input_nodes = new map<string, Gate*>;
+    }
+
     this->input_nodes->insert({input_name, linked_gate});
 }
-
-
 int Gate::getInputNode(string input_name, Gate** node) const {
 
     if(this->input_nodes->count(input_name) > 0) {
@@ -71,7 +85,6 @@ int Gate::getInputNode(string input_name, Gate** node) const {
     return 0;
 }
 
-
 void Gate::incrementClockCount(void) {
     this->last_calculation_clock++;
 }
@@ -82,17 +95,9 @@ void Gate::setLastCalculationClock(int new_clock_count) {
     this->last_calculation_clock = new_clock_count;
 }
 
-
-const string& Gate::getName(void) const {
-    return this->name;
-}
-
-
-
 void Gate::addValue(int value) {
     this->values.push_back(value);
 }
-
 int Gate::getValue(int clock_count, int *value) {
     if(clock_count <= this->last_calculation_clock) {
         *value = this->values.at(clock_count);
@@ -107,4 +112,18 @@ int Gate::getValue(int clock_count, int *value) {
     }
 
     return 0;
+}
+
+
+
+// =======  OTHER FUNCTIONS =======
+ostream& operator<<(ostream& out, const Gate &gate) {
+    for(const int& value : gate.values) {
+        if(value == -1) {
+            cout << 'x';
+        }  else {
+            cout << (char)('0'+value);
+        }
+    }
+    return out;
 }

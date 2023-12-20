@@ -267,7 +267,7 @@ int Json::simplifyWaves(void) {
 
         // create stimulus, and add it to `signals`
         Stimulus *tmp_stimulus = new Stimulus(signal["name"].as_str(), new_wave);
-        this->signals->addSignal(tmp_stimulus);
+        this->signals->addSignal(signal["name"].as_str(), tmp_stimulus);
     }
 
     return 0;

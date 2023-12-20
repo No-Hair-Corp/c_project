@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <iostream>
-#include <vector>
+#include <map>
 #include "Stimulus.hpp"
 
 using namespace std;
@@ -13,7 +13,7 @@ class Signals {
     private:
         int clock_counts;
         bool has_clock_duplication;
-        vector<Stimulus*> signals;
+        map<string, Stimulus*> signals;
 
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
@@ -28,8 +28,9 @@ class Signals {
         bool getHasClockDuplication() const;
         void setHasClockDuplication(bool has_clock_duplication);
         
-        vector<Stimulus*> getStimuli(void) const;
-        int addSignal(Stimulus *signal);
+        map<string, Stimulus*> getStimuli(void) const;
+        Stimulus* getStimulus(const string& name) const;
+        int addSignal(const string& signal_name, Stimulus *signal);
         // Stimulus* getSignals();
 };
 

@@ -4,12 +4,13 @@ unsigned int Output::min_nb_inputs = 1;
 unsigned int Output::default_nb_inputs = 1;
 unsigned int Output::max_nb_inputs = 1;
 
-Output::Output(): Gate("Output", Output::default_nb_inputs, Output::min_nb_inputs, Output::default_nb_inputs, Output::max_nb_inputs, false) {
+Output::Output():
+Gate("Output", "", Output::default_nb_inputs, Output::min_nb_inputs, Output::default_nb_inputs, Output::max_nb_inputs, false) {
     this->setInputsNames({"i0"});
 }
 
-Output::Output(map<string, Gate*>* input_nodes):
-Gate("Output", Output::default_nb_inputs, Output::min_nb_inputs, Output::default_nb_inputs, Output::max_nb_inputs, false) {
+Output::Output(string gate_id, map<string, Gate*>* input_nodes):
+Gate("Output", gate_id, Output::default_nb_inputs, Output::min_nb_inputs, Output::default_nb_inputs, Output::max_nb_inputs, false) {
     this->setInputsNames({"i0"});
     this->setInputNodes(input_nodes);
 }

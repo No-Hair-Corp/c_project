@@ -3,9 +3,9 @@ digraph testand1 {
     B [label="input"]; //input B
     GATE [label=AND2];
     O [label="Output"];
-    Mux [label="MUX" sel=B];
+    // Mux [label="MUX" sel=B];
     A->GATE->O;
     B->GATE;
-    A->Mux;
-    B->Mux;
+    // A->Mux;
+    // B->Mux;
 }

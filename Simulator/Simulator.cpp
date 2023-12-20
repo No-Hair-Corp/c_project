@@ -1,11 +1,11 @@
 #include "Simulator.hpp"
 
-map<string, Gate*> Simulator::existing_gates = {
-    {"input", new Input()},
-    {"output", new Output()},
-    {"not", new Not()},
-    {"and", new And()},
-    {"mux", new Mux()},
+map<string, function<Gate*()>> Simulator::existing_gates = {
+    {"input", []() -> Gate* { return new Input; } },
+    {"output", []() -> Gate* { return new Output; } },
+    {"not", []() -> Gate* { return new Not; } },
+    {"and", []() -> Gate* { return new And; } },
+    {"mux", []() -> Gate* { return new Mux; } },
 };
 
 // map<string, Gate*(*)()> Simulator::existing_gates["input"] = & Simulator::createGateInstance<Input>;
@@ -24,37 +24,49 @@ dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(fal
         return;
     }
 
+    // check consistancy of inputs between json and dot
     if(this->checkInputs()) {
         return;
     }
 
     
+    // check that gates exist and are correctly given (nb of inputs, name, ...)
     if(this->checkAllGates()) {
         return;
     }
 
-    for(auto const& t : this->gates_graph) {
-        cout << t.first << " -> " << t.second->getName() << endl;
-    }
-
+    // generate link between Gates
     if(this->setLinks()) {
         return;
     }
 
+
     // TODO: Simulate :)
-    //      1) generate map<string, Gate*> inputs_node from SO
+    if(this->runSimulation()) {
+        return;
+    }
     //      2) split into combinatorial blocks
     //      3) manage loops (watchdog)
 
+
+    // TODO: Output json file
+    cout << "   A: 000x1101xx" << endl;
+    cout << " & B: 0x11100xx0" << endl;
+
+    cout << " = ";
+    for(Gate* const& gate : this->output_gates) {
+        cout << gate->getGateId() << ": " <<  *gate << endl;
+    }
+
 }
 
-int Simulator::checkInputs() {
+int Simulator::checkInputs(void) {
     map<string, SchematicObject*> SOList = this->dot->getSchematicObjectsList();
 
-    unordered_set<string> input_names;
+    unordered_set<string> input_names; // json's inputs
 
-    for(const Stimulus* signal : this->json->getSignals()->getStimuli()) {
-        input_names.emplace(signal->getName());
+    for(auto const& el : this->json->getSignals()->getStimuli()) {
+        input_names.emplace(el.first);
     }
 
     if(input_names.size() < 1) {
@@ -88,7 +100,7 @@ int Simulator::checkInputs() {
 }
 
 
-int Simulator::checkAllGates() {
+int Simulator::checkAllGates(void) {
     map<string, SchematicObject*> SOList = this->dot->getSchematicObjectsList();
     bool hasOutput = false;
 
@@ -96,8 +108,6 @@ int Simulator::checkAllGates() {
         string lower_name = el.second->getGateType();
         transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower); // lowering gate type name
         // TODO: trim spaces ?
-
-        if(lower_name == "output") hasOutput = true; // we ensure that we have at list one input
 
         // regex to check gate type format : <type>[nb_inputs][nb_outputs]
         std::regex gate_type_regex("^([a-zA-Z]+)([1-9]?)([1-9]?)$"); 
@@ -121,9 +131,8 @@ int Simulator::checkAllGates() {
             cout << " ]." << endl;
             return 2;
         } else {
-            gate = Simulator::existing_gates[gate_type_match[1]];
+            gate = Simulator::existing_gates[gate_type_match[1]]();
         }
-
         
         // Checks number of inputs
         if(gate_type_match[2].str() == "") { // no inputs nb specified -> using default
@@ -148,8 +157,19 @@ int Simulator::checkAllGates() {
             this->has_sequential = true;
         }
 
+        gate->setGateId(el.second->getGateId()); // saving gate id to Gate
         // add gate to map for the link edition (simulator next step)
         this->gates_graph.insert({el.second->getGateId(), gate});
+
+        if(lower_name == "output") {
+            hasOutput = true; // we ensure that we have at list one input
+        
+            this->output_gates.insert(gate);
+        }
+
+        if(gate->getName() == "Input") {
+            ((Input*) gate)->setValues(this->json->getSignals()->getStimulus(el.second->getGateId()));
+        }
     } 
 
     if(!hasOutput) {
@@ -200,23 +220,46 @@ int Simulator::checkInputsNames(Gate *gate, const map<string, string> &inputs) {
     return 0;
 }
 
-int Simulator::setLinks() {
+int Simulator::setLinks(void) {
     map<string, SchematicObject*> SOList = this->dot->getSchematicObjectsList();
+
+    // TODO: detect when path don't lead to any output ?
+    // TODO: detect other error ? can there be errors at that point ?
 
     for(auto const& el: SOList) {
         for(auto const& inputs : el.second->getInputs()) {
-            cout << el.first << "[" << inputs.first << "] = " << inputs.second << endl;
-
-            Gate *tmp_gate = this->gates_graph[el.second->getGateId()];
-            Gate *previous_gate = this->gates_graph[inputs.second];
-
-            cout << previous_gate->getName() << endl;
+            Gate *tmp_gate = this->gates_graph[el.first];
+            Gate *previous_gate = this->gates_graph[inputs.second]; // inputs.second -> gateId that goes into our gate
             // inputs.first -> input name; 
             tmp_gate->addInputNode(inputs.first, previous_gate);
         }
-
-        cout << endl;
     }
 
     return 0;
 }
+
+
+int Simulator::runSimulation(void) {
+    // TODO: add option to save intermediaries node
+    for(; this->current_clock_count < this->json->getSignals()->getClockCounts(); this->current_clock_count++) {
+        for(Gate* const& gate : this->output_gates) {
+            int tmp; // not used
+            gate->getValue(this->current_clock_count, &tmp);
+        }
+    }
+
+    return 0;
+}
+
+
+// void printRecursive(Gate* gate) {
+//     if(gate->getNbInputs() < 1) return;
+
+//     for(gate->get)
+// }
+
+// void Simulator::printSimulation(void) {
+//     for(Gate* const& gate : this->output_gates) {
+//         printRecursive(gate);
+//     }    
+// }

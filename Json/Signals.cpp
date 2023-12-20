@@ -28,11 +28,16 @@ void Signals::setHasClockDuplication(bool has_clock_duplication){
 }
 
 
-vector<Stimulus*> Signals::getStimuli(void) const {
+map<string, Stimulus*> Signals::getStimuli(void) const {
   return this->signals;
 }
-int Signals::addSignal(Stimulus *stimulus) {
-  this->signals.push_back(stimulus);
+Stimulus* Signals::getStimulus(const string& name) const {
+  // TODO: check if it exists
+  return this->signals.at(name);
+}
+
+int Signals::addSignal(const string& signal_name, Stimulus *stimulus) {
+  this->signals.insert({signal_name, stimulus});
   return 0;
 }
 
