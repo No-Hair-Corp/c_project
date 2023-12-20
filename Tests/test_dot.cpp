@@ -20,8 +20,8 @@ int main() {
         TC_Token.check(!secondToken.isFirst());
 
     // === Dot Lexer ===
-    // === Check Functions ===
-    Test TC_Check("Check Functions");
+    // === Check Lexer Functions ===
+    Test TC_Check_Lexer("Check Lexer Functions");
         // == checkType checkKeywords CheckArrow ==
         // Setup
         Dot file("Tests/database/dot/test_and2_true");
@@ -47,16 +47,16 @@ int main() {
         getline(fileCheckArrow3,lineCA3);
 
         // Test
-        TC_Check.check(file.checkType(c1, Dot::specialCharacter));
-        TC_Check.check(file.checkType(c2, Dot::stringStarter));
-        TC_Check.check(file.checkType(c3, Dot::forbiddenCharacter));
-        TC_Check.check(!file.checkType(c1, Dot::forbiddenCharacter));
-        TC_Check.check(file.checkKeywords(keyword1,176,Dot::statementKeywords));
-        TC_Check.check(!file.checkKeywords(keyword2,176,Dot::statementKeywords));
-        TC_Check.check(file.checkKeywords(keyword3,3,Dot::starterKeywords));
-        TC_Check.check(file.CheckArrow(lineCA1,1));
-        TC_Check.check(file.CheckArrow(lineCA2,1));
-        TC_Check.check(!file.CheckArrow(lineCA3,1));
+        TC_Check_Lexer.check(file.checkType(c1, Dot::specialCharacter));
+        TC_Check_Lexer.check(file.checkType(c2, Dot::stringStarter));
+        TC_Check_Lexer.check(file.checkType(c3, Dot::forbiddenCharacter));
+        TC_Check_Lexer.check(!file.checkType(c1, Dot::forbiddenCharacter));
+        TC_Check_Lexer.check(file.checkKeywords(keyword1,176,Dot::statementKeywords));
+        TC_Check_Lexer.check(!file.checkKeywords(keyword2,176,Dot::statementKeywords));
+        TC_Check_Lexer.check(file.checkKeywords(keyword3,3,Dot::starterKeywords));
+        TC_Check_Lexer.check(file.CheckArrow(lineCA1,1));
+        TC_Check_Lexer.check(file.CheckArrow(lineCA2,1));
+        TC_Check_Lexer.check(!file.CheckArrow(lineCA3,1));
     
     // === Register Functions ===
     Test TC_Register("Register Functions");
@@ -165,30 +165,13 @@ int main() {
         */
 
     // === Dot Parser ===
-    // === throwParseError Functions ===
-    /*Test TC_Throw_Parse_Error("Throw Parse Error Functions"); //only with function type int and return 1 instead of exit(1)
-        // == throwParseError(const string& error_message) ==
-        // Setup
-        string error_message1 = "Test error 1";
 
-        // Test
-        TC_Throw_Parse_Error.check(file.throwParseError(error_message1)==1);
-
-        // == throwParseError(const string& error_message, unsigned int line, unsigned int column) ==
-        // Setup
-        string error_message2 = "Test error 2";
-        unsigned int lineError = 0, columnError = 0;
-
-        // Test
-        TC_Throw_Parse_Error.check(file.throwParseError(error_message2, lineError, columnError)==1);
-    */
-
-    // === checkExistence Functions ===
-    Test TC_Check_Existence("Check Existence Functions"); //only with function type int and return 1 instead of exit(1)
+    // === Check Parser Functions ===
+    Test TC_Check_Parser("Check Parser Functions"); //only with function type int and return 1 instead of exit(1)
         // == checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink) ==
         // Setup
-        SchematicObject SO1("A");
-        SchematicObject SO2("B");
+        SchematicObject SO1("A","input");
+        SchematicObject SO2("B","input");
 
         SchematicObject* p = &SO1;
         SchematicObject* q = &SO2;
@@ -205,14 +188,14 @@ int main() {
         map<string, vector<string>> tempLink2;
         map<string, vector<string>> tempLink3;
 
-        tempLink1[SO1.getGateId()]=v1; //SO1 ou A prend B en entrée, les 2 existent donc ça doit marcher
-        //tempLink2[SO1.getGateId()]=v2; //SO1 ou A prend B et C en entrée, C n'existe pas donc ça ne doit pas marcher
-        //tempLink3["D"]=v1; //D prend B en entrée, D n'existe pas donc ça ne doit pas marcher
+        tempLink1[SO1.getGateId()]=v1; 
+        tempLink2[SO1.getGateId()]=v2; 
+        tempLink3["D"]=v1; 
 
         // Test
-        TC_Check_Existence.check(file.checkExistence(schematicObjectsList1, tempLink1));
-        //TC_Check_Existence.check(!file.checkExistence(schematicObjectsList1, tempLink2));
-        //TC_Check_Existence.check(!file.checkExistence(schematicObjectsList1, tempLink3)); //for both of them with function type bool and return false instead of exit(1)
+        TC_Check_Parser.check(file.checkExistence(schematicObjectsList1, tempLink1)==0); //SO1 ou A prend B en entrée, les 2 existent donc ça doit marcher
+        TC_Check_Parser.check(file.checkExistence(schematicObjectsList1, tempLink2)==1); //SO1 ou A prend B et C en entrée, C n'existe pas donc ça ne doit pas marcher
+        TC_Check_Parser.check(file.checkExistence(schematicObjectsList1, tempLink3)==2); //D prend B en entrée, D n'existe pas donc ça ne doit pas marcher
 
         // == checkExistence(map<string, SchematicObject*>& schematicObjectsList) ==
         // Setup
@@ -222,8 +205,8 @@ int main() {
         addOptions1["sel"] = "A";
         addOptions2["sel"] = "B";
         
-        SchematicObject SO3("A", addOptions1);
-        SchematicObject SO4("A", addOptions2);
+        SchematicObject SO3("A","input", addOptions1);
+        SchematicObject SO4("A","input", addOptions2);
 
         SchematicObject* r = &SO3;
         SchematicObject* s = &SO4;
@@ -235,31 +218,63 @@ int main() {
         schematicObjectsList3["A"] = s;
 
         // Test
-        TC_Check_Existence.check(file.checkExistence(schematicObjectsList2));
-        //TC_Check_Existence.check(!file.checkExistence(schematicObjectsList3)); //with function type bool and return false instead of exit(1)
+        TC_Check_Parser.check(file.checkExistence(schematicObjectsList2)==0);
+        TC_Check_Parser.check(file.checkExistence(schematicObjectsList3)==1);
 
-    // === checkLabel Function ===
-    Test TC_Check_Label("Check Label Function");
         //  == checkLabel ==
         // Setup
-        SchematicObject SO5("A", "input");
+        SchematicObject SO5("A","input");
+        SchematicObject SO6("B","");
+
+        SchematicObject* t = &SO5;
+        SchematicObject* u = &SO6;
+
+        map<string, SchematicObject*> schematicObjectsList4;
+        map<string, SchematicObject*> schematicObjectsList5;
+
+        schematicObjectsList4["A"] = t;
+        schematicObjectsList5["B"] = u;
         
         // Test
-        TC_Fill_Io_List.check(file.fillIoList(tempLinkToFill));
-
+        TC_Check_Parser.check(file.checkLabel(schematicObjectsList4)==0);
+        TC_Check_Parser.check(file.checkLabel(schematicObjectsList5)==1);
 
     // === fillIoList Function ===
     Test TC_Fill_Io_List("Fill Io List Function");
         //  == fillIoList ==
         // Setup
-        map<string, vector<string>> tempLinkToFill;
+        map<string, string> addOptions3;
 
-        vector<string> v3={"B","C"};
+        SchematicObject SO7("A","input",addOptions3);
+        SchematicObject SO8("B","input",addOptions3);
+        SchematicObject SO9("C","input",addOptions3);
+        SchematicObject SO10("GATE1","and2",addOptions3);
+        SchematicObject SO11("O","output",addOptions3);
 
-        tempLinkToFill["GATE1"]=v3;
-        
+        SchematicObject* v = &SO7;
+        SchematicObject* w = &SO8;
+        SchematicObject* x = &SO9;
+        SchematicObject* y = &SO10;
+        SchematicObject* z = &SO11;
+
+        map<string, SchematicObject*> schematicObjectsList6;
+
+        schematicObjectsList6["A"] = v;
+        schematicObjectsList6["B"] = w;
+        schematicObjectsList6["C"] = x;
+        schematicObjectsList6["GATE1"] = y;
+        schematicObjectsList6["O"] = z;
+
+        map<string, vector<string>> tempLinkToFill1;
+
+        vector<string> v3={"A","B"};
+        vector<string> v4={"GATE1","C"};
+
+        tempLinkToFill1["GATE1"]=v3;
+        tempLinkToFill1["O"]=v4;
+
         // Test
-        TC_Fill_Io_List.check(file.fillIoList(tempLinkToFill));
+        TC_Fill_Io_List.check(file.fillIoList(tempLinkToFill1)==0);
 
     return 0;
 }

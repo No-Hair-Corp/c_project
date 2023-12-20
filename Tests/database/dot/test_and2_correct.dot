@@ -1,13 +1,12 @@
 digraph            testand2
 {
+    A->
+    GATE -> O;B ->//GATE;}
+    GATE;
                 A [ label  =  " A " ]
 
     B [label    = 
     " B "];
     
     GATE [label="AND2"];O [label = "OUT
-    PUT"];
-    
-    A->
-    GATE -> O;B ->//GATE;}
-    GATE;}
+    PUT"];}
