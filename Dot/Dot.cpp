@@ -84,7 +84,7 @@ int Dot::lexer() {
                 // Register the string and create a token
                 Dot::registerString(input_file, line, column_number, line_number, buffer);
                 if (buffer == ""){
-                    throwParseError("Void string detected", line_number, column_number);
+                    throwParseError("Empty string detected", line_number, column_number);
                     return 2;
                 } else {
                 currentToken = new Token(buffer, stringType, previousToken, NULL, line_number + 1, column_number);
@@ -263,12 +263,13 @@ int Dot::parse() { //TODO: priorité entre additionnalOutput et les connexions
     Token* current_token = this->first_token;
     map<string, vector<string>> tempLink;
 
-    do {
+    if(current_token == nullptr){
+        throwParseError("Empty file given");
+        return 22;
+    }
 
-        if (current_token->getNextToken() == nullptr && current_token->getValue() != "}" ){
-            throwParseError("Syntax error: Missing '}'", current_token->getLine(), current_token->getColumn());
-            return 1;
-        }
+
+    do {
         
         switch (current_state)
         {
@@ -466,6 +467,10 @@ int Dot::parse() { //TODO: priorité entre additionnalOutput et les connexions
             }
         }
         current_state = next_state;
+        if (current_token->getNextToken() == nullptr && current_token->getValue() != "}" ){
+            throwParseError("Syntax error: Missing '}'", current_token->getLine(), current_token->getColumn());
+            return 1;
+        }
         
     } while ( (current_token = current_token->getNextToken()) );
     
