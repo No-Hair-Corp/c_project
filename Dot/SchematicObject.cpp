@@ -4,9 +4,9 @@
 // Constructor: initializes an empty SchematicObject in order to fill it after
 SchematicObject::SchematicObject(): gate_type(""), gate_id(""), inputList(), outputList() {}
 
-SchematicObject::SchematicObject(string gateID) : gate_type(""), gate_id(gateID), inputList(), outputList() {}
+SchematicObject::SchematicObject(string gateID, string gateType) : gate_type(gateType), gate_id(gateID), inputList(), outputList() {}
 
-SchematicObject::SchematicObject(string gateID, map<string, string> additionnalOptions): gate_type(""), gate_id(gateID), inputList(), outputList(), additionnalOptions(additionnalOptions) {}
+SchematicObject::SchematicObject(string gateID, string gateType, map<string, string> additionnalOptions): gate_type(gateType), gate_id(gateID), inputList(), outputList(), additionnalOptions(additionnalOptions) {}
 
 SchematicObject::~SchematicObject(){}
 
