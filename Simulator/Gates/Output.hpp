@@ -14,9 +14,12 @@ class Output : public Gate {
         // =======  STATICS =======
         static list<string> inputs_names;
 
-
+        static unsigned int min_nb_inputs;
+        static unsigned int default_nb_inputs;
+        static unsigned int max_nb_inputs;
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
+        Output();
         Output(map<string, Gate*>* input_nodes);
         ~Output();
 

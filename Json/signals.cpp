@@ -28,7 +28,7 @@ void Signals::setHasClockDuplication(bool has_clock_duplication){
 }
 
 
-vector<Stimulus*> Signals::getSignals(void) const {
+vector<Stimulus*> Signals::getStimuli(void) const {
   return this->signals;
 }
 int Signals::addSignal(Stimulus *stimulus) {

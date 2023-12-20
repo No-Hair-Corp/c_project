@@ -1,11 +1,20 @@
 #include "Not.hpp"
 
-list<string> Not::inputs_names = {"in"};
+list<string> Not::inputs_names = {"i0"};
 
+unsigned int Not::min_nb_inputs = 1;
+unsigned int Not::default_nb_inputs = 1;
+unsigned int Not::max_nb_inputs = 1;
+
+
+Not::Not(): Gate("Not", Not::default_nb_inputs, Not::min_nb_inputs, Not::default_nb_inputs, Not::max_nb_inputs, false) {
+    this->setInputsNames({"i0"});
+}
 
 Not::Not(map<string, Gate*>* input_nodes):
-Gate("Not", 0, false) {
-    this->setInputNodes(input_nodes);    
+Gate("Not", Not::default_nb_inputs, Not::min_nb_inputs, Not::default_nb_inputs, Not::max_nb_inputs, false) {
+    this->setInputsNames({"i0"});
+    this->setInputNodes(input_nodes);
 }
 
 Not::~Not() { }
@@ -14,7 +23,7 @@ Not::~Not() { }
 int Not::calculateValue(void) {
     
     Gate *previous_gate;
-    this->getInputNode("in", &previous_gate);
+    this->getInputNode("i0", &previous_gate);
     
     this->incrementClockCount();
 
