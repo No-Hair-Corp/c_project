@@ -70,7 +70,7 @@ class Dot {
         void throwParseError(const string &error_message, unsigned int line, unsigned int column);
         int checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink);
         int checkExistence(map<string, SchematicObject*>& schematicObjectsList);
-        int fillIoList(map<string, vector<string>>& tempLink);
+        int fillIoList(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink);
         int checkLabel(map<string, SchematicObject*>& schematicObjectsList);
 };
 

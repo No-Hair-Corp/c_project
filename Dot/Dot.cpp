@@ -481,7 +481,7 @@ int Dot::parse() { //TODO: priorité entre additionnalOutput et les connexions
         return 20;
     }
 
-    if(fillIoList(tempLink)){
+    if(fillIoList(this->schematicObjectsList, tempLink)){
         return 21;
     }
 
@@ -520,21 +520,21 @@ int Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList){
 }
 
 
-int Dot::fillIoList(map<string, vector<string>>& tempLink){
+int Dot::fillIoList(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink){
     for (auto const& link : tempLink){
         int it =0;
         for (auto const& Inputs : link.second){
-            map<string, string> test = this->schematicObjectsList[link.first]->getInputs();
-            while(this->schematicObjectsList[link.first]->getInputs().count("i"+to_string(it))){
+            map<string, string> test = schematicObjectsList[link.first]->getInputs();
+            while(schematicObjectsList[link.first]->getInputs().count("i"+to_string(it))){
                 it++;
             }
-            this->schematicObjectsList[link.first]->addInputs("i"+to_string(it), Inputs);
-            this->schematicObjectsList[Inputs]->addOutputs(link.first);
+            schematicObjectsList[link.first]->addInputs("i"+to_string(it), Inputs);
+            schematicObjectsList[Inputs]->addOutputs(link.first);
         } 
     }
-    for(auto const& SO : this->schematicObjectsList){
-        for(auto const& option : this->schematicObjectsList[SO.first]->getAdditionnalOptions()){
-            this->schematicObjectsList[SO.first]->addInputs(option.first, option.second);
+    for(auto const& SO : schematicObjectsList){
+        for(auto const& option : schematicObjectsList[SO.first]->getAdditionnalOptions()){
+            schematicObjectsList[SO.first]->addInputs(option.first, option.second);
         }
     }
     return 0;
