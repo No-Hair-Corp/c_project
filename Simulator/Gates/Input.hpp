@@ -11,18 +11,23 @@ using namespace std;
 
 class Input : public Gate {
     private:      
-
+        static unsigned int min_nb_inputs;
+        static unsigned int default_nb_inputs;
+        static unsigned int max_nb_inputs;
+        
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
+        Input();
         Input(Stimulus *values);
         ~Input();
+
 
 
         // =======  GETTERS / SETTERS =======
 
 
 
-        // =======  OTHER FUNCTION =======
+        // =======  OTHER FUNCTIONS =======
         int calculateValue(void);// -> return errorCode not value ;)
 
 };

@@ -1,5 +1,5 @@
-#ifndef _NOT_GATE_H_
-#define _NOT_GATE_H_
+#ifndef _MUX_GATE_H_
+#define _MUX_GATE_H_
 
 #include "../Gate.hpp"
 #include <string>
@@ -7,22 +7,21 @@
 
 using namespace std;
 
-class Not : public Gate {
+class Mux : public Gate {
     private:        
 
     public:
         // =======  STATICS =======
         static list<string> inputs_names;
-
         static unsigned int min_nb_inputs;
         static unsigned int default_nb_inputs;
         static unsigned int max_nb_inputs;
 
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
-        Not();
-        Not(map<string, Gate*>* input_nodes);
-        ~Not();
+        Mux();
+        Mux(map<string, Gate*>* input_nodes, unsigned int nb_inputs);
+        ~Mux();
 
 
         // =======  GETTERS / SETTERS =======

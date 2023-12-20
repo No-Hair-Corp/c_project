@@ -1,7 +1,9 @@
 #include "Gate.hpp"
 
-Gate::Gate(string name, unsigned int nb_inputs, bool is_sequential):
-name(name), nb_inputs(nb_inputs), is_sequential(is_sequential), last_calculation_clock(-1) {
+
+// =======  CONSTRUCTOR / DESTRUCTOR =======
+Gate::Gate(string name, unsigned int nb_inputs,unsigned int min_nb_inputs, unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential):
+name(name), is_sequential(is_sequential), nb_inputs(nb_inputs), min_nb_inputs(min_nb_inputs), default_nb_inputs(default_nb_inputs), max_nb_inputs(max_nb_inputs), last_calculation_clock(-1) {
 
 }
 
@@ -10,14 +12,53 @@ Gate::~Gate() {}
 
 
 // =======  GETTERS / SETTERS =======
+bool Gate::getIsSequential(void) const {
+    return this->is_sequential;
+}
+
 unsigned int Gate::getNbInputs(void) const {
     return this->nb_inputs;
 }
+int Gate::setNbInputs(unsigned int new_nb_inputs) {
+    if(new_nb_inputs > this->max_nb_inputs) {
+        cout << this->name << " can't have more than " << this->max_nb_inputs << " inputs." << endl;
+        return 1;
+    }
 
+    if(new_nb_inputs < this->min_nb_inputs) {
+        cout << this->name << " can't have less than " << this->min_nb_inputs << " inputs." << endl;
+        return 2;
+    }
+
+    this->nb_inputs = new_nb_inputs;
+    return 0;
+}
+
+
+unsigned int Gate::getMinNbInputs() const {
+    return this->min_nb_inputs;
+}
+unsigned int Gate::getDefaultNbInputs() const {
+    return this->default_nb_inputs;
+}
+unsigned int Gate::getMaxNbInputs() const {
+    return this->max_nb_inputs;
+}
+
+void Gate::setInputsNames(const list<string>& new_value) {
+    this->inputs_names = new_value;
+}
+list<string>* Gate::getInputsNames() {
+    return &this->inputs_names;
+}
 
 void Gate::setInputNodes(map<string, Gate*>* new_input_nodes) {
     this->input_nodes = new_input_nodes;
 } 
+void Gate::addInputNode(const string& input_name, Gate* linked_gate) {
+    this->input_nodes->insert({input_name, linked_gate});
+}
+
 
 int Gate::getInputNode(string input_name, Gate** node) const {
 

@@ -2,7 +2,10 @@ digraph testand1 {
     A [label="input"]; #input A
     B [label="input"]; //input B
     GATE [label=AND2];
-    O [label="OUTPUT"];
+    O [label="Output"];
+    Mux [label="MUX" sel=B];
     A->GATE->O;
     B->GATE;
+    A->Mux;
+    B->Mux;
 }

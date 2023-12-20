@@ -1,10 +1,19 @@
 #include "And.hpp"
 
-list<string> And::inputs_names = {"i@"};
+unsigned int And::min_nb_inputs = 2;
+unsigned int And::default_nb_inputs = 2;
+unsigned int And::max_nb_inputs = 9;
 
+
+// =======  CONSTRUCTOR / DESTRUCTOR =======
+And::And():
+Gate("And", And::default_nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
+    this->setInputsNames({"i@"});
+}
 
 And::And(map<string, Gate*>* input_nodes, unsigned int nb_inputs):
-Gate("AND", nb_inputs, false) {
+Gate("And", nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
+    this->setInputsNames({"i@"});
     this->setInputNodes(input_nodes);    
 }
 
@@ -13,6 +22,13 @@ And::~And() {
 }
 
 
+
+// =======  GETTERS / SETTERS =======
+
+
+
+
+// =======  OTHER FUNCTION =======
 int And::calculateValue(void) {
     
     this->incrementClockCount();

@@ -28,7 +28,7 @@ class Signals {
         bool getHasClockDuplication() const;
         void setHasClockDuplication(bool has_clock_duplication);
         
-        vector<Stimulus*> getSignals(void) const;
+        vector<Stimulus*> getStimuli(void) const;
         int addSignal(Stimulus *signal);
         // Stimulus* getSignals();
 };
