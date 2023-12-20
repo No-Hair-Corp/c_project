@@ -7,12 +7,12 @@ unsigned int And::max_nb_inputs = 9;
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 And::And():
-Gate("And", "", And::default_nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
+Gate("And", "", '&', And::default_nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
     this->setInputsNames({"i@"});
 }
 
 And::And(string gate_id, map<string, Gate*>* input_nodes, unsigned int nb_inputs):
-Gate("And", gate_id, nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
+Gate("And", gate_id, '&', nb_inputs, And::min_nb_inputs, And::default_nb_inputs, And::max_nb_inputs, false) {
     this->setInputsNames({"i@"});
     this->setInputNodes(input_nodes);    
 }
@@ -30,9 +30,8 @@ And::~And() {
 
 // =======  OTHER FUNCTION =======
 int And::calculateValue(void) {
-    
     this->incrementClockCount();
-
+    
     bool hasZero = false;
     bool hasOne = false;
     bool hasX = false;
@@ -44,13 +43,12 @@ int And::calculateValue(void) {
     for(unsigned int i = 0; i < this->getNbInputs(); i++) {
         Gate *previous_gate;
         this->getInputNode("i"+to_string(i), &previous_gate);
-
+        
         int previous_gate_value;
         previous_gate->getValue(this->getLastCalculationClock(), &previous_gate_value);
 
         if(previous_gate_value == 0) {
             hasZero = true;
-            break; // we have a 0; no need to go further
         } else if(previous_gate_value == 1) {
             hasOne = true;
         } else if(previous_gate_value == -1) {

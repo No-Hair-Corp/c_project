@@ -8,11 +8,11 @@ unsigned int Input::max_nb_inputs = 0;
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Input::Input():
-Gate("Input", "", Input::default_nb_inputs, Input::min_nb_inputs, Input::default_nb_inputs, Input::max_nb_inputs, false) {
+Gate("Input", "", ' ', Input::default_nb_inputs, Input::min_nb_inputs, Input::default_nb_inputs, Input::max_nb_inputs, false) {
 }
 
 Input::Input(string gate_id, Stimulus *values):
-Gate("Input", gate_id, Input::default_nb_inputs, Input::min_nb_inputs, Input::default_nb_inputs, Input::max_nb_inputs, false) {
+Gate("Input", gate_id, ' ', Input::default_nb_inputs, Input::min_nb_inputs, Input::default_nb_inputs, Input::max_nb_inputs, false) {
 
     this->setValues(values);
 }

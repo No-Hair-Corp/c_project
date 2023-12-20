@@ -50,13 +50,15 @@ dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(fal
 
 
     // TODO: Output json file
-    cout << "   A: 000x1101xx" << endl;
-    cout << " & B: 0x11100xx0" << endl;
 
-    cout << " = ";
-    for(Gate* const& gate : this->output_gates) {
-        cout << gate->getGateId() << ": " <<  *gate << endl;
-    }
+
+    // cout << "   A: 000x1101xx" << endl;
+    // cout << " & B: 0x11100xx0" << endl;
+    // cout << " = ";
+    // for(Gate* const& gate : this->output_gates) {
+    //     cout << gate->getGateId() << ": " <<  *gate << endl;
+    // }
+    // cout << endl << endl;
 
 }
 
@@ -252,14 +254,27 @@ int Simulator::runSimulation(void) {
 }
 
 
-// void printRecursive(Gate* gate) {
-//     if(gate->getNbInputs() < 1) return;
+void printRecursive(Gate* gate) {
+    if(gate->getNbInputs() < 1) return;
 
-//     for(gate->get)
-// }
+    unsigned int i = 0;
+    for(auto const& el : *gate->getInputNodes()) {
+        printRecursive(el.second);
+        
+        if(i || gate->getNbInputs() == 1) cout << gate->getGateSign();
+        else cout << ' ';
 
-// void Simulator::printSimulation(void) {
-//     for(Gate* const& gate : this->output_gates) {
-//         printRecursive(gate);
-//     }    
-// }
+        cout << " " << *el.second << "  <- " << el.first << "(" << el.second->getGateId() << ")" << endl;
+
+        i++;
+    }
+    cout << "-------------------- "  << gate->getGateId() << " [" << gate->getName()  << "]" << endl;
+}
+
+void Simulator::printSimulation(void) {
+    for(Gate* const& gate : this->output_gates) {
+        cout << endl;
+        cout << "Calculation for output `" << gate->getGateId() << "`:" << endl;
+        printRecursive(gate);
+    }    
+}

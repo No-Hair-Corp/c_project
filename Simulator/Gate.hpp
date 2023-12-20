@@ -14,6 +14,7 @@ class Gate {
     private:
         string name;
         string gate_id;
+        char gate_sign;
 
         bool is_sequential;
 
@@ -38,7 +39,7 @@ class Gate {
 
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
-        Gate(string name, string gate_id, unsigned int nb_inputs,unsigned int min_nb_inputs,
+        Gate(string name, string gate_id, char gate_sign, unsigned int nb_inputs,unsigned int min_nb_inputs,
                 unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential);
 
         virtual ~Gate() = 0; // virtual class
@@ -51,6 +52,7 @@ class Gate {
         const string& getGateId(void) const;
         void setGateId(const string& new_gate_id);
 
+        char getGateSign(void) const;
 
         bool getIsSequential(void) const;
 
@@ -67,6 +69,7 @@ class Gate {
         void setInputNodes(map<string, Gate*>* new_input_nodes);
         void addInputNode(const string& input_name, Gate* linked_gate);
         int getInputNode(string input_name, Gate** node) const;
+        const map<string, Gate*>* getInputNodes(void);
 
         void incrementClockCount(void);
         void setLastCalculationClock(int new_clock_count);

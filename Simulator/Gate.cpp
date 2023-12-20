@@ -2,8 +2,11 @@
 
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
-Gate::Gate(string name, string gate_id, unsigned int nb_inputs,unsigned int min_nb_inputs, unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential):
-name(name), gate_id(gate_id), is_sequential(is_sequential), nb_inputs(nb_inputs), min_nb_inputs(min_nb_inputs), default_nb_inputs(default_nb_inputs), max_nb_inputs(max_nb_inputs), last_calculation_clock(-1) {
+Gate::Gate(string name, string gate_id, char gate_sign, unsigned int nb_inputs,unsigned int min_nb_inputs,
+    unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential):
+name(name), gate_id(gate_id), gate_sign(gate_sign), is_sequential(is_sequential), nb_inputs(nb_inputs),
+    min_nb_inputs(min_nb_inputs), default_nb_inputs(default_nb_inputs), max_nb_inputs(max_nb_inputs),
+    last_calculation_clock(-1) {
 
 }
 
@@ -22,6 +25,11 @@ const string& Gate::getGateId(void) const {
 void Gate::setGateId(const string& new_gate_id) {
     this->gate_id = new_gate_id;
 }
+
+char Gate::getGateSign(void) const {
+    return this->gate_sign;
+}
+
 
 
 bool Gate::getIsSequential(void) const {
@@ -84,6 +92,10 @@ int Gate::getInputNode(string input_name, Gate** node) const {
     }
     return 0;
 }
+const map<string, Gate*>* Gate::getInputNodes(void) {
+    return this->input_nodes;
+}
+
 
 void Gate::incrementClockCount(void) {
     this->last_calculation_clock++;
@@ -99,15 +111,13 @@ void Gate::addValue(int value) {
     this->values.push_back(value);
 }
 int Gate::getValue(int clock_count, int *value) {
-    if(clock_count <= this->last_calculation_clock) {
+    if(clock_count <= this->getLastCalculationClock()) {
         *value = this->values.at(clock_count);
-    } else if(clock_count == this->last_calculation_clock + 1) {
-        if(clock_count >= this->values.size()) {
-            this->calculateValue();
-        }
+    } else if(clock_count == this->getLastCalculationClock() + 1) {
+        this->calculateValue();
         *value = this->values.at(clock_count);
     } else {
-        cout << "Error: Trying to get a value that is to far in the future." << endl;
+        cout << "Error: Trying to get a value that is in the future." << endl;
         return 1;
     }
 
