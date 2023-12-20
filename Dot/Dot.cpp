@@ -453,6 +453,9 @@ int Dot::parse() { //TODO: priorité entre additionnalOutput et les connexions
                     next_state = open_accolade;
                 } else if (current_token->getValue() == "->"){
                     next_state = link;
+                } else if (current_token->getValue() == "}"){
+                    break;
+                
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting `->` or new instance.", current_token->getLine(), current_token->getColumn());
                     return 16;
