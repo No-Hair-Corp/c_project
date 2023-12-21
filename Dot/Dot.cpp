@@ -265,7 +265,7 @@ int Dot::parse() { //TODO: priorité entre additionnalOutput et les connexions
 
     if(current_token == nullptr){
         throwParseError("Empty file given");
-        return 22;
+        return 21;
     }
 
 
@@ -451,7 +451,7 @@ int Dot::parse() { //TODO: priorité entre additionnalOutput et les connexions
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
                     next_state = open_accolade;
-                } else if (current_token->getValue() == "->"){
+                } else if (current_token->getType() == Assignment){
                     next_state = link;
                 } else if (current_token->getValue() == "}"){
                     break;
@@ -489,9 +489,7 @@ int Dot::parse() { //TODO: priorité entre additionnalOutput et les connexions
         return 20;
     }
 
-    if(fillIoList(this->schematicObjectsList, tempLink)){
-        return 21;
-    }
+    fillIoList(this->schematicObjectsList, tempLink);
 
     return 0;
 }
