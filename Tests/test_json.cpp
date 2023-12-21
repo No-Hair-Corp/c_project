@@ -5,9 +5,6 @@ using namespace std;
 
 int main() {
 
-    /*// Setup for all test cases
-    Json jsonParse("Tests/database/json/test1.json");*/
-
     // === assertJsonIntegrity ===
     Test TC_Verify_Min_Json("Verify if there is all minimum elements on Json");
         // Setup
@@ -30,8 +27,8 @@ int main() {
 
         // Test
         cout << array->as_str() << endl;
-        for(RSJresource al : clean_array){
-            cout<<al.as_str()<<endl;
+        for(RSJresource el : clean_array){
+            cout<<el.as_str()<<endl;
         }
         TC_Simplify_Json.check(true);
 
@@ -65,5 +62,23 @@ int main() {
         TC_Simplify_Waves.check(fileSimplifyWaves1.simplifyWaves()==0);
         TC_Simplify_Waves.check(fileSimplifyWaves2.simplifyWaves()==1);
 
+    // === Final Tests Json ===
+    Test TC_Final_Tests_Json("Final Tests Json");
+        //Setup
+        Json fileFinalTestJson1("Tests/database/Examen/stimuli/full_adder.json");
+        Json fileFinalTestJson2("Tests/database/Examen/stimuli/half_adder.json");
+        Json fileFinalTestJson3("Tests/database/Examen/stimuli/lfsr.json");
+        Json fileFinalTestJson4("Tests/database/Examen/stimuli/one_input.json");
+        Json fileFinalTestJson5("Tests/database/Examen/stimuli/two_inputs.json");
+        Json fileFinalTestJson6("Tests/database/Examen/stimuli/three_inputs.json");
+
+        //Test
+        TC_Final_Tests_Json.check(fileFinalTestJson1.getErrorCode()==0); //no error
+        TC_Final_Tests_Json.check(fileFinalTestJson2.getErrorCode()==0); //no error
+        TC_Final_Tests_Json.check(fileFinalTestJson3.getErrorCode()==0); //no error
+        TC_Final_Tests_Json.check(fileFinalTestJson4.getErrorCode()==0); //no error
+        TC_Final_Tests_Json.check(fileFinalTestJson5.getErrorCode()==0); //no error
+        TC_Final_Tests_Json.check(fileFinalTestJson6.getErrorCode()==0); //no error
+        
     return 0;
 }

@@ -1,7 +1,8 @@
 digraph testand2 {
-    A [sel="A"];
+    A [label="input"];
     B [label="input"];
     GATE [label="AND2"];
+    M [label = "MUX2" sel = "A" sel = "B"];
     O [label="OUTPUT"];
     A->GATE->O;
     B->GATE;

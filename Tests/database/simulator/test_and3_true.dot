@@ -1,0 +1,10 @@
+digraph testand3 {
+    A [label="input"];
+    B [label="input"];
+    C [label="input"];
+    GATE [label="AND3"];
+    O [label="OUTPUT"];
+    A->GATE->O;
+    B->GATE;
+    C->GATE;
+}

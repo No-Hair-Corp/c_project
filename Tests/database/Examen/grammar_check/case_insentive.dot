@@ -1,0 +1,12 @@
+
+diGraph TEST {
+
+I [label = "iNPuT"];
+
+GATE [label = "NoT" ];
+
+O [label = "OuTpUt"];
+
+I -> GaTe -> o;
+
+}

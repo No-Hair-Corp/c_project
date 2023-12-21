@@ -1,8 +1,3 @@
 digraph 
-    A [label="input"];
-    B [label="input"];
-    GATE [label="AND2"];
-    O [label="OUTPUT"];
-    A->GATE->O;
-    B->GATE;
+
 }

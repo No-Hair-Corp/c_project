@@ -1,0 +1,10 @@
+
+digraph test {
+
+I [label = "INPUT"];
+
+GATE [label = "NOT" ];
+
+I -> GATE;
+
+}
