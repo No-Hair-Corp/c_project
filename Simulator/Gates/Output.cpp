@@ -20,16 +20,13 @@ Output::~Output() {
 }
 
 int Output::calculateValue(void) {
-    this->incrementClockCount();
-    
+
     Gate *previous_gate;
     this->getInputNode("i0", &previous_gate);
     
-
     int previous_gate_value;
     previous_gate->getValue(this->getLastCalculationClock(), &previous_gate_value);
 
     // For an Output, you just get the previous element output
-    this->addValue(previous_gate_value);
-    return 0;
+    return previous_gate_value;
 }
