@@ -30,8 +30,6 @@ Xor::~Xor() {
 
 // =======  OTHER FUNCTION =======
 int Xor::calculateValue(void) {
-    this->incrementClockCount();
-    
     unsigned int nb_1 = 0;
     bool hasX = false;
 
@@ -53,11 +51,11 @@ int Xor::calculateValue(void) {
     }
 
     if (hasX) {
-        this->addValue(-1);
+        return -1;
     } else if(nb_1 > 0 && nb_1 % 2) {
-        this->addValue(1);
+        return 1;
     } else {
-        this->addValue(0);
+        return 0;
     }
 
     return 0;

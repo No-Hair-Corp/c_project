@@ -5,6 +5,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <unordered_set>
 #include <map>
 
 using namespace std;
@@ -35,6 +36,11 @@ class Gate {
 
         int last_calculation_clock;
         vector<int> values; // 1 int per clock count -> 1: high; 0 low; -1: x/unknown
+
+        bool had_calculate_value;
+        static unsigned int values_history_iterator;
+        static map<string, int> values_history;
+        static vector<string> tmp_test;
         
 
     public:
@@ -76,9 +82,18 @@ class Gate {
         int getLastCalculationClock(void) const;
 
         void addValue(int value);
+        int setValue(int clock_count, int value);
         int getValue(int clock_count, int* value); //-> if unset, run calculate value
         // unsigned char getPreviousValue(unsigned int delta);
         // unsigned char getValue(unsigned int clock_count); // maybe keep only this one or the previous
+
+        bool getHadCalculatedValue(void) const;
+        void setHadCalculatedValue(bool new_value);
+
+        static int getValueHistory(string gate_id);
+        static void setValueHistory(string gate_id, int new_value);
+        static void resetValuesHistory(void);
+
 
 
 

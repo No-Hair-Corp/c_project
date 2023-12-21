@@ -1,6 +1,10 @@
 #include "Gate.hpp"
 
 
+unsigned int Gate::values_history_iterator = 0;
+map<string, int> Gate::values_history;
+vector<string> Gate::tmp_test;
+
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Gate::Gate(string name, string gate_id, char gate_sign, unsigned int nb_inputs,unsigned int min_nb_inputs,
     unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential):
@@ -110,19 +114,101 @@ void Gate::setLastCalculationClock(int new_clock_count) {
 void Gate::addValue(int value) {
     this->values.push_back(value);
 }
-int Gate::getValue(int clock_count, int *value) {
-    if(clock_count <= this->getLastCalculationClock()) {
-        *value = this->values.at(clock_count);
-    } else if(clock_count == this->getLastCalculationClock() + 1) {
-        this->calculateValue();
-        *value = this->values.at(clock_count);
+int Gate::setValue(int clock_count, int value) {
+        if(clock_count <= this->getLastCalculationClock()) {
+        if(this->values.size() == clock_count) {
+            this->values.push_back(value);
+        } else {
+            this->values[clock_count] = value;
+        }
     } else {
-        cout << "Error: Trying to get a value that is in the future." << endl;
+        //TODO: throw error 'cause it's in the future
+        cout << "Error: can't" << endl;
         return 1;
+    }
+    return 0;
+}
+int Gate::getValue(int clock_count, int *value) {
+    if(!this->getHadCalculatedValue()) {
+        if(this->getName() != "Input") {
+            this->incrementClockCount(); 
+            this->setHadCalculatedValue(true);
+        }
+
+        if(clock_count < this->values.size()) {
+            *value = this->values.at(clock_count);
+        } else if(clock_count == this->values.size()) {
+            // this->calculateValue();
+            this->addValue(this->calculateValue());
+            *value = this->values.at(clock_count);
+        } else {
+            cout << "Error: Trying to get a value that is in the future." << endl;
+            return 1;
+        }
+    } else {
+        // we've already been here
+        if(Gate::values_history_iterator) {
+            bool skip = false;
+            for(string name : Gate::tmp_test) {
+                for(auto const& el : *this->getInputNodes()) {
+                    if(el.second->getGateId() == name) {
+                        *value = this->calculateValue();
+                        this->values[clock_count] = *value;
+                        skip = true;
+                    }
+                }
+            }
+            if(!skip) {
+                *value = this->values.at(clock_count);
+            }
+        } else if(clock_count > 0) {
+            *value = this->values.at(clock_count - 1);
+        } else {
+            *value = -1;
+            // *value = -1;
+        }
+        
+        Gate::values_history_iterator++;
+        Gate::setValueHistory(this->getGateId(), *value);
+    }
+
+    if(Gate::values_history.count(this->getGateId())) {
+        if(Gate::getValueHistory(this->getGateId()) != *value) {
+            Gate::tmp_test.push_back(this->getGateId());
+            int tmp = this->calculateValue();
+            Gate::tmp_test.pop_back();
+
+            *value = tmp;
+            Gate::setValueHistory(this->getGateId(), *value);
+        }
     }
 
     return 0;
 }
+
+bool Gate::getHadCalculatedValue(void) const {
+    return this->had_calculate_value;
+}
+void Gate::setHadCalculatedValue(bool new_value) {
+    this->had_calculate_value = new_value;
+}
+
+
+int Gate::getValueHistory(string gate_id) {
+    return Gate::values_history[gate_id];
+}
+void Gate::setValueHistory(string gate_id, int new_value) {
+    if(Gate::values_history.count(gate_id)) {
+        Gate::values_history[gate_id] = new_value;
+    } else {
+        Gate::values_history.insert({gate_id,  new_value});
+    }
+}
+void Gate::resetValuesHistory(void) {
+    Gate::values_history_iterator = 0;
+    Gate::values_history.clear();
+}
+
 
 
 

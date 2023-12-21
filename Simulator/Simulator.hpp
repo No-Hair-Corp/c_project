@@ -13,6 +13,7 @@
 
 #include "Gates/And.hpp"
 #include "Gates/Or.hpp"
+#include "Gates/Nor.hpp"
 #include "Gates/Xor.hpp"
 #include "Gates/Input.hpp"
 #include "Gates/Output.hpp"

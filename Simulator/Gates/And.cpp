@@ -30,7 +30,6 @@ And::~And() {
 
 // =======  OTHER FUNCTION =======
 int And::calculateValue(void) {
-    this->incrementClockCount();
     
     bool hasZero = false;
     bool hasOne = false;
@@ -57,11 +56,11 @@ int And::calculateValue(void) {
     }
 
     if(hasZero) {
-        this->addValue(0);
+        return 0;
     } else if(hasX) {
-        this->addValue(-1);
+        return -1;
     } else {
-        this->addValue(1);
+        return 1;
     }
 
     return 0;

@@ -1,0 +1,16 @@
+digraph testand1 {
+    S [label=input]
+    R [label="input"]; 
+
+    U0 [label=NOR]
+    U1 [label=NOR]
+
+    Q [label="Output"];
+    Qb [label="Output"];
+
+    R -> U0 -> Q;
+    U1-> U0;
+
+    S -> U1 -> Qb;
+    U0 -> U1;
+}

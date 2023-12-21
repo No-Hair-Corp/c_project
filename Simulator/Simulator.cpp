@@ -7,6 +7,7 @@ map<string, function<Gate*()>> Simulator::existing_gates = {
     {"not", []() -> Gate* { return new Not; } },
     {"and", []() -> Gate* { return new And; } },
     {"or", []() -> Gate* { return new Or; } },
+    {"nor", []() -> Gate* { return new Nor; } },
     {"xor", []() -> Gate* { return new Xor; } },
     {"mux", []() -> Gate* { return new Mux; } },
     {"ff", []() -> Gate* { return new Flipflop; } },
@@ -57,12 +58,6 @@ dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(fal
         this->error_code = SIM_SIMULATION_ERROR;
         return;
     }
-    //      2) split into combinatorial blocks
-    //      3) manage loops (watchdog)
-
-
-    // TODO: Output json file
-
 }
 
 
@@ -257,9 +252,15 @@ int Simulator::setLinks(void) {
 int Simulator::runSimulation(void) {
     // TODO: add option to save intermediaries node
     for(; this->current_clock_count < this->json->getSignals()->getClockCounts(); this->current_clock_count++) {
+        
         for(Gate* const& gate : this->output_gates) {
             int tmp; // not used
             gate->getValue(this->current_clock_count, &tmp);
+        }
+        // reset had calculated
+        Gate::resetValuesHistory();
+        for(auto const& el : this->gates_graph) {
+            el.second->setHadCalculatedValue(false);
         }
     }
 
@@ -285,6 +286,7 @@ void Simulator::printRecursive(Gate* gate) {
 }
 
 void Simulator::printSimulation(void) {
+    //TODO: fix with loop
     for(Gate* const& gate : this->output_gates) {
         cout << endl;
         cout << "Calculation for output `" << gate->getGateId() << "`:" << endl;

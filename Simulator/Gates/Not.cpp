@@ -22,7 +22,6 @@ Not::~Not() { }
 
 
 int Not::calculateValue(void) {
-    this->incrementClockCount();
     
     Gate *previous_gate;
     this->getInputNode("i0", &previous_gate);
@@ -45,7 +44,7 @@ int Not::calculateValue(void) {
             break;
     }
 
-    this->addValue(previous_gate_value);
+    return previous_gate_value;
 
     return 0;
 }

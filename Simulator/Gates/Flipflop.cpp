@@ -30,7 +30,6 @@ Flipflop::~Flipflop() {
 
 // =======  OTHER FUNCTION =======
 int Flipflop::calculateValue(void) {
-    this->incrementClockCount();
 
     Gate *data_gate, *clock_gate;
     this->getInputNode("d", &data_gate);
@@ -43,16 +42,16 @@ int Flipflop::calculateValue(void) {
 
     if(clock_value == 0) {
         if(this->getLastCalculationClock() == 0) {
-            this->addValue(-1); // we have x, because we don't have a previous value
+            return -1; // we have x, because we don't have a previous value
         } else {
             // we get the previous value (we replace data value to avoid creating a useless new value)
             this->getValue(this->getLastCalculationClock() - 1, &data_value);
-            this->addValue(data_value);
+            return data_value;
         }
     } else if(clock_value == -1) {
-        this->addValue(-1); // clock -1 -> we can't know what we have in output -> x
+        return -1; // clock -1 -> we can't know what we have in output -> x
     } else { // equal to 1 (in theory)
-        this->addValue(data_value); // copy data value
+        return data_value; // copy data value
     }
 
     return 0;
