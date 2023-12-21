@@ -7,15 +7,19 @@ Json::Json(string file_path):
 file_path(file_path) {
     ifstream json_file(file_path);
 
+    this->error_code = SUCCESS;
+
     if(json_file.fail()) {
         cout << "Error: An error happened while opening " << file_path << " please check file's path." <<  endl;
-        return; // TODO: store error state in object
+        this->error_code = FILE_READ_ERROR;
+        return;
     }
 
     this->json_dict = new RSJresource(json_file);
     this->json_dict->parse();
 
     if(this->assertJsonIntegrity()) { // check json is correct, exit program otherwise
+        this->error_code = INTEGRITY_ERROR;
         return;
     }
     this->simplifyJson((*json_dict)["signal"]); // remove signals group
@@ -23,19 +27,20 @@ file_path(file_path) {
     // No usable signal found
     if(!this->json_clean_array.size()) {
         cout << "Error: No suitable signal was found in the given JSON. This might be a JSON syntax issue." << endl;
+        this->error_code = NB_SIGNAL_ERROR;
         return;
     }
     cout << "Debug: Found " << this->json_clean_array.size() << " potential signals." << endl; 
 
     if(this->consistencyAndPrepare()) { // check signals, exit program if errors
+        this->error_code = PREPARE_ERROR;
         return;
     }
     if(this->simplifyWaves()) {  // convert wave to easier value ("1.0." -> "1100"...)
+        this->error_code = SIMPLIFY_ERROR;
         return;
     }
-    // for (Stimulus* signal: this->signals->getSignals()) {
-    //     cout << signal->getName() << ":\t" << signal->getValue() << endl; 
-    // }
+    
     json_file.close();
 }
 
@@ -46,6 +51,10 @@ Json::~Json(){
 
 
 // =======  GETTERS / SETTERS =======
+JsonErrorCodes Json::getErrorCode(void) const {
+    return this->error_code;
+}
+
 const string& Json::getFilePath(void) const {
     return this->file_path;
 }
@@ -280,7 +289,7 @@ int Json::printJson(const string& file_path, set<Stimulus*> stimuli) {
     ifstream checked_file(file_path);
     if(checked_file.good()) {
         // TODO: take force option
-        cout << "Error: File already exist." <<  endl;
+        cout << "Error: File " << file_path << " already exists." <<  endl;
         return 1;
     }
     checked_file.close();
@@ -292,12 +301,13 @@ int Json::printJson(const string& file_path, set<Stimulus*> stimuli) {
         return 2;
     }
 
-    RSJresource json_out("{\"signals\": []}");
+    RSJresource json_out("{\"signal\": []}");
 
     unsigned int i = 0;
     for(Stimulus* const& stimulus : stimuli) {
+        // TODO: wave -> replace repetition by `.`
         RSJresource signal("{\"name\": \"" + stimulus->getName() + "\", \"wave\": \"" + stimulus->getValue() + "\"}");
-        json_out["signals"][i] = signal;
+        json_out["signal"][i] = signal;
         i++;
     }
 

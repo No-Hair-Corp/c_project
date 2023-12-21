@@ -13,9 +13,13 @@
 
 using namespace std;
 
+enum JsonErrorCodes { SUCCESS, FILE_READ_ERROR, INTEGRITY_ERROR, NB_SIGNAL_ERROR, PREPARE_ERROR, SIMPLIFY_ERROR};
+
 class Json {
 
     private:
+        JsonErrorCodes error_code;
+
         string file_path;
         RSJresource *json_dict;
         vector<RSJresource> json_clean_array;
@@ -29,6 +33,8 @@ class Json {
 
 
         // =======  GETTERS / SETTERS =======
+        JsonErrorCodes getErrorCode(void) const;
+
         const string& getFilePath(void) const;
         int setFilePath(string& new_file_path);
 
