@@ -1,17 +1,23 @@
 #include "Simulator.hpp"
 
+// Map to instanciate Gate() from string name
 map<string, function<Gate*()>> Simulator::existing_gates = {
     {"input", []() -> Gate* { return new Input; } },
     {"output", []() -> Gate* { return new Output; } },
     {"not", []() -> Gate* { return new Not; } },
     {"and", []() -> Gate* { return new And; } },
+    {"or", []() -> Gate* { return new Or; } },
+    {"xor", []() -> Gate* { return new Xor; } },
     {"mux", []() -> Gate* { return new Mux; } },
 };
 
-// map<string, Gate*(*)()> Simulator::existing_gates["input"] = & Simulator::createGateInstance<Input>;
 
+
+// =======  CONSTRUCTOR / DESTRUCTOR =======
 Simulator::Simulator(const string& dot_file_path, const string& json_file_path):
 dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(false), current_clock_count(0) {
+
+    this->error_code = SUCCESS;
 
     // parsing json and preparing DOT
     this->dot = new Dot(dot_file_path);
@@ -21,28 +27,33 @@ dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(fal
     this->dot->lexer();
     
     if(this->dot->parse()) {
+        this->error_code = PARSE_ERROR;
         return;
     }
 
     // check consistancy of inputs between json and dot
     if(this->checkInputs()) {
+        this->error_code = INPUTS_INCONSISTENCY_ERROR;
         return;
     }
 
     
     // check that gates exist and are correctly given (nb of inputs, name, ...)
     if(this->checkAllGates()) {
+        this->error_code = BAD_GATE_ERROR;
         return;
     }
 
     // generate link between Gates
     if(this->setLinks()) {
+        this->error_code = LINK_ERROR;
         return;
     }
 
 
     // TODO: Simulate :)
     if(this->runSimulation()) {
+        this->error_code = SIMULATION_ERROR;
         return;
     }
     //      2) split into combinatorial blocks
@@ -51,17 +62,18 @@ dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(fal
 
     // TODO: Output json file
 
-
-    // cout << "   A: 000x1101xx" << endl;
-    // cout << " & B: 0x11100xx0" << endl;
-    // cout << " = ";
-    // for(Gate* const& gate : this->output_gates) {
-    //     cout << gate->getGateId() << ": " <<  *gate << endl;
-    // }
-    // cout << endl << endl;
-
 }
 
+
+
+// =======  GETTERS / SETTERS =======
+SimulatorErrorCodes Simulator::getErrorCode(void) const {
+    return this->error_code;
+}
+
+
+
+// =======  OTHER FUNCTIONS =======
 int Simulator::checkInputs(void) {
     map<string, SchematicObject*> SOList = this->dot->getSchematicObjectsList();
 
@@ -260,7 +272,7 @@ void printRecursive(Gate* gate) {
     unsigned int i = 0;
     for(auto const& el : *gate->getInputNodes()) {
         printRecursive(el.second);
-        
+
         if(i || gate->getNbInputs() == 1) cout << gate->getGateSign();
         else cout << ' ';
 

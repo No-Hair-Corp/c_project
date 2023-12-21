@@ -14,11 +14,13 @@ int main() {
     // A ---+----\.
     //      | AND |--- O
     // B ---+----/.
-    string dot_path = "Tests/database/dot/xtest_1.dot";
-    string json_path = "Tests/database/json/xtest_1.json";
+    string dot_path = "Tests/database/dot/xtest_full_adder.dot";
+    string json_path = "Tests/database/json/xtest_full_adder.json";
     Simulator sim_and2(dot_path, json_path);
 
-    sim_and2.printSimulation();
+    if(!sim_and2.getErrorCode()) {
+        sim_and2.printSimulation();
+    }
 
     return 0;
 }

@@ -12,6 +12,8 @@
 #include "Gate.hpp"
 
 #include "Gates/And.hpp"
+#include "Gates/Or.hpp"
+#include "Gates/Xor.hpp"
 #include "Gates/Input.hpp"
 #include "Gates/Output.hpp"
 #include "Gates/Not.hpp"
@@ -19,8 +21,14 @@
 
 using namespace std;
 
+enum SimulatorErrorCodes { SUCCESS, JSON_ERROR, LEXER_ERROR, PARSE_ERROR, INPUTS_INCONSISTENCY_ERROR,
+    BAD_GATE_ERROR, LINK_ERROR, SIMULATION_ERROR };
+
 class Simulator {
     private:
+        
+        SimulatorErrorCodes error_code;
+
         unsigned int current_clock_count; // TODO: useless ?
 
         string dot_file_path, json_file_path;
@@ -43,9 +51,9 @@ class Simulator {
 
 
         // =======  GETTERS / SETTERS =======
+        SimulatorErrorCodes getErrorCode(void) const;
 
-
-        // =======  OTHER FUNCTION =======
+        // =======  OTHER FUNCTIONS =======
         int checkInputs(void);
 
         int checkAllGates(void); // -> register if there is sequential stuff, check input/output number consistency, 
