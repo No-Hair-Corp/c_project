@@ -18,11 +18,12 @@
 #include "Gates/Output.hpp"
 #include "Gates/Not.hpp"
 #include "Gates/Mux.hpp"
+#include "Gates/Flipflop.hpp"
 
 using namespace std;
 
-enum SimulatorErrorCodes { SUCCESS, JSON_ERROR, LEXER_ERROR, PARSE_ERROR, INPUTS_INCONSISTENCY_ERROR,
-    BAD_GATE_ERROR, LINK_ERROR, SIMULATION_ERROR };
+enum SimulatorErrorCodes { SIM_SUCCESS, SIM_JSON_ERROR, SIM_LEXER_ERROR, SIM_PARSE_ERROR, SIM_INPUTS_INCONSISTENCY_ERROR,
+    SIM_BAD_GATE_ERROR, SIM_LINK_ERROR, SIM_SIMULATION_ERROR };
 
 class Simulator {
     private:

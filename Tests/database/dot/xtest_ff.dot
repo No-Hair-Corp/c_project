@@ -1,0 +1,16 @@
+digraph testand1 {
+    D [label="input"]; 
+    A [label=input]
+    Clk [label="input"]; 
+
+    U0[label="FF" d=D clk=Clk];
+    U1 [label=AND]
+
+    O [label="Output"];
+
+
+    D->U0->U1->O;   
+    Clk->U0;
+    A->U1;
+
+}

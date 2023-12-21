@@ -9,6 +9,7 @@ map<string, function<Gate*()>> Simulator::existing_gates = {
     {"or", []() -> Gate* { return new Or; } },
     {"xor", []() -> Gate* { return new Xor; } },
     {"mux", []() -> Gate* { return new Mux; } },
+    {"ff", []() -> Gate* { return new Flipflop; } },
 };
 
 
@@ -17,7 +18,7 @@ map<string, function<Gate*()>> Simulator::existing_gates = {
 Simulator::Simulator(const string& dot_file_path, const string& json_file_path):
 dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(false), current_clock_count(0) {
 
-    this->error_code = SUCCESS;
+    this->error_code = SIM_SUCCESS;
 
     // parsing json and preparing DOT
     this->dot = new Dot(dot_file_path);
@@ -27,33 +28,33 @@ dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(fal
     this->dot->lexer();
     
     if(this->dot->parse()) {
-        this->error_code = PARSE_ERROR;
+        this->error_code = SIM_PARSE_ERROR;
         return;
     }
 
     // check consistancy of inputs between json and dot
     if(this->checkInputs()) {
-        this->error_code = INPUTS_INCONSISTENCY_ERROR;
+        this->error_code = SIM_INPUTS_INCONSISTENCY_ERROR;
         return;
     }
 
     
     // check that gates exist and are correctly given (nb of inputs, name, ...)
     if(this->checkAllGates()) {
-        this->error_code = BAD_GATE_ERROR;
+        this->error_code = SIM_BAD_GATE_ERROR;
         return;
     }
 
     // generate link between Gates
     if(this->setLinks()) {
-        this->error_code = LINK_ERROR;
+        this->error_code = SIM_LINK_ERROR;
         return;
     }
 
 
     // TODO: Simulate :)
     if(this->runSimulation()) {
-        this->error_code = SIMULATION_ERROR;
+        this->error_code = SIM_SIMULATION_ERROR;
         return;
     }
     //      2) split into combinatorial blocks
@@ -225,7 +226,7 @@ int Simulator::checkInputsNames(Gate *gate, const map<string, string> &inputs) {
         }
     }
 
-    if(inputs.size() != total_nb_inputs) { // check that the total number of output is correct (@ + additional inputs)
+    if(inputs.size() < total_nb_inputs) { // check that the total number of output is correct (@ + additional inputs)
         cout << "Error: Gate " << gate->getName() << gate->getNbInputs() << " should have " << gate->getNbInputs() << " inputs, "
                 << inputs.size() << " given.";
         return 1;

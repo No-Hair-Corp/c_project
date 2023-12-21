@@ -7,11 +7,11 @@ Json::Json(string file_path):
 file_path(file_path) {
     ifstream json_file(file_path);
 
-    this->error_code = SUCCESS;
+    this->error_code = JSON_SUCCESS;
 
     if(json_file.fail()) {
         cout << "Error: An error happened while opening " << file_path << " please check file's path." <<  endl;
-        this->error_code = FILE_READ_ERROR;
+        this->error_code = JSON_FILE_READ_ERROR;
         return;
     }
 
@@ -19,7 +19,7 @@ file_path(file_path) {
     this->json_dict->parse();
 
     if(this->assertJsonIntegrity()) { // check json is correct, exit program otherwise
-        this->error_code = INTEGRITY_ERROR;
+        this->error_code = JSON_INTEGRITY_ERROR;
         return;
     }
     this->simplifyJson((*json_dict)["signal"]); // remove signals group
@@ -27,17 +27,17 @@ file_path(file_path) {
     // No usable signal found
     if(!this->json_clean_array.size()) {
         cout << "Error: No suitable signal was found in the given JSON. This might be a JSON syntax issue." << endl;
-        this->error_code = NB_SIGNAL_ERROR;
+        this->error_code = JSON_NB_SIGNAL_ERROR;
         return;
     }
     cout << "Debug: Found " << this->json_clean_array.size() << " potential signals." << endl; 
 
     if(this->consistencyAndPrepare()) { // check signals, exit program if errors
-        this->error_code = PREPARE_ERROR;
+        this->error_code = JSON_PREPARE_ERROR;
         return;
     }
     if(this->simplifyWaves()) {  // convert wave to easier value ("1.0." -> "1100"...)
-        this->error_code = SIMPLIFY_ERROR;
+        this->error_code = JSON_SIMPLIFY_ERROR;
         return;
     }
     
