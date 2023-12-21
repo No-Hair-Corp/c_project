@@ -3,6 +3,6 @@ digraph testand2 {
     B [label="input"];
     GATE [label="AND2"];
     O [label="OUTPUT"];
-    A->GATE->O;
+    A->->O;
     B->GATE;
 }

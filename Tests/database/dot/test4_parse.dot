@@ -1,4 +1,4 @@
-digraph testand2 {
+digraph 
     A [label="input"];
     B [label="input"];
     GATE [label="AND2"];

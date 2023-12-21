@@ -1,7 +1,7 @@
 digraph testand2 {
     A [label="input"];
     B [label="input"];
-    GATE [label="AND2"];
+    GATE [label="AND2" sel="C" b0="A" b1="B"];
     O [label="OUTPUT"];
     A->GATE->O;
     B->GATE;

@@ -5,4 +5,3 @@ digraph testand2 {
     O [label="OUTPUT"];
     A->GATE->O;
     B->GATE;
-}

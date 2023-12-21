@@ -1,5 +1,5 @@
 digraph testand2 {
-    A [label="input"];
+    A [label"input"];
     B [label="input"];
     GATE [label="AND2"];
     O [label="OUTPUT"];

@@ -1,0 +1,13 @@
+digraph testcomplex {
+    A [label="input"]; #input A
+    B [label="input"]; //input B
+    C [label="input"]; //input B
+    GATE1 [label="MUX2" sel="C" b0="A" b1="B"];
+    GATE2 [label="OR2"];
+    E2 [label=OR2];
+    O2 [label="output"];
+    GATE1->E2;
+    O1->GATE2->O2;
+    C->GATE2;
+    O1 [label="output"];
+}

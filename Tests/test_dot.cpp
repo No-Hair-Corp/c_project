@@ -145,27 +145,25 @@ int main() {
     Test TC_Lexer("Lexer Function");
         // == lexer ==
         // Setup
-        Dot file1("Tests/database/dot/test_and2_true.dot");
-        Dot file2("Tests/database/dot/test_and2_correct.dot");
-        Dot file3("Tests/database/dot/test_and2_false.dot");
+        Dot fileLexer1("Tests/database/dot/test_and2_true.dot");
+        Dot fileLexer2("Tests/database/dot/test_and2_correct.dot");
+        Dot fileLexer3("Tests/database/dot/test_and2_false.dot");
 
         // Test
-        TC_Lexer.check(file1.lexer()==0);
-        TC_Lexer.check(file2.lexer()==0);
-        /*TC_Lexer.check(file3.lexer()==2); //only with a return instead of exit(1)
+        TC_Lexer.check(fileLexer1.lexer()==0);
+        TC_Lexer.check(fileLexer2.lexer()==0);
+        // TC_Lexer.check(fileLexer3.lexer()==2); //only with a return instead of exit(1) on lexer function
 
-        // Visualisation lexing
-        file1.lexer();
-        Token* current = file1.getFirstToken();
-        while (current->Token::getNextToken() != NULL) {
-            cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-            current = current->getNextToken();
-        }
-        cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
-        */
+        // // Visualisation lexing
+        // fileLexer1.lexer();
+        // Token* current = fileLexer1.getFirstToken();
+        // while (current->Token::getNextToken() != NULL) {
+        //     cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
+        //     current = current->getNextToken();
+        // }
+        // cout << "Token: "<< current->Token::getType() << ", Value: "<< current->Token::getValue() << ", Line Number: " << current->getLine() << ", Column number: " << current->getColumn() <<endl;
 
     // === Dot Parser ===
-
     // === Check Parser Functions ===
     Test TC_Check_Parser("Check Parser Functions"); //only with function type int and return 1 instead of exit(1)
         // == checkExistence(map<string, SchematicObject*>& schematicObjectsList, map<string, vector<string>>& tempLink) ==
@@ -244,11 +242,14 @@ int main() {
         //  == fillIoList ==
         // Setup
         map<string, string> addOptions3;
+        map<string, string> addOptions4;
+
+        addOptions4["sel"] = "C";
 
         SchematicObject SO7("A","input",addOptions3);
         SchematicObject SO8("B","input",addOptions3);
-        SchematicObject SO9("C","input",addOptions3);
-        SchematicObject SO10("GATE1","and2",addOptions3);
+        SchematicObject SO9("C","input",addOptions4);
+        SchematicObject SO10("GATE1","mux",addOptions3);
         SchematicObject SO11("O","output",addOptions3);
 
         SchematicObject* v = &SO7;
@@ -267,14 +268,114 @@ int main() {
 
         map<string, vector<string>> tempLinkToFill1;
 
-        vector<string> v3={"A","B"};
-        vector<string> v4={"GATE1","C"};
+        vector<string> v3={"A","B","C"};
+        vector<string> v4={"GATE1"};
 
         tempLinkToFill1["GATE1"]=v3;
         tempLinkToFill1["O"]=v4;
 
         // Test
-        TC_Fill_Io_List.check(file.fillIoList(tempLinkToFill1)==0);
+        TC_Fill_Io_List.check(file.fillIoList(schematicObjectsList6,tempLinkToFill1)==0);
+        // // Visualisation liste remplie :
+        // cout << "Taille de la liste de SO: " << schematicObjectsList6.size() << endl;
+        // for(auto const& x : schematicObjectsList6){
+        //     x.second->print();
+        // }
+
+        // === parse Function ===
+        Test TC_Parser("Parser Function");
+        // == parse ==
+        // Setup
+        Dot fileParse00("Tests/database/dot/test_and2_true.dot");
+        Dot fileParse01("Tests/database/dot/test_complexcircuit_true.dot");
+        //Dot fileParse02("Tests/database/dot/test_graphcircuit_true.dot");
+        Dot fileParse03("Tests/database/dot/test_strictcircuit_true.dot");
+
+        Dot fileParse1("Tests/database/dot/test1_parse.dot");
+        Dot fileParse2("Tests/database/dot/test2_parse.dot");
+        Dot fileParse3("Tests/database/dot/test3_parse.dot");
+        //Dot fileParse4("Tests/database/dot/test4_parse.dot");
+        Dot fileParse5("Tests/database/dot/test5_parse.dot");
+        Dot fileParse6("Tests/database/dot/test6_parse.dot");
+        Dot fileParse7("Tests/database/dot/test7_parse.dot");
+        Dot fileParse8("Tests/database/dot/test8_parse.dot");
+        Dot fileParse9("Tests/database/dot/test9_parse.dot");
+        Dot fileParse10("Tests/database/dot/test10_parse.dot");
+        //Dot fileParse11("Tests/database/dot/test11_parse.dot");
+        Dot fileParse12("Tests/database/dot/test12_parse.dot");
+        Dot fileParse13("Tests/database/dot/test13_parse.dot");
+        Dot fileParse14("Tests/database/dot/test14_parse.dot");
+        Dot fileParse15("Tests/database/dot/test15_parse.dot");
+        Dot fileParse16("Tests/database/dot/test16_parse.dot");
+        //Dot fileParse17("Tests/database/dot/test17_parse.dot");
+        Dot fileParse18("Tests/database/dot/test18_parse.dot");
+        Dot fileParse19("Tests/database/dot/test19_parse.dot");
+        //Dot fileParse20("Tests/database/dot/test20_parse.dot");
+        //Dot fileParse21("Tests/database/dot/test21_parse.dot");
+        Dot fileParse22("Tests/database/dot/test22_parse.dot");
+
+        fileParse00.lexer();
+        fileParse01.lexer();
+        //fileParse02.lexer();
+        fileParse03.lexer();
+
+        fileParse1.lexer();
+        fileParse2.lexer();
+        fileParse3.lexer();
+        //fileParse4.lexer();
+        fileParse5.lexer();
+        fileParse6.lexer();
+        fileParse7.lexer();
+        fileParse8.lexer();
+        fileParse9.lexer();
+        fileParse10.lexer();
+        //fileParse11.lexer();
+        fileParse12.lexer();
+        fileParse13.lexer();
+        fileParse14.lexer();
+        fileParse15.lexer();
+        fileParse16.lexer();
+        //fileParse17.lexer();
+        fileParse18.lexer();
+        fileParse19.lexer();
+        //fileParse20.lexer();
+        //fileParse21.lexer();
+        fileParse22.lexer();
+
+        // Test
+        TC_Parser.check(fileParse00.parse()==0);
+        TC_Parser.check(fileParse01.parse()==0);
+        //TC_Parser.check(fileParse02.parse()==0);
+        TC_Parser.check(fileParse03.parse()==0);
+
+        TC_Parser.check(fileParse1.parse()==1);
+        TC_Parser.check(fileParse2.parse()==2);
+        TC_Parser.check(fileParse3.parse()==3);
+        //TC_Parser.check(fileParse4.parse()==4);
+        TC_Parser.check(fileParse5.parse()==5);
+        TC_Parser.check(fileParse6.parse()==6);
+        TC_Parser.check(fileParse7.parse()==7);
+        TC_Parser.check(fileParse8.parse()==8);
+        TC_Parser.check(fileParse9.parse()==9);
+        TC_Parser.check(fileParse10.parse()==10);
+        //TC_Parser.check(fileParse11.parse()==11);
+        TC_Parser.check(fileParse12.parse()==12);
+        TC_Parser.check(fileParse13.parse()==13);
+        TC_Parser.check(fileParse14.parse()==14);
+        TC_Parser.check(fileParse15.parse()==15);
+        TC_Parser.check(fileParse16.parse()==16);
+        //TC_Parser.check(fileParse17.parse()==17);
+        TC_Parser.check(fileParse18.parse()==18);
+        TC_Parser.check(fileParse19.parse()==19);
+        //TC_Parser.check(fileParse20.parse()==20);
+        //TC_Parser.check(fileParse21.parse()==21);
+        TC_Parser.check(fileParse22.parse()==22);
+
+        // // Visualisation parsing
+        // cout << "Taille de la liste de SO: " << fileParse00.getSchematicObjectsList().size() << endl;
+        // for(auto const& x : fileParse00.getSchematicObjectsList()){
+        //     x.second->print();
+        // }
 
     return 0;
 }
