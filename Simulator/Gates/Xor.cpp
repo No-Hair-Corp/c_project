@@ -7,12 +7,12 @@ unsigned int Xor::max_nb_inputs = 9;
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Xor::Xor():
-Gate("Xor", "", '&', Xor::default_nb_inputs, Xor::min_nb_inputs, Xor::default_nb_inputs, Xor::max_nb_inputs, false) {
+Gate("Xor", "", '^', Xor::default_nb_inputs, Xor::min_nb_inputs, Xor::default_nb_inputs, Xor::max_nb_inputs, false) {
     this->setInputsNames({"i@"});
 }
 
 Xor::Xor(string gate_id, map<string, Gate*>* input_nodes, unsigned int nb_inputs):
-Gate("Xor", gate_id, '&', nb_inputs, Xor::min_nb_inputs, Xor::default_nb_inputs, Xor::max_nb_inputs, false) {
+Gate("Xor", gate_id, '^', nb_inputs, Xor::min_nb_inputs, Xor::default_nb_inputs, Xor::max_nb_inputs, false) {
     this->setInputsNames({"i@"});
     this->setInputNodes(input_nodes);    
 }
@@ -32,7 +32,7 @@ Xor::~Xor() {
 int Xor::calculateValue(void) {
     this->incrementClockCount();
     
-    unsigned int nb_1;
+    unsigned int nb_1 = 0;
     bool hasX = false;
 
     // if has at least one x -> return x
@@ -54,10 +54,10 @@ int Xor::calculateValue(void) {
 
     if (hasX) {
         this->addValue(-1);
-    } else if(nb_1 % 2) {
-        this->addValue(0);
-    } else {
+    } else if(nb_1 > 0 && nb_1 % 2) {
         this->addValue(1);
+    } else {
+        this->addValue(0);
     }
 
     return 0;

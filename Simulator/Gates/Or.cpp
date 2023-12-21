@@ -7,12 +7,12 @@ unsigned int Or::max_nb_inputs = 9;
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Or::Or():
-Gate("Or", "", '&', Or::default_nb_inputs, Or::min_nb_inputs, Or::default_nb_inputs, Or::max_nb_inputs, false) {
+Gate("Or", "", '|', Or::default_nb_inputs, Or::min_nb_inputs, Or::default_nb_inputs, Or::max_nb_inputs, false) {
     this->setInputsNames({"i@"});
 }
 
 Or::Or(string gate_id, map<string, Gate*>* input_nodes, unsigned int nb_inputs):
-Gate("Or", gate_id, '&', nb_inputs, Or::min_nb_inputs, Or::default_nb_inputs, Or::max_nb_inputs, false) {
+Gate("Or", gate_id, '|', nb_inputs, Or::min_nb_inputs, Or::default_nb_inputs, Or::max_nb_inputs, false) {
     this->setInputsNames({"i@"});
     this->setInputNodes(input_nodes);    
 }
