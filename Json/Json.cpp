@@ -36,6 +36,7 @@ file_path(file_path) {
     // for (Stimulus* signal: this->signals->getSignals()) {
     //     cout << signal->getName() << ":\t" << signal->getValue() << endl; 
     // }
+    json_file.close();
 }
 
 Json::~Json(){
@@ -269,6 +270,42 @@ int Json::simplifyWaves(void) {
         Stimulus *tmp_stimulus = new Stimulus(signal["name"].as_str(), new_wave);
         this->signals->addSignal(signal["name"].as_str(), tmp_stimulus);
     }
+
+    return 0;
+}
+
+
+
+int Json::printJson(const string& file_path, set<Stimulus*> stimuli) {
+    ifstream checked_file(file_path);
+    if(checked_file.good()) {
+        // TODO: take force option
+        cout << "Error: File already exist." <<  endl;
+        return 1;
+    }
+    checked_file.close();
+
+
+    ofstream output_file(file_path); // append at end of file to avoid 
+    if(output_file.fail()) {
+        cout << "Error: Couldn't open " << file_path << "." <<  endl;
+        return 2;
+    }
+
+    RSJresource json_out("{\"signals\": []}");
+
+    unsigned int i = 0;
+    for(Stimulus* const& stimulus : stimuli) {
+        RSJresource signal("{\"name\": \"" + stimulus->getName() + "\", \"wave\": \"" + stimulus->getValue() + "\"}");
+        json_out["signals"][i] = signal;
+        i++;
+    }
+
+    cout << "Debug: Saving output JSON to " << file_path << endl;
+
+    output_file << json_out.as_str() << endl; 
+
+    output_file.close();
 
     return 0;
 }

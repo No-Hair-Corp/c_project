@@ -65,7 +65,10 @@ class Simulator {
         
         int runSimulation(void);
 
+        void printRecursive(Gate* gate);
         void printSimulation(void);
+
+        void saveToJson(const string& file_path);
 
 
 };

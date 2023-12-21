@@ -266,7 +266,7 @@ int Simulator::runSimulation(void) {
 }
 
 
-void printRecursive(Gate* gate) {
+void Simulator::printRecursive(Gate* gate) {
     if(gate->getNbInputs() < 1) return;
 
     unsigned int i = 0;
@@ -287,6 +287,20 @@ void Simulator::printSimulation(void) {
     for(Gate* const& gate : this->output_gates) {
         cout << endl;
         cout << "Calculation for output `" << gate->getGateId() << "`:" << endl;
-        printRecursive(gate);
-    }    
+        this->printRecursive(gate);
+    }
+    cout << endl;
+}
+
+
+void Simulator::saveToJson(const string& file_path) {
+    set<Stimulus*> stimuli;
+
+    // TODO : add additional output
+    for(Gate* const& gate : this->output_gates) {
+        Stimulus* tmp_stimulus = new Stimulus(gate->getGateId(), gate->to_str());
+        stimuli.insert(tmp_stimulus);
+    }
+
+    Json::printJson(file_path, stimuli);
 }

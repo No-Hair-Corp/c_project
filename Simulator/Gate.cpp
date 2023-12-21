@@ -127,13 +127,21 @@ int Gate::getValue(int clock_count, int *value) {
 
 
 // =======  OTHER FUNCTIONS =======
-ostream& operator<<(ostream& out, const Gate &gate) {
-    for(const int& value : gate.values) {
+string Gate::to_str(void) const {
+    string tmp_value;
+
+    for(const int& value : this->values) {
         if(value == -1) {
-            cout << 'x';
+            tmp_value.push_back('x');
         }  else {
-            cout << (char)('0'+value);
+            tmp_value.push_back((char)('0'+value));
         }
     }
+
+    return tmp_value;
+}
+
+ostream& operator<<(ostream& out, const Gate &gate) {
+    out << gate.to_str();
     return out;
 }

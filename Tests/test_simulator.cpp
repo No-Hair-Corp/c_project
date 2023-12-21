@@ -20,6 +20,7 @@ int main() {
 
     if(!sim_and2.getErrorCode()) {
         sim_and2.printSimulation();
+        sim_and2.saveToJson("full_adder_output.json");
     }
 
     return 0;

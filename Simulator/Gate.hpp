@@ -88,6 +88,7 @@ class Gate {
         //      -> take care of sequential, and split of combinatoire blocks
         //      -> by the way if there is sequential better to get from start or end ?
 
+        string to_str(void) const;
         friend ostream& operator<<(ostream& out, const Gate &gate);
 };
 
