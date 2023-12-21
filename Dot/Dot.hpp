@@ -19,8 +19,7 @@ class Dot {
 
     public:
         // ======= TOKEN CONTAINER ========
-        //TODO: make 
-        static string specialCharacter;
+        static string specialCharacter;  
         static string stringStarter;
         static string statementKeywords[];
         static string starterKeywords[];
@@ -30,7 +29,7 @@ class Dot {
 
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         Dot(string file_path);
-        //~Dot();
+        ~Dot();
 
 
 

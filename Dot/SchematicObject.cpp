@@ -3,12 +3,13 @@
 
 // Constructor: initializes an empty SchematicObject in order to fill it after
 SchematicObject::SchematicObject(): gate_type(""), gate_id(""), inputList(), outputList() {}
-
+// Constructor: initializes a SchematicObject with attributs gateId and gateType
 SchematicObject::SchematicObject(string gateID, string gateType) : gate_type(gateType), gate_id(gateID), inputList(), outputList() {}
-
+// Constructor: initializes a SchematicObject with attributs gateID, gateType and additionnalOptions
 SchematicObject::SchematicObject(string gateID, string gateType, map<string, string> additionnalOptions): gate_type(gateType), gate_id(gateID), inputList(), outputList(), additionnalOptions(additionnalOptions) {}
-
-SchematicObject::~SchematicObject(){}
+// Destructor: delete SchematicObject instances
+SchematicObject::~SchematicObject(){
+}
 
 // Getters et setters pour gate_type
 string SchematicObject::getGateType() const {
@@ -55,16 +56,14 @@ void SchematicObject::addAdditionnalOptions(const string& key, const string& opt
 }
 
 void SchematicObject::print(){
-        // Implémentation de la méthode print
-        // Assurez-vous d'ajuster cela en fonction de votre classe réelle
-        cout << "GateId: " << getGateId() << " , gateType: " << getGateType() << endl;
-        for (const auto& input : getInputs()) {
-            cout << "InputLabel: " << input.first << " , Source: " << input.second << endl;
-        }
-        for (const auto& output : getOutputs()) {
-            cout << "Output: " << output << endl;
-        }
+    cout << "GateId: " << getGateId() << " , gateType: " << getGateType() << endl;
+    for (const auto& input : getInputs()) {
+        cout << "InputLabel: " << input.first << " , Source: " << input.second << endl;
     }
+    for (const auto& output : getOutputs()) {
+        cout << "Output: " << output << endl;
+    }
+}
 
 
 
