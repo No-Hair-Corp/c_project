@@ -14,6 +14,10 @@ all: output/main.o $(SIMULATOR_OBJS) $(GATES_OBJS) $(JSON_OBJS) $(DOT_OBJS)
 	g++ $(OPTIONS) $? -o simulator
 
 # UTILS 
+output/%.o: %.cpp
+	@mkdir -p output
+	g++ $(OPTIONS) -c $< -o $@
+
 output/%.o: Dot/%.cpp
 	@mkdir -p output
 	g++ $(OPTIONS) -c $< -o $@
