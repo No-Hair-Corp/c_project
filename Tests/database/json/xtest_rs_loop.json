@@ -1,6 +1,6 @@
 { signal: [
-    { name: "R",    wave: "1000000101" },
-    { name: "S",    wave: "0000100011" }
+    { name: "R",    wave: "10001" },
+    { name: "S",    wave: "00101" }
     // R:1 S:1  -> forbidden 
     // R:0 S:1  -> set 
     // R:1 S:0  -> reset 

@@ -1,0 +1,12 @@
+digraph testloop {
+    A [label="input"]; #input A
+    B [label="input"]; #input A
+
+    U0 [label=AND2];
+    U1[label="not"];
+    
+    O [label="Output"];
+
+    A -> U0 -> U1 -> O;
+    U1 -> U0;
+}

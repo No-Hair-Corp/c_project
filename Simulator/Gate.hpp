@@ -37,7 +37,9 @@ class Gate {
         int last_calculation_clock;
         vector<int> values; // 1 int per clock count -> 1: high; 0 low; -1: x/unknown
 
+        static bool loop_error;
         bool had_calculate_value;
+        vector<unsigned int> last_calculated_values;
         static unsigned int values_history_iterator;
         static map<string, int> values_history;
         static vector<string> tmp_test;
@@ -93,6 +95,8 @@ class Gate {
         static int getValueHistory(string gate_id);
         static void setValueHistory(string gate_id, int new_value);
         static void resetValuesHistory(void);
+
+        void resetLastValues(void);
 
 
 
