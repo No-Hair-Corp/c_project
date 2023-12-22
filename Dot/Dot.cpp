@@ -208,12 +208,12 @@ int Dot::registerString(ifstream& input_file, string& line, unsigned int& column
 
 // Function to throw a parse error without position information
 void Dot::throwParseError(const string& error_message) {
-    cout << "Error: " << error_message << endl;
+    cout << "Error in dot file: " << error_message << endl;
 }
 
 // Function to throw a parse error with position information
 void Dot::throwParseError(const string& error_message, unsigned int line, unsigned int column) {
-    cout << "Error at line " << line << ", column " << column << ": " << error_message << endl;
+    cout << "Error in dot file at line " << line << ", column " << column << ": " << error_message << endl;
 }
 
 // Function to register keywords in the input file
@@ -321,7 +321,7 @@ int Dot::parse() {
 
 
     do {
-        
+ 
         switch (current_state)
         {
             case default_state:{
@@ -376,7 +376,7 @@ int Dot::parse() {
             case open_accolade:{
                 if(current_token->getType() == AnyWords){
                     temp_schem = new SchematicObject();
-                    next_state = choose_declaration ;
+                    next_state = choose_declaration;
                 } else if (current_token->getValue() == "}") {
                     break;
                 } else {
@@ -440,7 +440,7 @@ int Dot::parse() {
                         temp_schem->setGateType(current_token->getValue());
                     }
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"` after `=`, expecting a word.", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+ current_token->getValue() +"` after `=`, expecting a word.", current_token->getLine(), current_token->getColumn());
                     return 12;
                 }
                 next_state = statement_value;
@@ -462,9 +462,15 @@ int Dot::parse() {
 
             case statement_end:{
                 if(current_token->getType() == AnyWords){
+                    // if (temp_schem){
+                    //     delete temp_schem;
+                    // }
                     temp_schem = new SchematicObject();
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
+                    // if (temp_schem){
+                    //     delete temp_schem;
+                    // }
                     next_state = open_accolade;
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting new declaration after `]`.", current_token->getLine(), current_token->getColumn());
@@ -478,7 +484,7 @@ int Dot::parse() {
                     tempLink[current_token->getValue()].push_back(current_token->getPreviousToken(2)->getValue());
                     next_state = link_end;
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting word.", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+ current_token->getValue() +"`, expecting word.", current_token->getLine(), current_token->getColumn());
                     return 15;
                 }
                 break;
@@ -486,9 +492,15 @@ int Dot::parse() {
 
             case link_end:{
                 if (current_token->getType() == AnyWords){
+                    // if (!temp_schem){
+                    //     delete temp_schem;
+                    // }
                     temp_schem = new SchematicObject();
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
+                    // if (!temp_schem){
+                    //     delete temp_schem;
+                    // }
                     next_state = open_accolade;
                 } else if (current_token->getType() == Assignment){
                     next_state = link;
@@ -496,7 +508,7 @@ int Dot::parse() {
                     break;
                 
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting `->` or new instance.", current_token->getLine(), current_token->getColumn());
+                    throwParseError("Syntax error: Unexpected `"+ current_token->getValue() +"`, expecting `->` or new instance.", current_token->getLine(), current_token->getColumn());
                     return 16;
                 }
                 break;
@@ -527,6 +539,7 @@ int Dot::parse() {
     }
 
     fillIoList(this->schematicObjectsList, tempLink);
+
 
     return 0;
 }
