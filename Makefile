@@ -9,6 +9,9 @@ JSON_OBJS = $(addprefix output/, Json.o Signals.o Stimulus.o)
 SIMULATOR_OBJS = $(addprefix output/, Simulator.o Gate.o Stimulus.o)
 GATES_OBJS = $(addprefix output/, $(patsubst %.hpp, %.o, $(notdir $(wildcard Simulator/Gates/*.hpp))))
 
+# all
+all: output/main.o $(SIMULATOR_OBJS) $(GATES_OBJS) $(JSON_OBJS) $(DOT_OBJS)
+	g++ $(OPTIONS) $? -o simulator
 
 # UTILS 
 output/%.o: Dot/%.cpp
