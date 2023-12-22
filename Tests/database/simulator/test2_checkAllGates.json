@@ -1,0 +1,3 @@
+{ signal: [
+    { name: "A", wave: "0..x1.01x." }
+]}

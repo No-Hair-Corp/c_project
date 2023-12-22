@@ -1,0 +1,8 @@
+digraph testand16 {
+    A [label="input"];
+    B [label="input"];
+    GATE [label="AND2o"];
+    S [label="OUTPUT"];
+    A->GATE->S;
+    B->GATE;
+}
