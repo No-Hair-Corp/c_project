@@ -504,17 +504,7 @@ int main() {
         /*//portes_elementaires
         //Setup
         Dot fileFinalTestDotPE1("Tests/database/Examen/portes_elementaires/and2.dot");
-        Dot fileFinalTestDotPE2("Tests/database/Examen/portes_elementaires/direct_connection.dot");
-        Dot fileFinalTestDotPE3("Tests/database/Examen/portes_elementaires/FlipFlop.dot");
-        Dot fileFinalTestDotPE4("Tests/database/Examen/portes_elementaires/Mux_explicit.dot");
-        Dot fileFinalTestDotPE5("Tests/database/Examen/portes_elementaires/Mux_implicit.dot");
-        Dot fileFinalTestDotPE6("Tests/database/Examen/portes_elementaires/nand2.dot");
-        Dot fileFinalTestDotPE7("Tests/database/Examen/portes_elementaires/nor2.dot");
-        Dot fileFinalTestDotPE8("Tests/database/Examen/portes_elementaires/not.dot");
-        Dot fileFinalTestDotPE9("Tests/database/Examen/portes_elementaires/or2.dot");
-        Dot fileFinalTestDotPE10("Tests/database/Examen/portes_elementaires/xnor2.dot");
-        Dot fileFinalTestDotPE11("Tests/database/Examen/portes_elementaires/xor2.dot");
-
+        
         map<string, string> addOptionsPE1;
 
         SchematicObject SO_PE1("I1","INPUT",addOptionsPE1);

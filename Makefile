@@ -53,5 +53,8 @@ test_json: output/test_json.o output/Test.o $(JSON_OBJS)
 test_simulator: output/test_simulator.o output/Test.o $(SIMULATOR_OBJS) $(GATES_OBJS) $(JSON_OBJS) $(DOT_OBJS)
 	g++ $(OPTIONS) $? -o output/test_simulator
 
+test_all: output/test_all.o output/Test.o $(SIMULATOR_OBJS) $(GATES_OBJS) $(JSON_OBJS) $(DOT_OBJS)
+	g++ $(OPTIONS) $? -o output/test_all
+
 clean:
 	rm -rf output/*

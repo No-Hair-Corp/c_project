@@ -1,9 +1,10 @@
-digraph testmux {
-    I1 [label = "INPUT"];
-    I2 [label = "INPUT"];
-    I3 [label = "INPUT"];
-    M [label = "MUX2" sel = "I3"];
+digraph testmux2 {
+    A [label="input"];
+    B [label="input"];
+    C [label="input"];
+    M [label="MUX2" sel="C" b0="A" b1="B"];
     O [label = "OUTPUT"];
-    I1 -> M -> O;
-    I2 -> M;
+    A -> M -> O;
+    B -> M;
+    C -> M;
 }
