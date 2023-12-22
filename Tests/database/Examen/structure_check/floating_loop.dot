@@ -1,0 +1,13 @@
+digraph test {
+
+I1 [label = "INPUT"];
+
+GATE2 [label = "NOT" ];
+GATE1 [label = "NOT" ];
+
+O1 [label = "OUTPUT"];
+
+I1 -> O1;
+
+GATE2 -> GATE1 -> GATE2;
+}

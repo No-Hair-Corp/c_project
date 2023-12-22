@@ -1,0 +1,9 @@
+digraph test {
+
+O [label = "OUTPUT"];
+O2 [label = "OUTPUT"];
+
+
+O -> O2;
+
+}

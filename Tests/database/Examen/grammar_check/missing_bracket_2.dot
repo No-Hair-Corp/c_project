@@ -1,0 +1,10 @@
+
+digraph test {
+
+I [label = "INPUL"];
+
+GATE [label = "NOT" ];
+
+O [label = "OUTPUT";
+
+I -> GATE -> O;
