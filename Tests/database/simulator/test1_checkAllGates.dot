@@ -1,0 +1,8 @@
+digraph testand2 {
+    A [label="iput"];
+    B [label="input"];
+    GATE [label="AND2"];
+    O [label="OUTPUT"];
+    A->GATE->O;
+    B->GATE;
+}

@@ -208,12 +208,12 @@ int Dot::registerString(ifstream& input_file, string& line, unsigned int& column
 
 // Function to throw a parse error without position information
 void Dot::throwParseError(const string& error_message) {
-    cout << "Error: " << error_message << endl;
+    cout << "Error in dot file: " << error_message << endl;
 }
 
 // Function to throw a parse error with position information
 void Dot::throwParseError(const string& error_message, unsigned int line, unsigned int column) {
-    cout << "Error at line " << line << ", column " << column << ": " << error_message << endl;
+    cout << "Error in dot file at line " << line << ", column " << column << ": " << error_message << endl;
 }
 
 // Function to register keywords in the input file
@@ -310,10 +310,13 @@ int Dot::parse() {
     enum parser_states {default_state,strict,graph_type,name,open_accolade,choose_declaration,statement,link,equal,statement_value,statement_end,link_end,unknown, assignment};
     parser_states current_state = default_state;
     parser_states next_state = unknown;
-    SchematicObject* temp_schem = nullptr;
-    Token* current_token = this->first_token;
-    map<string, vector<string>> tempLink;
 
+    map<string, vector<string>> tempLink; //temporary list to stock connexion
+    SchematicObject* temp_schem = nullptr;//temporary SchematicObject to use new in the parser
+
+    Token* current_token = this->first_token; //init current_token to the first_token
+
+    //check if the file is empty
     if(current_token == nullptr){
         throwParseError("Empty file given");
         return 21;
@@ -321,185 +324,260 @@ int Dot::parse() {
 
 
     do {
-        
+ 
         switch (current_state)
         {
-            case default_state:{
+            
+            case default_state: {
+                // Get the value of the current token
                 string copy = current_token->getValue();
+                
+                // Convert the value to lowercase for case-insensitive comparison
                 transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
-                if (copy == "strict"){
-                    next_state = strict ;
-                } else if (copy == "digraph" || copy == "graph"){
-                    next_state= graph_type;
-                } else {
-                    throwParseError("Syntax error: No starter keywords", current_token->getLine(), current_token->getColumn());
-                    return 2;
-                }
-                break;
-            }
-
-
-            case strict:{
-                string copy = current_token->getValue();
-                transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
-                if (copy == "digraph" || copy == "graph"){
+                
+                // Check if the value is "strict"
+                if (copy == "strict") {
+                    next_state = strict;
+                } 
+                // Else, check if the value is "digraph" or "graph"
+                else if (copy == "digraph" || copy == "graph") {
                     next_state = graph_type;
-                } else {
-                    throwParseError("Syntax error: unexpected `"+current_token->getValue()+"` after `strict`, expecting a `digraph` or `graph`.", current_token->getLine(), current_token->getColumn());
-                    return 3;
+                } 
+                // If none of the above conditions are satisfied, throw a syntax error
+                else {
+                    throwParseError("Syntax error: No starter keywords", current_token->getLine(), current_token->getColumn());
+                    return 2;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case graph_type:{
-                if (current_token->getType() == AnyWords){
+            case strict: {
+                // Get the value of the current token
+                string copy = current_token->getValue();
+                
+                // Convert the value to lowercase for case-insensitive comparison
+                transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
+                
+                // Check if the value is "digraph" or "graph"
+                if (copy == "digraph" || copy == "graph") {
+                    next_state = graph_type;
+                } 
+                // If the value is not "digraph" or "graph", throw a syntax error
+                else {
+                    throwParseError("Syntax error: unexpected `" + current_token->getValue() + "` after `strict`, expecting a `digraph` or `graph`.", current_token->getLine(), current_token->getColumn());
+                    return 3;  // Return an error code to the calling function
+                }
+                break;  // Exit the 'switch' block to move to the next case
+            }
+
+            case graph_type: {
+                // Check the type of the current token
+                if (current_token->getType() == AnyWords) {
+                    // If the type is AnyWords, transition to the 'name' state
                     next_state = name;
-                } else if (current_token->getValue() == "{") {
+                } 
+                // If the type is not AnyWords, check if the value is "{"
+                else if (current_token->getValue() == "{") {
+                    // If the value is "{", transition to the 'open_accolade' state
                     next_state = open_accolade;
-                } else {
-                    throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"` after `digraph` or `graph`, expecting an `{`.", current_token->getLine(), current_token->getColumn());
-                    return 4;
+                } 
+                // If the type is not AnyWords and the value is not "{", throw a syntax error
+                else {
+                    throwParseError("Syntax error: unexpected `" + current_token->getValue() + "` after `digraph` or `graph`, expecting an `{`.", current_token->getLine(), current_token->getColumn());
+                    return 4;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case name:{
-                if (current_token->getValue() == "{"){
+            case name: {
+                // Check if the value of the current token is "{"
+                if (current_token->getValue() == "{") {
+                    // If the value is "{", transition to the 'open_accolade' state
                     next_state = open_accolade;
-                } else {
-                    throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"` after `digraph` or `graph`, expecting an `{`.", current_token->getLine(), current_token->getColumn());
-                    return 5;
+                } 
+                // If the value is not "{", throw a syntax error
+                else {
+                    throwParseError("Syntax error: unexpected `" + current_token->getValue() + "` after `digraph` or `graph`, expecting an `{`.", current_token->getLine(), current_token->getColumn());
+                    return 5;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case open_accolade:{
-                if(current_token->getType() == AnyWords){
-                    temp_schem = new SchematicObject();
-                    next_state = choose_declaration ;
-                } else if (current_token->getValue() == "}") {
+            case open_accolade: {
+                // Check the type of the current token
+                if (current_token->getType() == AnyWords) {
+                    // If the type is AnyWords, transition to the 'choose_declaration' state
+                    next_state = choose_declaration;
+                } 
+                // If the value is "}", exit the loop
+                else if (current_token->getValue() == "}") {
                     break;
-                } else {
-                    throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"`, expecting a word.", current_token->getLine(), current_token->getColumn());
-                    return 6;
+                } 
+                // If neither condition is met, throw a syntax error
+                else {
+                    throwParseError("Syntax error: unexpected `" + current_token->getValue() + "`, expecting a word.", current_token->getLine(), current_token->getColumn());
+                    return 6;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case choose_declaration:{
-                if(current_token->getValue() == "["){
-                    if (!(this->schematicObjectsList.count(current_token->getPreviousToken()->getValue()))){
+            case choose_declaration: {
+                // Check if the current token's value is "["
+                if (current_token->getValue() == "[") {
+                    // If true, create a new SchematicObject and set its GateId
+                    temp_schem = new SchematicObject();
+                    // Check if the GateId is not already used
+                    if (!(this->schematicObjectsList.count(current_token->getPreviousToken()->getValue()))) {
                         temp_schem->setGateId(current_token->getPreviousToken()->getValue());
                     } else {
-                        throwParseError("Syntax error: Gate Id `"+ current_token->getPreviousToken()->getValue() +"` already used", current_token->getLine(), current_token->getColumn());
-                        return 7;
+                        // Throw an error if the GateId is already used
+                        throwParseError("Syntax error: Gate Id `" + current_token->getPreviousToken()->getValue() + "` already used", current_token->getLine(), current_token->getColumn());
+                        return 7;  // Return an error code to the calling function
                     }
+                    // Move to the 'statement' state
                     next_state = statement;
-                } else if (current_token->getType() == Assignment) {
+                } 
+                // Check if the current token's type is Assignment
+                else if (current_token->getType() == Assignment) {
+                    // If true, move to the 'link' state
                     next_state = link;
-                } else {
-                   throwParseError("Syntax error: unexpected `"+ current_token->getValue() +"`, expecting a `[` or `->`.", current_token->getLine(), current_token->getColumn());
-                   return 8;
+                } 
+                // If neither condition is met, throw a syntax error
+                else {
+                    throwParseError("Syntax error: unexpected `" + current_token->getValue() + "`, expecting a `[` or `->`.", current_token->getLine(), current_token->getColumn());
+                    return 8;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case statement:{
-                if(current_token->getType() == StatementKeyWords || current_token->getType() == AnyWords){
+            case statement: {
+                // Check if the current token's type is StatementKeyWords or AnyWords
+                if (current_token->getType() == StatementKeyWords || current_token->getType() == AnyWords) {
+                    // If true, transition to the 'assignment' state
                     next_state = assignment;
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"` after `[`, expecting a word.", current_token->getLine(), current_token->getColumn());
-                    return 9;
+                    // If the type is neither StatementKeyWords nor AnyWords, throw a syntax error
+                    throwParseError("Syntax error: Unexpected `" + current_token->getValue() + "` after `[`, expecting a word.", current_token->getLine(), current_token->getColumn());
+                    return 9;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case assignment:{
-                if(current_token->getValue() == "="){
+            case assignment: {
+                // Check if the current token's value is "="
+                if (current_token->getValue() == "=") {
+                    // If true, transition to the 'equal' state
                     next_state = equal;
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+", expecting an `=`.", current_token->getLine(), current_token->getColumn());
-                    return 10;
+                    // If the value is not "=", throw a syntax error
+                    throwParseError("Syntax error: Unexpected `" + current_token->getValue() + "`, expecting an `=`.", current_token->getLine(), current_token->getColumn());
+                    return 10;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-
-            case equal:{
-                if(current_token->getType() == stringType || current_token->getType() == AnyWords){
+            case equal: {
+                // Check if the current token's type is stringType or AnyWords
+                if (current_token->getType() == stringType || current_token->getType() == AnyWords) {
+                    // Create a lowercase copy of the token two positions back
                     string copy = current_token->getPreviousToken(2)->getValue();
                     transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
-                    if (current_token->getPreviousToken(2)->getType() != StatementKeyWords){
-                        if (!(temp_schem->getAdditionnalOptions().count(current_token->getPreviousToken(2)->getValue()))){
+
+                    // Check if the token two positions back is not a StatementKeyWords
+                    if (current_token->getPreviousToken(2)->getType() != StatementKeyWords) {
+                        // Check if the additional options of temp_schem do not contain the key
+                        if (!(temp_schem->getAdditionnalOptions().count(current_token->getPreviousToken(2)->getValue()))) {
+                            // If not, add the additional option to temp_schem
                             temp_schem->addAdditionnalOptions(current_token->getPreviousToken(2)->getValue(), current_token->getValue());
                         } else {
+                            // If the key is already present, throw a syntax error
                             throwParseError("Syntax error: SchematicsObject option already used", current_token->getLine(), current_token->getColumn());
-                            return 11;
+                            return 11;  // Return an error code to the calling function
                         }
                     } else if (copy == "label") {
+                        // If the key is "label", set the gate type of temp_schem
                         temp_schem->setGateType(current_token->getValue());
                     }
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"` after `=`, expecting a word.", current_token->getLine(), current_token->getColumn());
-                    return 12;
+                    // If the current token's type is not stringType or AnyWords, throw a syntax error
+                    throwParseError("Syntax error: Unexpected `" + current_token->getValue() + "` after `=`, expecting a word.", current_token->getLine(), current_token->getColumn());
+                    return 12;  // Return an error code to the calling function
                 }
+
+                // Transition to the 'statement_value' state
                 next_state = statement_value;
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case statement_value:{
-                if(current_token->getType() == StatementKeyWords || current_token->getType() == AnyWords){
+            case statement_value: {
+                // Check if the current token's type is StatementKeyWords or AnyWords
+                if (current_token->getType() == StatementKeyWords || current_token->getType() == AnyWords) {
+                    // Transition to the 'assignment' state
                     next_state = assignment;
-                } else if (current_token->getValue() == "]"){
-                    this->schematicObjectsList[temp_schem->getGateId()]=temp_schem;
+                } else if (current_token->getValue() == "]") {
+                    // If the current token's value is ']', add temp_schem to schematicObjectsList
+                    this->schematicObjectsList[temp_schem->getGateId()] = temp_schem;
+                    // Transition to the 'statement_end' state
                     next_state = statement_end;
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting `]`.", current_token->getLine(), current_token->getColumn());
-                    return 13;
+                    // If the current token doesn't match the expected values, throw a syntax error
+                    throwParseError("Syntax error: Unexpected `" + current_token->getValue() + "`, expecting `]`.", current_token->getLine(), current_token->getColumn());
+                    return 13;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case statement_end:{
-                if(current_token->getType() == AnyWords){
-                    temp_schem = new SchematicObject();
+            case statement_end: {
+                // Check if the current token's type is AnyWords
+                if (current_token->getType() == AnyWords) {
+                    // Transition to the 'choose_declaration' state
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
+                    // If the current token's value is ';', transition to the 'open_accolade' state
                     next_state = open_accolade;
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting new declaration after `]`.", current_token->getLine(), current_token->getColumn());
-                    return 14;
+                    // If the current token doesn't match the expected values, throw a syntax error
+                    throwParseError("Syntax error: Unexpected `" + current_token->getValue() + "`, expecting new declaration after `]`.", current_token->getLine(), current_token->getColumn());
+                    return 14;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case link:{
-                if (current_token->getType() == AnyWords){
+            case link: {
+                // Check if the current token's type is AnyWords
+                if (current_token->getType() == AnyWords) {
+                    // Update the tempLink map with the current token's value and the previous token's value
                     tempLink[current_token->getValue()].push_back(current_token->getPreviousToken(2)->getValue());
+                    // Transition to the 'link_end' state
                     next_state = link_end;
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting word.", current_token->getLine(), current_token->getColumn());
-                    return 15;
+                    // If the current token doesn't match the expected type, throw a syntax error
+                    throwParseError("Syntax error: Unexpected `" + current_token->getValue() + "`, expecting word.", current_token->getLine(), current_token->getColumn());
+                    return 15;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
-            case link_end:{
-                if (current_token->getType() == AnyWords){
-                    temp_schem = new SchematicObject();
+            case link_end: {
+                // Check if the current token's type is AnyWords
+                if (current_token->getType() == AnyWords) {
+                    // Transition to the 'choose_declaration' state
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
+                    // Transition to the 'open_accolade' state
                     next_state = open_accolade;
-                } else if (current_token->getType() == Assignment){
+                } else if (current_token->getType() == Assignment) {
+                    // Transition to the 'link' state
                     next_state = link;
-                } else if (current_token->getValue() == "}"){
+                } else if (current_token->getValue() == "}") {
+                    // Break out of the loop if the current token is '}'
                     break;
-                
                 } else {
-                    throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting `->` or new instance.", current_token->getLine(), current_token->getColumn());
-                    return 16;
+                    // If the current token doesn't match any expected values, throw a syntax error
+                    throwParseError("Syntax error: Unexpected `" + current_token->getValue() + "`, expecting `->` or new instance.", current_token->getLine(), current_token->getColumn());
+                    return 16;  // Return an error code to the calling function
                 }
-                break;
+                break;  // Exit the 'switch' block to move to the next case
             }
 
             default:{
@@ -511,22 +589,28 @@ int Dot::parse() {
             throwParseError("Syntax error: Missing '}'", current_token->getLine(), current_token->getColumn());
             return 1;
         }
-        
-    } while ( (current_token = current_token->getNextToken()) );
-    
+
+    //loop until we reach the last token
+    } while ( (current_token = current_token->getNextToken()) ); 
+
+    //check existence of the connexion instances
     if(checkExistence(this->schematicObjectsList, tempLink)){
         return 18;
     }
 
+    //check existence of the additionnal option instances
     if(checkExistence(this->schematicObjectsList)){
         return 19;
     }
 
+    //check if each gate has a type
     if (checkLabel(this->schematicObjectsList)){
         return 20;
     }
 
+    //fill the I/O list after checking existence
     fillIoList(this->schematicObjectsList, tempLink);
+
 
     return 0;
 }
@@ -546,6 +630,7 @@ int Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList, map
                     throwParseError("This instance doesn't exist: " + y);
                     return 1; // Return error code 1
                 }
+
             }
         } else {
             // Throw an error if the key (instance) doesn't exist in schematicObjectsList
@@ -621,7 +706,6 @@ int Dot::fillIoList(map<string, SchematicObject*>& schematicObjectsList, map<str
 int Dot::checkLabel(map<string, SchematicObject*>& schematicObjectsList) {
     // Iterate over each schematic object in schematicObjectsList
     for (auto const& x : schematicObjectsList) {
-        
         // Check if the gate type is empty (not declared)
         if (x.second->getGateType() == "") {
             // Throw an error if no gate type is declared for the current instance

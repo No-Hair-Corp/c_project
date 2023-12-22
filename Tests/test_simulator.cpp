@@ -11,37 +11,42 @@ using namespace std;
 int main() {
 
     // === checkInputs ===
-    Test TC_Check_Inputs("Check Inputs");
-        // Setup
-        string dot_path1 = "Tests/database/simulator/test_and2_true.dot";
-        string json_path1 = "Tests/database/simulator/test_2inputs_A_B.json";
-        string dot_path2 = "Tests/database/simulator/test_and3_true.dot";
-        string json_path2 = "Tests/database/simulator/test_empty.json";
-        string dot_path3 = "Tests/database/simulator/test2_and2_true.dot";
-        Simulator simCheckInputs1(dot_path1, json_path1);
-        Simulator simCheckInputs2(dot_path1, json_path2);
-        Simulator simCheckInputs3(dot_path2, json_path1);
-        Simulator simCheckInputs4(dot_path3, json_path1);
+    Test TC_Check_Inputs("Check Inputs Function");
+        //Setup
+        string dot_path_checkInputs1 = "Tests/database/simulator/test_and2_true.dot";
+        string json_path_checkInputs1 = "Tests/database/simulator/test_2inputs_A_B.json";
+        string dot_path_checkInputs2 = "Tests/database/simulator/test2_and2_true.dot";
+        string json_path_checkInputs2 = "Tests/database/simulator/test_3inputs_A_B_C.json";
+
+        Simulator simCheckInputs1(dot_path_checkInputs1, json_path_checkInputs1);
+        Simulator simCheckInputs2(dot_path_checkInputs2, json_path_checkInputs1);
+        Simulator simCheckInputs3(dot_path_checkInputs1, json_path_checkInputs2);
         
-        // Test
+        //Test
         TC_Check_Inputs.check(simCheckInputs1.checkInputs()==0);
-        TC_Check_Inputs.check(simCheckInputs2.checkInputs()==1);
+        TC_Check_Inputs.check(simCheckInputs2.checkInputs()==2);
         TC_Check_Inputs.check(simCheckInputs3.checkInputs()==3);
-        TC_Check_Inputs.check(simCheckInputs4.checkInputs()==2);
+
+    // === checkAllGates ===
+    Test TC_Check_All_Gates("Check All Gates Function");
+        // Setup
+        string dot_path_checkAllGates1 = "Tests/database/simulator/test1_checkAllGates.dot";
+        string json_path_checkAllGates1 = "Tests/database/simulator/test_2inputs_A_B.json";
+        string dot_path_checkAllGates2 = "Tests/database/simulator/test2_checkAllGates.dot";
+        string json_path_checkAllGates2 = "Tests/database/simulator/test2_checkAllGates.json";
+        string dot_path_checkAllGates3 = "Tests/database/simulator/test3_checkAllGates.dot";
+        string dot_path_checkAllGates4 = "Tests/database/simulator/test_and2_true.dot";
+
+        Simulator simCheckAllGates1(dot_path_checkAllGates1, json_path_checkAllGates1);
+        Simulator simCheckAllGates2(dot_path_checkAllGates2, json_path_checkAllGates2);
+        Simulator simCheckAllGates3(dot_path_checkAllGates3, json_path_checkAllGates1);
+        Simulator simCheckAllGates4(dot_path_checkAllGates4, json_path_checkAllGates1);
+
+        //Test
+        TC_Check_All_Gates.check(simCheckAllGates1.checkAllGates()==2);
+        TC_Check_All_Gates.check(simCheckAllGates2.checkAllGates()==3);
+        TC_Check_All_Gates.check(simCheckAllGates3.checkAllGates()==1);
+        TC_Check_All_Gates.check(simCheckAllGates4.checkAllGates()==0);
 
     return 0;
 }
-
-/*
-// A ---+----\.
-    //      | AND |--- O
-// B ---+----/.
-    string dot_path = "Tests/database/dot/xtest_full_adder.dot";
-    string json_path = "Tests/database/json/xtest_full_adder.json";
-    Simulator sim_and2(dot_path, json_path);
-
-    if(!sim_and2.getErrorCode()) {
-        sim_and2.printSimulation();
-        sim_and2.saveToJson("full_adder_output.json");
-    }
-*/

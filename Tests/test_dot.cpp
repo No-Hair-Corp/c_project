@@ -557,8 +557,6 @@ int main() {
         for(auto const& x : fileFinalTestDotPE1.getSchematicObjectsList()){
             x.second->print();
         }
-
-        //Test
 */
 
     return 0;
