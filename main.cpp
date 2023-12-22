@@ -19,6 +19,11 @@ int main(int argc, char* argv[]) {
     int option;
     int option_index = 0;
 
+    //Variables des chemins d'accès aux fichiers d'inputs/outputs
+    string json_path;
+    string dot_path;
+    string output_path;
+
     // Variables pour suivre les options requises
     bool jsonSpecified = false;
     bool dotSpecified = false;
@@ -31,7 +36,7 @@ int main(int argc, char* argv[]) {
                 break;
             case 'j':
                 if (optarg) {
-                    std::cout << "JSON option with argument: " << optarg << std::endl;
+                    json_path = optarg;
                     jsonSpecified = true;
                 } else {
                     // std::cerr << "--json option requires an argument" << std::endl;
@@ -40,7 +45,7 @@ int main(int argc, char* argv[]) {
                 break;
             case 'd':
                 if (optarg) {
-                    std::cout << "Dot option with argument: " << optarg << std::endl;
+                   dot_path = optarg;
                     dotSpecified = true;
                 } else {
                     // std::cerr << "--dot option requires an argument" << std::endl;
@@ -49,7 +54,7 @@ int main(int argc, char* argv[]) {
                 break;
             case 'o':
                 if (optarg) {
-                    std::cout << "Output option with argument: " << optarg << std::endl;
+                    output_path = optarg;
                     outputSpecified = true;
                 } else {
                     // std::cerr << "--output option requires an argument" << std::endl;
@@ -79,6 +84,12 @@ int main(int argc, char* argv[]) {
     // Process remaining non-option arguments (if any)
     for (int i = optind; i < argc; ++i) {
         std::cout << "Non-option argument: " << argv[i] << std::endl;
+    }
+
+
+    Simulator sim(dot_path, json_path);
+    if(!sim.getErrorCode()) {
+        sim.saveToJson("");
     }
 
     return 0;

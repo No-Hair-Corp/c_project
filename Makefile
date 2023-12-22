@@ -11,7 +11,7 @@ GATES_OBJS = $(addprefix output/, $(patsubst %.hpp, %.o, $(notdir $(wildcard Sim
 
 # all
 all: output/main.o $(SIMULATOR_OBJS) $(GATES_OBJS) $(JSON_OBJS) $(DOT_OBJS)
-	g++ $(OPTIONS) $? -o simulator
+	g++ $(OPTIONS) $? -o run_simulator
 
 # UTILS 
 output/%.o: %.cpp
