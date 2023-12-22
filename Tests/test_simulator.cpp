@@ -50,17 +50,3 @@ int main() {
 
     return 0;
 }
-
-/*
-// A ---+----\.
-    //      | AND |--- O
-// B ---+----/.
-    string dot_path = "Tests/database/dot/xtest_full_adder.dot";
-    string json_path = "Tests/database/json/xtest_full_adder.json";
-    Simulator sim_and2(dot_path, json_path);
-
-    if(!sim_and2.getErrorCode()) {
-        sim_and2.printSimulation();
-        sim_and2.saveToJson("full_adder_output.json");
-    }
-*/
