@@ -375,7 +375,6 @@ int Dot::parse() {
 
             case open_accolade:{
                 if(current_token->getType() == AnyWords){
-                    temp_schem = new SchematicObject();
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == "}") {
                     break;
@@ -388,6 +387,7 @@ int Dot::parse() {
 
             case choose_declaration:{
                 if(current_token->getValue() == "["){
+                    temp_schem = new SchematicObject();
                     if (!(this->schematicObjectsList.count(current_token->getPreviousToken()->getValue()))){
                         temp_schem->setGateId(current_token->getPreviousToken()->getValue());
                     } else {
@@ -462,15 +462,8 @@ int Dot::parse() {
 
             case statement_end:{
                 if(current_token->getType() == AnyWords){
-                    // if (temp_schem){
-                    //     delete temp_schem;
-                    // }
-                    temp_schem = new SchematicObject();
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
-                    // if (temp_schem){
-                    //     delete temp_schem;
-                    // }
                     next_state = open_accolade;
                 } else {
                     throwParseError("Syntax error: Unexpected `"+current_token->getValue()+"`, expecting new declaration after `]`.", current_token->getLine(), current_token->getColumn());
@@ -492,15 +485,8 @@ int Dot::parse() {
 
             case link_end:{
                 if (current_token->getType() == AnyWords){
-                    // if (!temp_schem){
-                    //     delete temp_schem;
-                    // }
-                    temp_schem = new SchematicObject();
                     next_state = choose_declaration;
                 } else if (current_token->getValue() == ";") {
-                    // if (!temp_schem){
-                    //     delete temp_schem;
-                    // }
                     next_state = open_accolade;
                 } else if (current_token->getType() == Assignment){
                     next_state = link;
@@ -525,7 +511,7 @@ int Dot::parse() {
         }
         
     } while ( (current_token = current_token->getNextToken()) );
-    
+
     if(checkExistence(this->schematicObjectsList, tempLink)){
         return 18;
     }
@@ -537,7 +523,6 @@ int Dot::parse() {
     if (checkLabel(this->schematicObjectsList)){
         return 20;
     }
-
     fillIoList(this->schematicObjectsList, tempLink);
 
 
@@ -559,6 +544,7 @@ int Dot::checkExistence(map<string, SchematicObject*>& schematicObjectsList, map
                     throwParseError("This instance doesn't exist: " + y);
                     return 1; // Return error code 1
                 }
+
             }
         } else {
             // Throw an error if the key (instance) doesn't exist in schematicObjectsList
@@ -634,7 +620,6 @@ int Dot::fillIoList(map<string, SchematicObject*>& schematicObjectsList, map<str
 int Dot::checkLabel(map<string, SchematicObject*>& schematicObjectsList) {
     // Iterate over each schematic object in schematicObjectsList
     for (auto const& x : schematicObjectsList) {
-        
         // Check if the gate type is empty (not declared)
         if (x.second->getGateType() == "") {
             // Throw an error if no gate type is declared for the current instance
