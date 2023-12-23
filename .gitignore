@@ -34,3 +34,4 @@
 *.DS_Store
 .vscode
 output/
+run_simulator
