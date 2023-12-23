@@ -8,7 +8,9 @@ clock_counts(clock_counts), has_clock_duplication(has_clock_duplication) {
 }
 
 Signals::~Signals(){
-  // TODO : Free memory ?
+  for(auto const& el : this->signals) {
+    delete el.second;
+  }
 }
 
 

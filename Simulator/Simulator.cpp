@@ -54,11 +54,17 @@ current_clock_count(0), dot_file_path(dot_file_path), json_file_path(json_file_p
         return;
     }
 
-
-    // TODO: Simulate :)
     if(this->runSimulation()) {
         this->error_code = SIM_SIMULATION_ERROR;
         return;
+    }
+}
+
+Simulator::~Simulator() {
+    delete this->dot;
+    delete this->json;
+    for(auto const& el : this->gates_graph) {
+        delete el.second; // free dynamically created gates
     }
 }
 
@@ -119,7 +125,6 @@ int Simulator::checkAllGates(void) {
     for(auto const& el: SOList) { // checking all gates
         string lower_name = el.second->getGateType();
         transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower); // lowering gate type name
-        // TODO: trim spaces ?
 
         // regex to check gate type format : <type>[nb_inputs][nb_outputs]
         std::regex gate_type_regex("^([a-zA-Z]+)([1-9]?)([1-9]?)$"); 
@@ -159,7 +164,7 @@ int Simulator::checkAllGates(void) {
             }
         }
 
-        // TODO : Manage number of outputs > 1 (ex: MUX42)
+        // TODO: Manage number of outputs > 1 (ex: MUX42)
 
         gate->setGateId(el.second->getGateId()); // saving gate id to Gate
 
@@ -328,7 +333,6 @@ void Simulator::printSimulation(void) {
 void Simulator::saveToJson(const string& file_path, bool overwrite, vector<string> additional_outputs) {
     set<Stimulus*> stimuli;
     
-    // TODO : add additional output
     for(string node_name : additional_outputs) {
         if(this->gates_graph.count(node_name)) {
             Stimulus* tmp_stimulus = new Stimulus(this->gates_graph[node_name]->getGateId(),
@@ -347,4 +351,8 @@ void Simulator::saveToJson(const string& file_path, bool overwrite, vector<strin
     
 
     Json::printJson(file_path, stimuli, overwrite);
+
+    for(Stimulus* stimulus : stimuli) {
+        delete stimulus; // clean memory
+    }
 }

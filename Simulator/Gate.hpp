@@ -51,7 +51,7 @@ class Gate {
         Gate(string name, string gate_id, char gate_sign, unsigned int nb_inputs,unsigned int min_nb_inputs,
                 unsigned int default_nb_inputs, unsigned int max_nb_inputs, bool is_sequential);
 
-        virtual ~Gate() = 0; // virtual class
+        virtual ~Gate();
 
 
 

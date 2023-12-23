@@ -16,7 +16,10 @@ name(name), gate_id(gate_id), gate_sign(gate_sign), is_sequential(is_sequential)
     this->input_nodes = new map<string, Gate*>;
 }
 
-Gate::~Gate() {}
+Gate::~Gate() {
+    // TODO: free inputs_nodes's gates memory ?
+    delete this->input_nodes;
+}
 
 
 

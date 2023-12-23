@@ -8,7 +8,6 @@ name(name), value(value) {
 }
 
 Stimulus::~Stimulus(){
-  // TODO : Free memory ?
 }
 
 

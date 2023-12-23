@@ -1,6 +1,5 @@
 #include "Json.hpp"
 
-// TODO: add Debug/verbose option 
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Json::Json(string file_path):
@@ -45,7 +44,9 @@ file_path(file_path) {
 }
 
 Json::~Json(){
-    // TODO : free memory ?
+    delete this->signals;
+    delete this->json_dict;
+
 }
 
 
@@ -59,7 +60,7 @@ const string& Json::getFilePath(void) const {
     return this->file_path;
 }
 int Json::setFilePath(string& new_file_path) {
-    // TODO: check if file exists
+    // TODO: check if file exists ?
     this->file_path = new_file_path;
 
     return 0;

@@ -34,7 +34,7 @@ class Simulator {
         
         SimulatorErrorCodes error_code;
 
-        unsigned int current_clock_count; // TODO: useless ?
+        unsigned int current_clock_count;
 
         string dot_file_path, json_file_path;
         Dot* dot;
@@ -51,7 +51,7 @@ class Simulator {
     public:
         // =======  CONSTRUCTOR / DESTRUCTOR =======
         Simulator(const string& dot_file_path, const string& json_file_path);
-        // ~Simulator();
+        ~Simulator();
 
 
 
