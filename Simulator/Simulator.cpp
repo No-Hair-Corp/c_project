@@ -325,14 +325,26 @@ void Simulator::printSimulation(void) {
 }
 
 
-void Simulator::saveToJson(const string& file_path, bool overwrite, vector<string> additionnal_outputs) {
+void Simulator::saveToJson(const string& file_path, bool overwrite, vector<string> additional_outputs) {
     set<Stimulus*> stimuli;
-
+    
     // TODO : add additional output
+    for(string node_name : additional_outputs) {
+        if(this->gates_graph.count(node_name)) {
+            Stimulus* tmp_stimulus = new Stimulus(this->gates_graph[node_name]->getGateId(),
+                this->gates_graph[node_name]->to_str());
+            stimuli.insert(tmp_stimulus);
+        } else {
+            Help::debug(SIMULATOR_DEBUG, WARNING_DEBUG, "Node " + node_name + " doesn't exist in simulation, and "
+                + "won't be added to output JSON.");
+        }
+    }
+
     for(Gate* const& gate : this->output_gates) {
         Stimulus* tmp_stimulus = new Stimulus(gate->getGateId(), gate->to_str());
         stimuli.insert(tmp_stimulus);
     }
+    
 
     Json::printJson(file_path, stimuli, overwrite);
 }
