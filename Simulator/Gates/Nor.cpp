@@ -31,7 +31,6 @@ Nor::~Nor() {
 // =======  OTHER FUNCTION =======
 int Nor::calculateValue(void) {
     
-    bool hasZero = false;
     bool hasOne = false;
     bool hasX = false;
 
@@ -46,9 +45,7 @@ int Nor::calculateValue(void) {
         int previous_gate_value;
         previous_gate->getValue(this->getLastCalculationClock(), &previous_gate_value);
 
-        if(previous_gate_value == 0) {
-            hasZero = true;
-        } else if(previous_gate_value == 1) {
+        if(previous_gate_value == 1) {
             hasOne = true;
         } else if(previous_gate_value == -1) {
             hasX = true;

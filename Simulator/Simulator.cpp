@@ -19,7 +19,7 @@ map<string, function<Gate*()>> Simulator::existing_gates = {
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Simulator::Simulator(const string& dot_file_path, const string& json_file_path):
-dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(false), current_clock_count(0) {
+current_clock_count(0), dot_file_path(dot_file_path), json_file_path(json_file_path), has_sequential(false) {
 
     this->error_code = SIM_SUCCESS;
 
@@ -274,6 +274,7 @@ int Simulator::runSimulation(void) {
             if(gate->getValue(this->current_clock_count, &tmp) == 2) { // We have a loop error
                 cout << "[Simulator] Error: Found an unresolvable inifinite loop in simulation at clock count "
                     << this->current_clock_count << " when calculating output `" << gate->getGateId() << "`." << endl;
+                
                 this->error_code = SIM_LOOP_ERROR;
                 return 1;
             }

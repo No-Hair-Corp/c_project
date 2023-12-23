@@ -32,7 +32,6 @@ Nand::~Nand() {
 int Nand::calculateValue(void) {
     
     bool hasZero = false;
-    bool hasOne = false;
     bool hasX = false;
 
     // For an Nand, 1+1=0; 1+0=1; 1+x=x; 0+x=1;
@@ -48,8 +47,6 @@ int Nand::calculateValue(void) {
 
         if(previous_gate_value == 0) {
             hasZero = true;
-        } else if(previous_gate_value == 1) {
-            hasOne = true;
         } else if(previous_gate_value == -1) {
             hasX = true;
         }

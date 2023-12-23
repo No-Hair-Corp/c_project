@@ -42,8 +42,6 @@ class Gate {
         bool had_calculate_value;
         vector<unsigned int> last_calculated_values;
         static unsigned int values_history_iterator;
-        // static map<string, int> values_history;
-        // static vector<string> tmp_test;
         
 
     public:

@@ -1,6 +1,6 @@
 #include "Help.hpp"
 
-debug_level Help::verbose_level = WARNING_DEBUG;
+debug_level Help::verbose_level = INFO_DEBUG;
 map<debug_level, string> Help::debug_level_color = {
     {INFO_DEBUG, "1;37"},
     {WARNING_DEBUG, "1;33"},
@@ -37,6 +37,7 @@ debug_level Help::getVerboseLevel(void) {
 
 // =======  OTHER FUNCTIONS =======
 void Help::debug(debug_part part, debug_level level, string message) {
+    //TODO: display depending on verbose level
     cout << "[" << Help::debug_part_text[part] << "] ";
     cout << "\033[" << Help::debug_level_color[level] << "m" << Help::debug_level_text[level] << "\033[0m: ";
     cout << message << endl;

@@ -5,8 +5,6 @@
 
 bool Gate::loop_error = false;
 unsigned int Gate::values_history_iterator = 0;
-// map<string, int> Gate::values_history;
-// vector<string> Gate::tmp_test;
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Gate::Gate(string name, string gate_id, char gate_sign, unsigned int nb_inputs,unsigned int min_nb_inputs,
@@ -130,6 +128,7 @@ int Gate::getValue(int clock_count, int *value) {
     if(loop_error) return 2;
 
     if(Gate::values_history_iterator > MAX_LOOP_ITERATION) {
+        cout << Gate::values_history_iterator;
         Gate::loop_error = true;
         return 2;
     }
@@ -170,13 +169,11 @@ int Gate::getValue(int clock_count, int *value) {
             bool gate_has_changed = false;
             for(auto const& el : *this->getInputNodes()) {
                 Gate* prev_gate = el.second;
-                if(prev_gate->last_calculated_values.size()) {
-                    for(int i : prev_gate->last_calculated_values) {
-                        int prev_value = prev_gate->last_calculated_values[prev_gate->last_calculated_values.size() - 2];
-                        if(prev_value != prev_gate->last_calculated_values.back()) {
-                            *value = this->calculateValue();
-                            gate_has_changed = true;
-                        }
+                if(prev_gate->last_calculated_values.size() > 1) {
+                    int prev_value = prev_gate->last_calculated_values[prev_gate->last_calculated_values.size() - 2];
+                    if(prev_value != prev_gate->last_calculated_values.back()) {
+                        *value = this->calculateValue();
+                        gate_has_changed = true;
                     }
                 }
             }
@@ -208,19 +205,8 @@ void Gate::setHadCalculatedValue(bool new_value) {
 }
 
 
-// int Gate::getValueHistory(string gate_id) {
-//     return Gate::values_history[gate_id];
-// }
-// void Gate::setValueHistory(string gate_id, int new_value) {
-//     if(Gate::values_history.count(gate_id)) {
-//         Gate::values_history[gate_id] = new_value;
-//     } else {
-//         Gate::values_history.insert({gate_id,  new_value});
-//     }
-// }
 void Gate::resetValuesHistory(void) {
     Gate::values_history_iterator = 0;
-    // Gate::values_history.clear();
 }
 
 void Gate::resetLastValues(void) {

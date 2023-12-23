@@ -1,5 +1,5 @@
 # VARIABLES
-OPTIONS = -g -std=c++0x #-Wall
+OPTIONS = -g -std=c++0x -Wall
 
 SRC_DIRS = Dot Simulator Tests Json
 SRCS = $(shell find $(SRC_DIRS) -name "*.cpp")
@@ -62,4 +62,4 @@ test_all: output/test_all.o output/Test.o $(SIMULATOR_OBJS) $(GATES_OBJS) $(JSON
 	g++ $(OPTIONS) $? -o output/test_all
 
 clean:
-	rm -rf output/*
+	rm -rf output/* run_simulator

@@ -32,7 +32,6 @@ And::~And() {
 int And::calculateValue(void) {
     
     bool hasZero = false;
-    bool hasOne = false;
     bool hasX = false;
 
     // For an And, 1+1=1; 1+0=0; 1+x=x; 0+x=0;
@@ -48,8 +47,6 @@ int And::calculateValue(void) {
 
         if(previous_gate_value == 0) {
             hasZero = true;
-        } else if(previous_gate_value == 1) {
-            hasOne = true;
         } else if(previous_gate_value == -1) {
             hasX = true;
         }
