@@ -10,6 +10,7 @@ name(name), nb_asserts(0), nb_checks(0), nb_failed_checks(0) {
 }
 Test::~Test() {
     if(this->nb_failed_checks == 0) {
+        cout<<endl;
         cout << "Test case [" << this->name << "] PASSED with " <<
             this->nb_checks << " checks and " << this->nb_asserts << " asserts."
             << endl;
