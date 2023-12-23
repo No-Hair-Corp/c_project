@@ -67,7 +67,7 @@ class Json {
         int simplifyWaves(void);
 
         /** @brief Sauvegarde le fichier json à partir d'une map de stimuli. **/
-        static int printJson(const string& file_path, set<Stimulus*> stimuli);
+        static int printJson(const string& file_path, set<Stimulus*> stimuli, bool overwrite);
 
 };
 

@@ -102,7 +102,7 @@ int main(int argc, char* argv[]) {
     Simulator sim(dot_path, json_path);
     if(!sim.getErrorCode()) {
         cout << "Successful simulation!"<< endl;
-        sim.saveToJson(output_path);
+        sim.saveToJson(output_path); // sim.saveToJson(output_path, true); // to overwrite output
         
     }
 

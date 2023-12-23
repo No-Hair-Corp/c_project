@@ -72,7 +72,7 @@ class Simulator {
         void printRecursive(Gate* gate);
         void printSimulation(void);
 
-        void saveToJson(const string& file_path);
+        void saveToJson(const string& file_path, bool overwrite = false, vector<string> additionnal_outputs = {});
 
 
 };
