@@ -44,6 +44,7 @@ class Gate {
         bool had_calculate_value;
         vector<unsigned int> last_calculated_values;
         static unsigned int values_history_iterator;
+        static unsigned int max_iterations;
         
 
     public:
@@ -98,6 +99,9 @@ class Gate {
         static void resetValuesHistory(void);
 
         void resetLastValues(void);
+
+        static void setMaxIteration(unsigned int new_value);
+        static unsigned int getValuesHistoryIterator(void);
 
 
 

@@ -284,7 +284,9 @@ int Simulator::runSimulation(void) {
             int tmp; // not used
             if(gate->getValue(this->current_clock_count, &tmp) == 2) { // We have a loop error
                 Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Found an unresolvable inifinite loop in simulation at clock count "
-                    + to_string(this->current_clock_count) + " when calculating output `" + gate->getGateId() + "`.");
+                    + to_string(this->current_clock_count) + " when calculating output `" + gate->getGateId() + "`. "
+                    + "Try to increase th number of iterations with -i option (current max iteration: "
+                    + to_string(Gate::getValuesHistoryIterator()) + ").");
                 
                 this->error_code = SIM_LOOP_ERROR;
                 return 1;

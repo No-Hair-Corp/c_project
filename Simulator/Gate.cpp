@@ -1,10 +1,8 @@
 #include "Gate.hpp"
 
-#define MAX_LOOP_ITERATION 20
-
-
 bool Gate::loop_error = false;
 unsigned int Gate::values_history_iterator = 0;
+unsigned int Gate::max_iterations = 20;
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Gate::Gate(string name, string gate_id, char gate_sign, unsigned int nb_inputs,unsigned int min_nb_inputs,
@@ -129,7 +127,7 @@ int Gate::setValue(int clock_count, int value) {
 int Gate::getValue(int clock_count, int *value) {
     if(loop_error) return 2;
 
-    if(Gate::values_history_iterator > MAX_LOOP_ITERATION) {
+    if(Gate::values_history_iterator >= Gate::max_iterations) {
         Gate::loop_error = true;
         return 2;
     }
@@ -214,6 +212,12 @@ void Gate::resetLastValues(void) {
     this->last_calculated_values.clear();
 }
 
+void Gate::setMaxIteration(unsigned int new_value) {
+    Gate::max_iterations = new_value;
+}
+unsigned int Gate::getValuesHistoryIterator(void) {
+    return Gate::values_history_iterator;
+}
 
 
 
