@@ -34,9 +34,6 @@ int main(int argc, char* argv[]) {
     bool dotSpecified = false;
     bool outputSpecified = false;
     bool forceSpecified = false;
-    bool addSpecified = false;
-    bool verboseSpecified = false;
-    bool iterationSpecified = false;
 
     while ((option = getopt_long(argc, argv, "hj:d:o:fa:v:i:", long_options, &option_index)) != -1) {
         switch (option) {
@@ -76,7 +73,6 @@ int main(int argc, char* argv[]) {
                 break; 
             case 'a'://ajouter tous les arguments dans une liste
                 if (optarg) {
-                    addSpecified = true;
                     additionnal_outputs.push_back(optarg);
                     while (optind < argc && argv[optind][0] != '-') {
                         additionnal_outputs.push_back(argv[optind++]);
@@ -88,7 +84,6 @@ int main(int argc, char* argv[]) {
                 break;
             case 'v':
                 if (optarg) {
-                    verboseSpecified = true;
                     try{
                         verbose_level = (debug_level)stoi(optarg);
                     } catch (const std::invalid_argument& e) {
@@ -110,8 +105,7 @@ int main(int argc, char* argv[]) {
                 }
                 break;
             case 'i':
-                if (optarg) {
-                    iterationSpecified = true;  
+                if (optarg) { 
 
                     try {
                         // Convertir la chaîne de caractères en un entier
