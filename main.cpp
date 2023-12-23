@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
     while ((option = getopt_long(argc, argv, "hj:d:o:fa:v:i:", long_options, &option_index)) != -1) {
         switch (option) {
             case 'h':
-                Help::debug(GENERAL_DEBUG, INFO_DEBUG,"usage: ./main [options] args\n--json      specify json file path\n--dot       specify dot file path\n--output    output file path\n--force     overwrites output file\n--add       add output signal to output file\n--verbose   int between 0 and 5 to set debug level\n--iteration set iteration numberin loop");
+                Help::debug(GENERAL_DEBUG, INFO_DEBUG,"The aim of this project is to create a logic gate simulator that takes as input a DOT file describing the logic circuit and a WaveJSON file describing the input stimuli. The final output will be a WaveJSON file of the simulation results. The WaveJSON is a simplified JSON of WaveDrom.\nUsage: ./main [options] args\n--json      specify json file path\n--dot       specify dot file path\n--output    output file path\n--force     overwrites output file\n--add       add output signal to output file\n--verbose   int between 0 and 5 to set debug level\n--iteration set iteration number in loop");
                 exit(0);
                 break;
             case 'j':
