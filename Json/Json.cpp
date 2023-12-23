@@ -285,12 +285,15 @@ int Json::simplifyWaves(void) {
 
 
 
-int Json::printJson(const string& file_path, set<Stimulus*> stimuli) {
+int Json::printJson(const string& file_path, set<Stimulus*> stimuli, bool overwrite) {
     ifstream checked_file(file_path);
     if(checked_file.good()) {
-        // TODO: take force option
-        cout << "Error: File " << file_path << " already exists." <<  endl;
-        return 1;
+        if(overwrite) {
+            cout << "Info: File " << file_path << " exists, but will be overwritten." <<  endl;
+        } else {
+            cout << "Error: File " << file_path << " already exists. Use -f option to overwrite." <<  endl;
+            return 1;
+        }
     }
     checked_file.close();
 

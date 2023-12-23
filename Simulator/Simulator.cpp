@@ -318,7 +318,7 @@ void Simulator::printSimulation(void) {
 }
 
 
-void Simulator::saveToJson(const string& file_path) {
+void Simulator::saveToJson(const string& file_path, bool overwrite, vector<string> additionnal_outputs) {
     set<Stimulus*> stimuli;
 
     // TODO : add additional output
@@ -327,5 +327,5 @@ void Simulator::saveToJson(const string& file_path) {
         stimuli.insert(tmp_stimulus);
     }
 
-    Json::printJson(file_path, stimuli);
+    Json::printJson(file_path, stimuli, overwrite);
 }
