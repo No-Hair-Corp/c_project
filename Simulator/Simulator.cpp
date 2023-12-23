@@ -75,6 +75,13 @@ SimulatorErrorCodes Simulator::getErrorCode(void) const {
     return this->error_code;
 }
 
+map<string, Gate*> Simulator::getGates(void) {
+    return this->gates_graph;
+}
+unordered_set<Gate*> Simulator::getOutputGates(void) {
+    return this->output_gates;
+}
+
 
 
 // =======  OTHER FUNCTIONS =======

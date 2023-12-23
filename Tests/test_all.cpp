@@ -245,13 +245,12 @@ int main() {
 
         //Test
 
-        map<string, string> expected_values1; //ouput names (gateid), output values
-        for(gates : outputs){
-        if(gate.to_str() == expected_values1[gate.getGateId()]){
-            cout << gate.getGateId() << "test passed" << endl;
-        }
-        else{
-            cout << gate.getGateId() << "test failed" << endl;
+        map<string, string> and2_expected_values = {
+            {"O", "001110000"}
+        }; //ouput names (gateid), output values
+
+        for(Gate* const& gate : and2.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == and2_expected_values[gate->getGateId()]);
         }
 
     //structure_ok

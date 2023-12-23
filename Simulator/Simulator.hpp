@@ -57,6 +57,8 @@ class Simulator {
 
         // =======  GETTERS / SETTERS =======
         SimulatorErrorCodes getErrorCode(void) const;
+        map<string, Gate*> getGates(void);
+        unordered_set<Gate*> getOutputGates(void);
 
         // =======  OTHER FUNCTIONS =======
         int checkInputs(void);
