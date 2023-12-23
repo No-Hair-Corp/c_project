@@ -2,12 +2,14 @@
 
 debug_level Help::verbose_level = INFO_DEBUG;
 map<debug_level, string> Help::debug_level_color = {
+    {DEBUG_DEBUG, "1;35"},
     {INFO_DEBUG, "1;37"},
     {WARNING_DEBUG, "1;33"},
     {ERROR_DEBUG, "1;31"},
     {FATAL_ERROR_DEBUG, "1;37;41"},
 };
 map<debug_level, string> Help::debug_level_text = {
+    {DEBUG_DEBUG, "Debug"},
     {INFO_DEBUG, "Info"},
     {WARNING_DEBUG, "Warning"},
     {ERROR_DEBUG, "Error"},
@@ -37,8 +39,9 @@ debug_level Help::getVerboseLevel(void) {
 
 // =======  OTHER FUNCTIONS =======
 void Help::debug(debug_part part, debug_level level, string message) {
-    //TODO: display depending on verbose level
-    cout << "[" << Help::debug_part_text[part] << "] ";
-    cout << "\033[" << Help::debug_level_color[level] << "m" << Help::debug_level_text[level] << "\033[0m: ";
-    cout << message << endl;
+    if(level <= verbose_level) {
+        cout << "[" << Help::debug_part_text[part] << "] ";
+        cout << "\033[" << Help::debug_level_color[level] << "m" << Help::debug_level_text[level] << "\033[0m: ";
+        cout << message << endl;
+    }
 }

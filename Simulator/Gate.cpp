@@ -47,12 +47,12 @@ unsigned int Gate::getNbInputs(void) const {
 }
 int Gate::setNbInputs(unsigned int new_nb_inputs) {
     if(new_nb_inputs > this->max_nb_inputs) {
-        cout << this->name << " can't have more than " << this->max_nb_inputs << " inputs." << endl;
+        Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, this->name + " can't have more than " + to_string(this->max_nb_inputs) + " inputs.");
         return 1;
     }
 
     if(new_nb_inputs < this->min_nb_inputs) {
-        cout << this->name << " can't have less than " << this->min_nb_inputs << " inputs." << endl;
+        Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, this->name + " can't have less than " + to_string(this->min_nb_inputs) + " inputs.");
         return 2;
     }
 
@@ -88,7 +88,7 @@ int Gate::getInputNode(string input_name, Gate** node) const {
     if(this->input_nodes->count(input_name) > 0) {
         *node = this->input_nodes->at(input_name);
     } else {
-        cout << "[Simulator] Error: Trying to access a non existing input." << endl;
+        Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Trying to access a non existing input.");
         return 1;
     }
     return 0;
@@ -119,7 +119,7 @@ int Gate::setValue(int clock_count, int value) {
             this->values[clock_count] = value;
         }
     } else {
-        cout << "[Simulator] Error: can't set a value in the future." << endl;
+        Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Can't set a value in the future.");
         return 1;
     }
     return 0;
@@ -128,7 +128,6 @@ int Gate::getValue(int clock_count, int *value) {
     if(loop_error) return 2;
 
     if(Gate::values_history_iterator > MAX_LOOP_ITERATION) {
-        cout << Gate::values_history_iterator;
         Gate::loop_error = true;
         return 2;
     }
@@ -144,7 +143,7 @@ int Gate::getValue(int clock_count, int *value) {
 
             return 0; // no further thing to check
         } else if (clock_count > this->values.size() + 1) {
-            cout << "[Simulator] Error: Trying to get a value that is in the future." << endl;
+            Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Trying to get a value that is in the future.");
             return 1;
         } else { // we never calculated the value, we calculate it
             int calculated_value = this->calculateValue(); // we calculate the value, save it, and return it

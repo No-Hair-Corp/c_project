@@ -1,6 +1,8 @@
 #ifndef _GATE_H_
 #define _GATE_H_
 
+#include "../Help/Help.hpp"
+
 #include <iostream>
 #include <string>
 #include <list>

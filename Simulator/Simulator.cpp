@@ -82,7 +82,7 @@ int Simulator::checkInputs(void) {
     }
 
     if(input_names.size() < 1) {
-        cout << "[Simulator] Error: Waveform doesn't have any input." << endl; 
+        Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Waveform doesn't have any input.");
         return 1;
     }
 
@@ -93,7 +93,8 @@ int Simulator::checkInputs(void) {
 
         if(lower_name == "input") {
             if(!input_names.count(el.second->getGateId())) {
-                cout << "[Simulator] Error: Input " << el.second->getGateId() << " doesn't exist in waveform file." << endl; 
+                Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Input " + el.second->getGateId() +
+                    " doesn't exist in waveform file.");
                 return 2;
             }
             nb_dot_inputs++;
@@ -102,9 +103,8 @@ int Simulator::checkInputs(void) {
 
 
     if(nb_dot_inputs != input_names.size()) {
-        cout << "[Simulator] Error: The Dot and the Wavedrom don't have the same number of inputs. Found " << nb_dot_inputs 
-            << " in Dot, but " << input_names.size()  << " in Json." << endl; 
-
+        Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "The Dot and the Wavedrom don't have the same number of inputs. Found " + 
+            to_string(nb_dot_inputs) + " in Dot, but " + to_string(input_names.size()) + " in Json."); 
         return 3;
     }
 
@@ -128,19 +128,23 @@ int Simulator::checkAllGates(void) {
 
         // .size must be 4 -> group 0 general, 1: gate name, 2: nb inputs, 3: nb outputs
         if(gate_type_match.size() != 4) {
-            cout << "[Simulator] Error: Gate type `" << el.second->getGateType() << "` is not properly formed. Authorized form : "
-                << "<type>[nb_inputs][nb_outputs]." << endl; 
+            Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Gate type `" + el.second->getGateType() +
+                "` is not properly formed. Authorized form : <type>[nb_inputs][nb_outputs].");
             return 1;
         }
 
         Gate* gate;
         // check if gate exists
         if(!Simulator::existing_gates.count(gate_type_match[1])) {
-            cout << "[Simulator] Error: Unknow gate type `" << gate_type_match[1] << "`. Available gates: ["; 
+            string allowed_gates = "";
             for(auto const& el : Simulator::existing_gates) {
-                cout << " " << el.first;
+                allowed_gates.push_back(' ');
+                allowed_gates += el.first;
             }
-            cout << " ]." << endl;
+
+            Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Unknow gate type `" + gate_type_match[1].str() +
+                "`. Available gates: [" + allowed_gates + "].");
+
             return 2;
         } else {
             gate = Simulator::existing_gates[gate_type_match[1]]();
@@ -157,10 +161,12 @@ int Simulator::checkAllGates(void) {
 
         // TODO : Manage number of outputs > 1 (ex: MUX42)
 
+        gate->setGateId(el.second->getGateId()); // saving gate id to Gate
+
 
         // Check if all inputs are filled by specified inputs 
         if(this->checkInputsNames(gate, el.second->getInputs())) {
-            cout << " (Gate id: `" << el.second->getGateId() << "`)" << endl;
+            // cout << " (Gate id: `" << el.second->getGateId() << "`)" << endl;
             return 4;
         }
 
@@ -169,7 +175,6 @@ int Simulator::checkAllGates(void) {
             this->has_sequential = true;
         }
 
-        gate->setGateId(el.second->getGateId()); // saving gate id to Gate
         // add gate to map for the link edition (simulator next step)
         this->gates_graph.insert({el.second->getGateId(), gate});
 
@@ -185,7 +190,7 @@ int Simulator::checkAllGates(void) {
     } 
 
     if(!hasOutput) {
-        cout << "[Simulator] Error: Dot file doesn't specify any output." << endl; 
+        Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Dot file doesn't specify any output.");
     }
 
     return 0;
@@ -195,8 +200,8 @@ int Simulator::checkAllGates(void) {
 int Simulator::checkInputsNames(Gate *gate, const map<string, string> &inputs) {
     // used for the sequential elements mostly, ex mux, because we have an importance
     // with the order like i0, i1 and the sel. Might be used with typical gates
-    // wildcards: i@ -> AND2: i0, i1; AND3: i0, i1, i2; ...;
-    //          sel% -> MUX2: sel0; MUX3: sel0 sel1; MUX4: sel0 sel1; ...;
+    // wildcards:   i@ -> AND2: i0, i1; AND3: i0, i1, i2; ...;
+    //            sel% -> MUX2: sel0; MUX3: sel0 sel1; MUX4: sel0 sel1; ...;
 
     unsigned int total_nb_inputs = 0;
 
@@ -209,8 +214,8 @@ int Simulator::checkInputsNames(Gate *gate, const map<string, string> &inputs) {
                 replace(input_name.begin(), input_name.end(), '@', (char)('0'+i));
 
                 if(!inputs.count(input_name)) { // wildcarded input isn't specified
-                    cout << "[Simulator] Error: Input `" << input_name << "` is missing for gate of type " << gate->getName() << gate->getNbInputs()
-                        << ".";
+                    Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Input `" + input_name + "` is missing for gate " +
+                        gate->getGateId() + " (" + gate->getName() + to_string(gate->getNbInputs()) + ").");
                     return 2;
                 }
                 total_nb_inputs++;
@@ -224,15 +229,15 @@ int Simulator::checkInputsNames(Gate *gate, const map<string, string> &inputs) {
                 replace(input_name.begin(), input_name.end(), '%', (char)('0'+i));
 
                 if(!inputs.count(input_name)) { // wildcarded input isn't specified
-                    cout << "[Simulator] Error: Input `" << input_name << "` is missing for gate of type " << gate->getName() << gate->getNbInputs()
-                        << ".";
+                    Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Input `" + input_name + "` is missing for gate " +
+                        gate->getGateId() + " (" + gate->getName() + to_string(gate->getNbInputs()) + ").");
                     return 2;
                 }
                 total_nb_inputs++;
             }
-        } else if(!inputs.count(gate_el)) { // not wilcarded input isn't specified
-            cout << "[Simulator] Error: Input `" << gate_el << "` is missing for gate of type " << gate->getName() << gate->getNbInputs()
-                << ".";
+        } else if(!inputs.count(gate_el)) { // not wildcarded input isn't specified
+            Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Input `" + gate_el + "` is missing for gate " +
+                gate->getGateId() + " (" + gate->getName() + to_string(gate->getNbInputs()) + ").");
             return 2;
         } else {
             total_nb_inputs++;
@@ -240,8 +245,9 @@ int Simulator::checkInputsNames(Gate *gate, const map<string, string> &inputs) {
     }
 
     if(inputs.size() < total_nb_inputs) { // check that the total number of output is correct (@ + additional inputs)
-        cout << "[Simulator] Error: Gate " << gate->getName() << gate->getNbInputs() << " should have " << gate->getNbInputs() << " inputs, "
-                << inputs.size() << " given.";
+        Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Gate " + gate->getGateId() + " (" + gate->getName()
+            + to_string(gate->getNbInputs()) + ") should have " + to_string(gate->getNbInputs()) + " inputs, "
+            + to_string(inputs.size()) + " given.");
         return 1;
     }
 
@@ -272,8 +278,8 @@ int Simulator::runSimulation(void) {
         for(Gate* const& gate : this->output_gates) {
             int tmp; // not used
             if(gate->getValue(this->current_clock_count, &tmp) == 2) { // We have a loop error
-                cout << "[Simulator] Error: Found an unresolvable inifinite loop in simulation at clock count "
-                    << this->current_clock_count << " when calculating output `" << gate->getGateId() << "`." << endl;
+                Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Found an unresolvable inifinite loop in simulation at clock count "
+                    + to_string(this->current_clock_count) + " when calculating output `" + gate->getGateId() + "`.");
                 
                 this->error_code = SIM_LOOP_ERROR;
                 return 1;
