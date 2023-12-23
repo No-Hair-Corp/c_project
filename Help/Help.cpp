@@ -1,8 +1,9 @@
 #include "Help.hpp"
 
-debug_level Help::verbose_level = INFO_DEBUG;
+debug_level Help::verbose_level = SUCCESS_DEBUG;
 map<debug_level, string> Help::debug_level_color = {
     {DEBUG_DEBUG, "1;35"},
+    {SUCCESS_DEBUG, "1;32"},
     {INFO_DEBUG, "1;37"},
     {WARNING_DEBUG, "1;33"},
     {ERROR_DEBUG, "1;31"},
@@ -10,6 +11,7 @@ map<debug_level, string> Help::debug_level_color = {
 };
 map<debug_level, string> Help::debug_level_text = {
     {DEBUG_DEBUG, "Debug"},
+    {SUCCESS_DEBUG, "Success"},
     {INFO_DEBUG, "Info"},
     {WARNING_DEBUG, "Warning"},
     {ERROR_DEBUG, "Error"},
