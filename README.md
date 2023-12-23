@@ -1,4 +1,4 @@
-# Projet C++ : Simulateur de porte logique
+# Projet C++ : Logic gates simulator
 
 The aim of this project is to create a logic gate simulator that takes as input a DOT file describing the logic circuit and a JSON file describing our input stimuli. The final output will be a JSON file of the simulation results.
 
