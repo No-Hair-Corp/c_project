@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     string output_path;
     debug_level verbose_level = SUCCESS_DEBUG;
     vector <string> additionnal_outputs = {};
-    int iteration_value;
+    int iteration_value = 20;
 
     // Variables pour suivre les options requises
     bool jsonSpecified = false;
