@@ -1,6 +1,6 @@
 # Projet C++ : Simulateur de porte logique
 
-The aim of this project is to create a logic gate simulator that takes as input a DOT file describing the logic circuit and a JSON file describing his inputs stimuli. The final output will be a JSON file of the simulation results.
+The aim of this project is to create a logic gate simulator that takes as input a DOT file describing the logic circuit and a JSON file describing our input stimuli. The final output will be a JSON file of the simulation results.
 
 ## Building
 
@@ -11,6 +11,10 @@ C++11
 
 ```bash
 make
+```
+If you want to remove generated files, use :
+```bash
+make clean
 ```
 
 ## Usage
