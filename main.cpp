@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     string json_path;
     string dot_path;
     string output_path;
-    debug_level verbose_level = INFO_DEBUG;
+    debug_level verbose_level = SUCCESS_DEBUG;
     vector <string> additionnal_outputs = {};
 
     // Variables pour suivre les options requises
@@ -86,9 +86,9 @@ int main(int argc, char* argv[]) {
             case 'v':
                 if (optarg) {
                     verboseSpecified = true;
-                    if(optarg == "0" || optarg == "1" || optarg == "2" || optarg == "3" || optarg == "4"){
-                        verbose_level = static_cast<debug_level> (*optarg);
-                    } else {
+                    verbose_level = (debug_level)stoi(optarg);
+
+                    if(verbose_level > DEBUG_DEBUG){
                         Help::debug(GENERAL_DEBUG, ERROR_DEBUG, "--verbose requires integer argument between 0 and 4");
                         return 1;
                     }
