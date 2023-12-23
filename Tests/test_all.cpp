@@ -237,7 +237,7 @@ int main() {
         Simulator Mux_explicit(dot_path4,json_path3);
         Simulator nand2(dot_path5,json_path2);
         Simulator nor2(dot_path6,json_path2);
-        Simulator not(dot_path7,json_path1);
+        Simulator not_gate(dot_path7,json_path1);
         Simulator or2(dot_path8,json_path2);
         Simulator xnor2(dot_path9,json_path2);
         Simulator xor2(dot_path10,json_path2);
@@ -262,7 +262,7 @@ int main() {
         string dot_path14 = "Tests/database/Examen/structure_ok/fan_out.dot"; 
         string dot_path15 = "Tests/database/Examen/structure_ok/independent_paths.dot";
         string dot_path16 = "Tests/database/Examen/structure_ok/not_and.dot";
-        string dot_path17 = "Tests/database/Examen/structure_ok/register.dot");
+        string dot_path17 = "Tests/database/Examen/structure_ok/register.dot";
         string dot_path18 = "Tests/database/Examen/structure_ok/shift_register.dot"; 
         string dot_path19 = "Tests/database/Examen/structure_ok/two_outputs.dot";
 

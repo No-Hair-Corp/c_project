@@ -44,9 +44,8 @@ file_path(file_path) {
 }
 
 Json::~Json(){
-    delete this->signals;
-    delete this->json_dict;
-
+    // delete this->signals;
+    // delete this->json_dict;
 }
 
 

@@ -10,14 +10,12 @@ name(name), nb_asserts(0), nb_checks(0), nb_failed_checks(0) {
 }
 Test::~Test() {
     if(this->nb_failed_checks == 0) {
-        cout<<endl;
-        cout << "Test case [" << this->name << "] PASSED with " <<
-            this->nb_checks << " checks and " << this->nb_asserts << " asserts."
-            << endl;
+        Help::debug(TEST_DEBUG, SUCCESS_DEBUG, "Test case [" + this->name + "] PASSED with "
+            + to_string(this->nb_checks) + " checks and " + to_string(this->nb_asserts) + " asserts.");
     } else {
-        cout << "Test case [" << this->name << "] has " << this->nb_failed_checks
-            << "/" << this->nb_checks << " FAILED checks and " << this->nb_asserts
-            << " asserts passed." << endl;
+        Help::debug(TEST_DEBUG, ERROR_DEBUG, "Test case [" + this->name + "] has " + to_string(this->nb_failed_checks)
+            + "/" + to_string(this->nb_checks) + " FAILED checks and " + to_string(this->nb_asserts)
+            + " asserts passed.");
     }
 }
 
@@ -35,8 +33,8 @@ int Test::assert(bool test_result) {
     this->nb_asserts++;
 
     if(!test_result) {
-        cout << "Test case [" << this->name << "] failed at Assert " <<
-            this->nb_asserts << ". Exiting program..." << endl;
+        Help::debug(TEST_DEBUG, ERROR_DEBUG,  "Test case [" + this->name + "] failed at Assert "
+            + to_string(this->nb_asserts) + ". Exiting program...");
         exit(1);
     }
     return 0;
@@ -47,8 +45,8 @@ int Test::check(bool test_result) {
 
     if(!test_result) {
         this->nb_failed_checks++;
-        cout << "Test case [" << this->name << "] failed at Check " <<
-            this->nb_checks << "." << endl;
+        Help::debug(TEST_DEBUG, WARNING_DEBUG,  "Test case [" + this->name + "] failed at Check "
+            + to_string(this->nb_checks) + ".");
         return 1;
     }
     return 0;

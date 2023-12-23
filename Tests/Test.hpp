@@ -1,6 +1,7 @@
 #ifndef _TEST_H_
 #define _TEST_H_
 
+#include "../Help/Help.hpp"
 #include <string>
 #include <map>
 #include <vector>

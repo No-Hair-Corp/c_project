@@ -18,6 +18,7 @@ map<debug_level, string> Help::debug_level_text = {
     {FATAL_ERROR_DEBUG, "Fatal Error"},
 };
 map<debug_part, string> Help::debug_part_text = {
+    {TEST_DEBUG, "Test"},
     {GENERAL_DEBUG, "General"},
     {JSON_DEBUG, "JSON"},
     {DOT_DEBUG, "Dot"},
