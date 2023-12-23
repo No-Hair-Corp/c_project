@@ -15,6 +15,7 @@ name(name), gate_id(gate_id), gate_sign(gate_sign), is_sequential(is_sequential)
     min_nb_inputs(min_nb_inputs), default_nb_inputs(default_nb_inputs), max_nb_inputs(max_nb_inputs),
     last_calculation_clock(-1) {
 
+    this->input_nodes = new map<string, Gate*>;
 }
 
 Gate::~Gate() {}
@@ -83,10 +84,6 @@ void Gate::setInputNodes(map<string, Gate*>* new_input_nodes) {
     this->input_nodes = new_input_nodes;
 } 
 void Gate::addInputNode(const string& input_name, Gate* linked_gate) {
-    if(this->input_nodes == NULL) { // create instance if doens't exist yet
-        this->input_nodes = new map<string, Gate*>;
-    }
-
     this->input_nodes->insert({input_name, linked_gate});
 }
 int Gate::getInputNode(string input_name, Gate** node) const {
