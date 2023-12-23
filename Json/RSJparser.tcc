@@ -61,6 +61,7 @@ std::string to_string (RSJresourceType rt) {
         case RSJ_OBJECT: return("RSJ_OBJECT");
         case RSJ_ARRAY: return("RSJ_ARRAY");
         case RSJ_LEAF: return("RSJ_LEAF");
+        default: return("RSJ_DEFAULT");
     }
 }
 
