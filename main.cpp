@@ -97,6 +97,9 @@ int main(int argc, char* argv[]) {
                     return 1;  // Indiquer une erreur
                 }
                 break;
+            case '?':
+                Help::debug(GENERAL_DEBUG, ERROR_DEBUG, "Invalid option");
+                return 1;
             default:
                 break;
         }
