@@ -3,6 +3,7 @@
 
 #include "Token.hpp"
 #include "SchematicObject.hpp"
+#include "../Help/Help.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>

@@ -208,12 +208,12 @@ int Dot::registerString(ifstream& input_file, string& line, unsigned int& column
 
 // Function to throw a parse error without position information
 void Dot::throwParseError(const string& error_message) {
-    cout << "Error in dot file: " << error_message << endl;
+    Help::debug(DOT_DEBUG, ERROR_DEBUG, error_message);
 }
 
 // Function to throw a parse error with position information
 void Dot::throwParseError(const string& error_message, unsigned int line, unsigned int column) {
-    cout << "Error in dot file at line " << line << ", column " << column << ": " << error_message << endl;
+    Help::debug(DOT_DEBUG, ERROR_DEBUG, "In dot file at line " + to_string(line) + ", column " + to_string(column) + ": " + error_message);
 }
 
 // Function to register keywords in the input file
