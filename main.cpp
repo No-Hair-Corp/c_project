@@ -9,8 +9,6 @@ static struct option long_options[] = {
     {"json", required_argument, nullptr, 'j'},
     {"dot", required_argument, nullptr, 'd'},
     {"output", required_argument, nullptr, 'o'},
-    {"force", no_argument, nullptr, 'o'},
-    {"add", required_argument, nullptr, 'a'},
     {nullptr, 0, nullptr, 0} // Indicates the end of options
 };
 
@@ -28,7 +26,6 @@ int main(int argc, char* argv[]) {
     bool jsonSpecified = false;
     bool dotSpecified = false;
     bool outputSpecified = false;
-    bool forceSpecified = false;
 
     while ((option = getopt_long(argc, argv, "hj:d:o:", long_options, &option_index)) != -1) {
         switch (option) {
@@ -60,18 +57,6 @@ int main(int argc, char* argv[]) {
                     outputSpecified = true;
                 } else {
                     std::cerr << "--output option requires an argument" << std::endl;
-                    return 1;  // Indiquer une erreur
-                }
-                break;
-            case 'f':
-                if (optarg) {
-                    outputSpecified = true;
-                break;
-            case 'a':
-                if (optarg) {
-                    addSpecified = true;
-                } else {
-                    std::cerr << "--add option requires an argument" << std::endl;
                     return 1;  // Indiquer une erreur
                 }
                 break;
@@ -114,21 +99,12 @@ int main(int argc, char* argv[]) {
     cout << "dot file: " << dot_path << endl;
     cout << "output file: " << output_path << endl;
 
-    if(forceSpecified && !addSpecified){
+    Simulator sim(dot_path, json_path);
+    if(!sim.getErrorCode()) {
+        cout << "Successful simulation!"<< endl;
+        sim.saveToJson(output_path);
         
-        
-
-    } else if (!forceSpecified && addSpecified) {
-
-    } else if (forceSpecified && addSpecified) {
-    
-    } else {
-        Simulator sim(dot_path, json_path);
-        if(!sim.getErrorCode()) {
-            cout << "Successful simulation!"<< endl;
-            sim.saveToJson(output_path);
     }
-    
 
     return 0;
 }
