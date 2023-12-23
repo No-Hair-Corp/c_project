@@ -244,14 +244,63 @@ int main() {
         Simulator xor2(dot_path10,json_path2);
 
         //Test
-
         map<string, string> and2_expected_values = {
             {"O", "001110000"}
         }; //ouput names (gateid), output values
+        map<string, string> direct_connection_expected_values = {
+            {"O", "001110011"}
+        }; 
+        map<string, string> Mux_explicit_expected_values = {
+            {"O", "001110000"}
+        }; 
+        map<string, string> nand2_expected_values = {
+            {"O", "110001111"}
+        }; 
+        map<string, string> nor2_expected_values = {
+            {"O", "000001100"}
+        };
+        map<string, string> not_gate_expected_values = {
+            {"O", "110001100"}
+        };
+        map<string, string> or2_expected_values = {
+            {"O", "111110011"}
+        };
+        map<string, string> xnor2_expected_values = {
+            {"O", "001111100"}
+        };
+        map<string, string> xor2_expected_values = {
+            {"O", "110000011"}
+        };
 
         for(Gate* const& gate : and2.getOutputGates()){
             TC2_Portes_Elementaires.check(gate->to_str() == and2_expected_values[gate->getGateId()]);
         }
+        for(Gate* const& gate : direct_connection.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == direct_connection_expected_values[gate->getGateId()]);
+        }
+        for(Gate* const& gate : Mux_explicit.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == Mux_explicit_expected_values[gate->getGateId()]);
+        }
+        for(Gate* const& gate : nand2.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == nand2_expected_values[gate->getGateId()]);
+        }
+        for(Gate* const& gate : nor2.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == nor2_expected_values[gate->getGateId()]);
+        }
+        for(Gate* const& gate : not_gate.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == not_gate_expected_values[gate->getGateId()]);
+        }
+        for(Gate* const& gate : or2.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == or2_expected_values[gate->getGateId()]);
+        }
+        for(Gate* const& gate : xnor2.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == xnor2_expected_values[gate->getGateId()]);
+        }
+        for(Gate* const& gate : xor2.getOutputGates()){
+            TC2_Portes_Elementaires.check(gate->to_str() == xor2_expected_values[gate->getGateId()]);
+        }
+        
+        
 
     //structure_ok
     Test TC2_Structure_OK("Structure Ok (Simulation)");
