@@ -7,6 +7,7 @@
 #include <regex>
 #include <map>
 
+#include "../Help/Help.hpp"
 #include "../Dot/Dot.hpp"
 #include "../Json/Json.hpp"
 #include "Gate.hpp"

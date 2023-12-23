@@ -26,11 +26,11 @@ file_path(file_path) {
 
     // No usable signal found
     if(!this->json_clean_array.size()) {
-        cout << "Error: No suitable signal was found in the given JSON. This might be a JSON syntax issue." << endl;
+        cout << "[JSON] Error: No suitable signal was found in the given JSON. This might be a JSON syntax issue." << endl;
         this->error_code = JSON_NB_SIGNAL_ERROR;
         return;
     }
-    cout << "Debug: Found " << this->json_clean_array.size() << " potential signals." << endl; 
+    cout << "[JSON] Info: Found " << this->json_clean_array.size() << " potential signals." << endl; 
 
     if(this->consistencyAndPrepare()) { // check signals, exit program if errors
         this->error_code = JSON_PREPARE_ERROR;
@@ -88,12 +88,12 @@ int Json::setSignals(Signals *new_signals) {
 int Json::assertJsonIntegrity(void) {
     // Checks that file as "signal" main structure
     if(!(*json_dict)["signal"].exists()) {
-        cout << "Error: WaveDrom file should include `signal` key." <<  endl;
+        cout << "[JSON] Error: WaveDrom file should include `signal` key." <<  endl;
         return 1;
     }
 
     if((*json_dict)["signal"].size() < 1) {
-        cout << "Error: WaveDrom should contains at least 1 signal." <<  endl;
+        cout << "[JSON] Error: WaveDrom should contains at least 1 signal." <<  endl;
         return 1;
     }
 
@@ -126,21 +126,21 @@ int Json::consistencyAndPrepare(void) {
     for (RSJresource signal: json_clean_array) {
         // verify presence of field name
         if(!signal["name"].exists()) {
-            cout << "Error: Signal n°" << i <<  " should have a field `name`." << endl;
+            Help::debug(JSON_DEBUG, ERROR_DEBUG, "Signal n°" + to_string(i) + " should have a field `name`.");
             return 1;
         }
         string signal_name = regex_replace(signal["name"].as_str(), removeSideQuotes, "$2"); // remove surrounding quotes
         json_clean_array.at(i-1).as_object()["name"] = signal_name; // update origin (signal is just a copy)
 
         if(!signal["wave"].exists()) {
-            cout << "Error: Signal \"" << signal_name <<  "\" should have a field `wave`." << endl;
+            Help::debug(JSON_DEBUG, ERROR_DEBUG, "Signal \"" + signal_name +  "\" should have a field `wave`.");
             return 2;
         }
         string signal_wave = regex_replace(signal["wave"].as_str(), removeSideQuotes, "$2"); // remove surrounding quotes
 
         // check for `|`
         if (signal_wave.find('|') != std::string::npos) {
-            cout << "Warning: `|` character is not managed. It will be removed from the signal." << endl;
+            Help::debug(JSON_DEBUG, ERROR_DEBUG, "`|` character is not managed. It will be removed from the signal.");
         }
 
         // remove `|` from signal
@@ -151,7 +151,7 @@ int Json::consistencyAndPrepare(void) {
 
         // verify that wave field isn't empty
         if(signal_wave.length() == 0) {
-            cout << "Error: Signal's \"" << signal_name <<  "\" can't have an empty `wave` field." << endl;
+            Help::debug(JSON_DEBUG, ERROR_DEBUG, "Signal's \"" + signal_name +  "\" can't have an empty `wave` field.");
             return 3;
         }
 
@@ -163,7 +163,7 @@ int Json::consistencyAndPrepare(void) {
 
         // checks that there is no several signals with the same name
         if(signal_names.count(signal_name)) {
-            cout << "Error: Several signals named \"" << signal_name << "\", this is not allowed." << endl;
+            Help::debug(JSON_DEBUG, ERROR_DEBUG, "Several signals named \"" + signal_name + "\", this is not allowed.");
             return 4;
         }
         signal_names.insert(signal_name);
@@ -177,18 +177,18 @@ int Json::consistencyAndPrepare(void) {
         // check consistency of clock_counts
         if(!tmp_clock_counts) tmp_clock_counts = signal_clock_counts;
         else if(tmp_clock_counts != signal_clock_counts) {
-            cout << "Error: Signal \"" << signal_name << "\" has a different `wave` length than previous signals. All the signals should have the same `wave` length (period ratio taken in account)." << endl;
+            Help::debug(JSON_DEBUG, ERROR_DEBUG, "Signal \"" + signal_name + "\" has a different `wave` length than previous signals. All the signals should have the same `wave` length (period ratio taken in account).");
             return 5;
         }
 
         // Simulator is not made to manage phase shift of signals, warns the user that option will be skipped 
         if(signal["phase"].exists()) {
-            cout << "Warning: Signals' phase option is not managed. Signal \"" << signal_name << "\" will be treated without phase shift." << endl;
+            Help::debug(JSON_DEBUG, WARNING_DEBUG, "Signals' phase option is not managed. Signal \"" + signal_name + "\" will be treated without phase shift.");
         }
 
         // Simulator is not made to manage data shift of signals, warns the user that option will be skipped 
         if(signal["data"].exists()) {
-            cout << "Error: Signals' data option is not *yet* managed. Signal \"" << signal_name << "\" cannot be treated." << endl;
+                Help::debug(JSON_DEBUG, ERROR_DEBUG, "Signals' data option is not *yet* managed. Signal \"" + signal_name + "\" cannot be treated.");
             return 6;
         }
         // TODO: Manage data bus; Like with custom formatting: (maybe in `Json::simplifyWaves()`)
@@ -220,7 +220,7 @@ int Json::simplifyWaves(void) {
 
         for(unsigned int i = 0; i < wave.length(); i++) {
             if(i == 0 && wave[i] ==  '.') {
-                cout << "Error: Signal \"" << signal["name"].as_str() << "\" start with a `.`. This is forbidden." << endl;
+                Help::debug(JSON_DEBUG, ERROR_DEBUG, "Signal \"" + signal["name"].as_str() + "\" start with a `.`. This is forbidden." );
                 return 1;
             }
 
@@ -256,7 +256,7 @@ int Json::simplifyWaves(void) {
                     break;
                 
                 default:
-                    cout << "Error: In signal \"" << signal["name"].as_str() << "\", foribdden character `" << wave[i] << "`." << endl;
+                    Help::debug(JSON_DEBUG, ERROR_DEBUG, "In signal \"" + signal["name"].as_str() + "\", foribdden character `" + wave[i] + "`." );
                     return 1;
                     break;
             }
@@ -289,9 +289,10 @@ int Json::printJson(const string& file_path, set<Stimulus*> stimuli, bool overwr
     ifstream checked_file(file_path);
     if(checked_file.good()) {
         if(overwrite) {
-            cout << "Info: File " << file_path << " exists, but will be overwritten." <<  endl;
+            Help::debug(JSON_DEBUG, INFO_DEBUG, "File " + file_path + " exists, but will be overwritten.");
         } else {
-            cout << "Error: File " << file_path << " already exists. Use -f option to overwrite." <<  endl;
+            Help::debug(JSON_DEBUG, ERROR_DEBUG, "File " + file_path + " already exists. Use -f option to overwrite.");
+            checked_file.close();
             return 1;
         }
     }
@@ -300,7 +301,8 @@ int Json::printJson(const string& file_path, set<Stimulus*> stimuli, bool overwr
 
     ofstream output_file(file_path); // append at end of file to avoid 
     if(output_file.fail()) {
-        cout << "Error: Couldn't open " << file_path << "." <<  endl;
+        Help::debug(JSON_DEBUG, ERROR_DEBUG, "Couldn't open " + file_path + ".");
+        output_file.close();
         return 2;
     }
 
@@ -314,7 +316,8 @@ int Json::printJson(const string& file_path, set<Stimulus*> stimuli, bool overwr
         i++;
     }
 
-    cout << "Debug: Saving output JSON to " << file_path << endl;
+    Help::debug(JSON_DEBUG, INFO_DEBUG, "Saving output JSON to " + file_path);
+
 
     output_file << json_out.as_str() << endl; 
 

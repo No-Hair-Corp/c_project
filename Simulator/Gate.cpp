@@ -93,7 +93,7 @@ int Gate::getInputNode(string input_name, Gate** node) const {
     if(this->input_nodes->count(input_name) > 0) {
         *node = this->input_nodes->at(input_name);
     } else {
-        cout << "Error: Trying to access a non existing input." << endl;
+        cout << "[Simulator] Error: Trying to access a non existing input." << endl;
         return 1;
     }
     return 0;
@@ -124,8 +124,7 @@ int Gate::setValue(int clock_count, int value) {
             this->values[clock_count] = value;
         }
     } else {
-        //TODO: throw error 'cause it's in the future
-        cout << "Error: can't" << endl;
+        cout << "[Simulator] Error: can't set a value in the future." << endl;
         return 1;
     }
     return 0;
@@ -149,7 +148,7 @@ int Gate::getValue(int clock_count, int *value) {
 
             return 0; // no further thing to check
         } else if (clock_count > this->values.size() + 1) {
-            cout << "Error: Trying to get a value that is in the future." << endl;
+            cout << "[Simulator] Error: Trying to get a value that is in the future." << endl;
             return 1;
         } else { // we never calculated the value, we calculate it
             int calculated_value = this->calculateValue(); // we calculate the value, save it, and return it

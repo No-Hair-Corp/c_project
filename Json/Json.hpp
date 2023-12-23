@@ -1,6 +1,8 @@
 #ifndef _JSON_H_
 #define _JSON_H_
 
+#include "../Help/Help.hpp"
+
 #include "RSJparser.tcc"
 #include <regex>
 #include <set>

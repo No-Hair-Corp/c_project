@@ -47,14 +47,12 @@ int Mux::calculateValue(void) {
             continue;
         }
 
-        // cout << "sel" << i << " " << sel_gate_value << endl;
         output_id += (1*sel_gate_value << i);
     }
 
     // TODO: manage multiple outputs ?
     int saveValue = -1; // set to X by default
     for(int i = 0; i < getNbInputs(); i++) {
-        // TODO: getValue from all input to calculate the sub value anyway
         this->getInputNode("i"+to_string(i), &output_gate);
         output_gate->getValue(this->getLastCalculationClock(), &output_value);
         if(i == output_id) saveValue = output_value;
@@ -63,7 +61,7 @@ int Mux::calculateValue(void) {
     if(hasX) return 1; // one of the sel is X, we can't know the input to select
 
     if(output_id + 1 > this->getNbInputs()) {
-        cout << "Simulation Error: Trying to get a MUX" << this->getNbInputs() << "'s " << output_id
+        cout << "[Simulator] Warning: Trying to get a MUX" << this->getNbInputs() << "'s " << output_id
             << " value which doesn't exist. Returning x." << endl;
         return -1;
     }
