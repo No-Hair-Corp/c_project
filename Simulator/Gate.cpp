@@ -5,8 +5,8 @@
 
 bool Gate::loop_error = false;
 unsigned int Gate::values_history_iterator = 0;
-map<string, int> Gate::values_history;
-vector<string> Gate::tmp_test;
+// map<string, int> Gate::values_history;
+// vector<string> Gate::tmp_test;
 
 // =======  CONSTRUCTOR / DESTRUCTOR =======
 Gate::Gate(string name, string gate_id, char gate_sign, unsigned int nb_inputs,unsigned int min_nb_inputs,
@@ -90,7 +90,6 @@ void Gate::addInputNode(const string& input_name, Gate* linked_gate) {
     this->input_nodes->insert({input_name, linked_gate});
 }
 int Gate::getInputNode(string input_name, Gate** node) const {
-
     if(this->input_nodes->count(input_name) > 0) {
         *node = this->input_nodes->at(input_name);
     } else {
@@ -131,7 +130,6 @@ int Gate::setValue(int clock_count, int value) {
     }
     return 0;
 }
-string space = "";
 int Gate::getValue(int clock_count, int *value) {
     if(loop_error) return 2;
 
@@ -139,9 +137,6 @@ int Gate::getValue(int clock_count, int *value) {
         Gate::loop_error = true;
         return 2;
     }
-
-    cout << space << "> " << this->gate_id << " @" << clock_count << endl;
-    space.push_back('\t');
 
     if(!this->getHadCalculatedValue()) {
         if(this->getName() != "Input") {
@@ -152,16 +147,12 @@ int Gate::getValue(int clock_count, int *value) {
         if(clock_count < this->values.size()) { // the value is in the past 
             *value = this->values.at(clock_count); // -> we just give it
 
-            space.pop_back();
-            cout << space << "< " << this->gate_id << " = " << *value << endl;
-
             return 0; // no further thing to check
         } else if (clock_count > this->values.size() + 1) {
             cout << "Error: Trying to get a value that is in the future." << endl;
             return 1;
         } else { // we never calculated the value, we calculate it
             int calculated_value = this->calculateValue(); // we calculate the value, save it, and return it
-            cout << space << "add calue"<<endl;
             this->addValue(calculated_value);
             *value = calculated_value;
         }
@@ -169,11 +160,9 @@ int Gate::getValue(int clock_count, int *value) {
         // 
         if(Gate::values_history_iterator == 0) {// we never started the cycle iterator,
             if(clock_count == 0) { // first clock, we can't get previous value
-                cout << space << " -> X" << endl;
                 *value = -1; // -> return x
             } else {
                 *value = this->values[clock_count - 1];  // get the value at previous clock
-                cout << space << " -> " << *value << " @ cc -1" << endl;
             }
     
             Gate::values_history_iterator++; // increment the values iterator
@@ -199,28 +188,14 @@ int Gate::getValue(int clock_count, int *value) {
             if(!gate_has_changed) {
                 *value = this->last_calculated_values.back();
             }
-            cout << space << " -> " << *value << " @ previous cycle" << endl;
-            
         }
     }
-
-    
-    space.pop_back();
-    cout << space << "< " << this->gate_id << " = "  << *value << " |  ";
-    for(int v : this->last_calculated_values) {
-        cout << v << ", ";
-    }
-    cout << endl;
 
     this->last_calculated_values.push_back(*value);
     if(this->last_calculated_values.size() > 1) {
         int previous_value = this->last_calculated_values.at(this->last_calculated_values.size() - 2);
         if(previous_value != *value) {
-            cout << space << " -> " << this->gate_id << " value changed from " << previous_value << " to " << *value  << endl;
             *value = this->calculateValue();
-            // this->getValue(clock_count, &tmp);
-            cout << space << " => " << *value << endl;
-
         }
     }
 
@@ -237,19 +212,19 @@ void Gate::setHadCalculatedValue(bool new_value) {
 }
 
 
-int Gate::getValueHistory(string gate_id) {
-    return Gate::values_history[gate_id];
-}
-void Gate::setValueHistory(string gate_id, int new_value) {
-    if(Gate::values_history.count(gate_id)) {
-        Gate::values_history[gate_id] = new_value;
-    } else {
-        Gate::values_history.insert({gate_id,  new_value});
-    }
-}
+// int Gate::getValueHistory(string gate_id) {
+//     return Gate::values_history[gate_id];
+// }
+// void Gate::setValueHistory(string gate_id, int new_value) {
+//     if(Gate::values_history.count(gate_id)) {
+//         Gate::values_history[gate_id] = new_value;
+//     } else {
+//         Gate::values_history.insert({gate_id,  new_value});
+//     }
+// }
 void Gate::resetValuesHistory(void) {
     Gate::values_history_iterator = 0;
-    Gate::values_history.clear();
+    // Gate::values_history.clear();
 }
 
 void Gate::resetLastValues(void) {

@@ -1,0 +1,17 @@
+digraph mux {
+    A [label="input"];
+    B [label="input"];
+    C [label="input"];
+
+    Sel0 [label="input"]; //input B
+    Sel1 [label="input"]; //input B
+
+    U0 [label=MUX3 i0=A i1=B i2=C sel0="Sel0" sel1="Sel1"];
+
+    O [label="Output"];
+
+    A  ->  U0  ->  O;
+    B  ->  U0;
+    C  ->  U0;
+    // Sel ->  U0; 
+}

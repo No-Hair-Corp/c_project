@@ -12,9 +12,11 @@
 #include "Gate.hpp"
 
 #include "Gates/And.hpp"
+#include "Gates/Nand.hpp"
 #include "Gates/Or.hpp"
 #include "Gates/Nor.hpp"
 #include "Gates/Xor.hpp"
+#include "Gates/Nxor.hpp"
 #include "Gates/Input.hpp"
 #include "Gates/Output.hpp"
 #include "Gates/Not.hpp"

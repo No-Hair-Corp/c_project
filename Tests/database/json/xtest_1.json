@@ -1,4 +1,4 @@
 { signal: [
-    { name: "A", wave: "001" },
-    { name: "B", wave: "000" }
+    { name: "A", wave: "01x01x01x" },
+    { name: "B", wave: "000111xxx" }
 ]}

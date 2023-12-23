@@ -6,9 +6,11 @@ map<string, function<Gate*()>> Simulator::existing_gates = {
     {"output", []() -> Gate* { return new Output; } },
     {"not", []() -> Gate* { return new Not; } },
     {"and", []() -> Gate* { return new And; } },
+    {"nand", []() -> Gate* { return new Nand; } },
     {"or", []() -> Gate* { return new Or; } },
     {"nor", []() -> Gate* { return new Nor; } },
     {"xor", []() -> Gate* { return new Xor; } },
+    {"xnor", []() -> Gate* { return new Nxor; } },
     {"mux", []() -> Gate* { return new Mux; } },
     {"ff", []() -> Gate* { return new Flipflop; } },
 };
@@ -193,7 +195,8 @@ int Simulator::checkAllGates(void) {
 int Simulator::checkInputsNames(Gate *gate, const map<string, string> &inputs) {
     // used for the sequential elements mostly, ex mux, because we have an importance
     // with the order like i0, i1 and the sel. Might be used with typical gates
-    // wildcards: i@ -> AND2 : i0, i1; AND3: i0, i1, i2; ...;
+    // wildcards: i@ -> AND2: i0, i1; AND3: i0, i1, i2; ...;
+    //          sel% -> MUX2: sel0; MUX3: sel0 sel1; MUX4: sel0 sel1; ...;
 
     unsigned int total_nb_inputs = 0;
 
@@ -204,6 +207,21 @@ int Simulator::checkInputsNames(Gate *gate, const map<string, string> &inputs) {
             for(char i = 0; i < gate->getNbInputs(); i++) { // replace @ by corresponding integer
                 input_name = gate_el;
                 replace(input_name.begin(), input_name.end(), '@', (char)('0'+i));
+
+                if(!inputs.count(input_name)) { // wildcarded input isn't specified
+                    cout << "Error: Input `" << input_name << "` is missing for gate of type " << gate->getName() << gate->getNbInputs()
+                        << ".";
+                    return 2;
+                }
+                total_nb_inputs++;
+            }
+        } else if(gate_el.find_first_of('%') != string::npos) { // check if we have a wildcard for log2 mode
+            string input_name = gate_el; // editable copy
+            int nbOfLogGate = (int) ceilf(log2f(gate->getNbInputs()));
+
+            for(char i = 0; i < nbOfLogGate; i++) { // replace % by corresponding integer
+                input_name = gate_el;
+                replace(input_name.begin(), input_name.end(), '%', (char)('0'+i));
 
                 if(!inputs.count(input_name)) { // wildcarded input isn't specified
                     cout << "Error: Input `" << input_name << "` is missing for gate of type " << gate->getName() << gate->getNbInputs()
@@ -251,7 +269,6 @@ int Simulator::setLinks(void) {
 
 int Simulator::runSimulation(void) {
     for(; this->current_clock_count < this->json->getSignals()->getClockCounts(); this->current_clock_count++) {
-        
         for(Gate* const& gate : this->output_gates) {
             int tmp; // not used
             if(gate->getValue(this->current_clock_count, &tmp) == 2) { // We have a loop error
@@ -260,7 +277,6 @@ int Simulator::runSimulation(void) {
                 this->error_code = SIM_LOOP_ERROR;
                 return 1;
             }
-            cout << gate->getGateId() << ":\t" << *gate << endl;
         }
         // reset had calculated
         Gate::resetValuesHistory();

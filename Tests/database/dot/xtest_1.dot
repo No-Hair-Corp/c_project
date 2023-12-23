@@ -1,14 +1,8 @@
 digraph testand1 {
     A [label="input"]; #input A
     B [label="input"]; //input B
-    U0[label="not"];
-    U1 [label=AND2];
-    U2[label="not"];
+    U0 [label=XNOR];
     O [label="Output"];
-    // Mux [label="MUX" sel=B];
-    B->U0->U1;    // B -> NOT ->  AND
-    //A->U1->O;     // A    ->      AND -> Out
-    A->U1->U2->O; // A    ->      AND -> NOT -> out
-    // A->Mux;
-    // B->Mux;
+    B->U0->O;
+    A->U0; 
 }
