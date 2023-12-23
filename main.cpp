@@ -12,6 +12,7 @@ static struct option long_options[] = {
     {"force", no_argument, nullptr, 'f'},
     {"add", required_argument, nullptr, 'a'},
     {"verbose", required_argument, nullptr, 'v'},
+    {"iteration", required_argument, nullptr, 'i'},
     {nullptr, 0, nullptr, 0} // Indicates the end of options
 };
 
@@ -26,6 +27,7 @@ int main(int argc, char* argv[]) {
     string output_path;
     debug_level verbose_level = SUCCESS_DEBUG;
     vector <string> additionnal_outputs = {};
+    int iteration_value;
 
     // Variables pour suivre les options requises
     bool jsonSpecified = false;
@@ -34,11 +36,12 @@ int main(int argc, char* argv[]) {
     bool forceSpecified = false;
     bool addSpecified = false;
     bool verboseSpecified = false;
+    bool iterationSpecified = false;
 
-    while ((option = getopt_long(argc, argv, "hj:d:o:fa:v:", long_options, &option_index)) != -1) {
+    while ((option = getopt_long(argc, argv, "hj:d:o:fa:v:i:", long_options, &option_index)) != -1) {
         switch (option) {
             case 'h':
-                Help::debug(GENERAL_DEBUG, INFO_DEBUG,"usage: ./main [options] args \n --json     specify json file path\n --dot      specify dot file path \n --output   output file path\n --force    overwrites output file \n --add      add output signal to output file\n --verbose  int between 0 and 5 to set debug level\n");
+                Help::debug(GENERAL_DEBUG, INFO_DEBUG,"usage: ./main [options] args\n--json      specify json file path\n--dot       specify dot file path\n--output    output file path\n--force     overwrites output file\n--add       add output signal to output file\n--verbose   int between 0 and 5 to set debug level\n--iteration set iteration numberin loop");
                 exit(0);
                 break;
             case 'j':
@@ -86,7 +89,16 @@ int main(int argc, char* argv[]) {
             case 'v':
                 if (optarg) {
                     verboseSpecified = true;
-                    verbose_level = (debug_level)stoi(optarg);
+                    try{
+                        verbose_level = (debug_level)stoi(optarg);
+                    } catch (const std::invalid_argument& e) {
+                        Help::debug(GENERAL_DEBUG, ERROR_DEBUG,"--verbose argument is not an integer");
+                        return 1;
+                    } catch (const std::out_of_range& e) {
+                        Help::debug(GENERAL_DEBUG, ERROR_DEBUG,"--verbose argument is out of integer range");
+                        return 1;
+                    }
+
 
                     if(verbose_level > DEBUG_DEBUG){
                         Help::debug(GENERAL_DEBUG, ERROR_DEBUG, "--verbose requires integer argument between 0 and 4");
@@ -94,6 +106,31 @@ int main(int argc, char* argv[]) {
                     }
                 } else {
                     Help::debug(GENERAL_DEBUG, ERROR_DEBUG, "--verbose requires integer argument between 0 and 4");
+                    return 1;  // Indiquer une erreur
+                }
+                break;
+            case 'i':
+                if (optarg) {
+                    iterationSpecified = true;  
+
+                    try {
+                        // Convertir la chaîne de caractères en un entier
+                        iteration_value = stoi(optarg);
+
+                    } catch (const std::invalid_argument& e) {
+                        Help::debug(GENERAL_DEBUG, ERROR_DEBUG,"--iteration argument is not an integer");
+                        return 1;
+                    } catch (const std::out_of_range& e) {
+                        Help::debug(GENERAL_DEBUG, ERROR_DEBUG,"--iteration argument is out of integer range");
+                        return 1;
+                    }
+
+                    if(iteration_value < 0){
+                        Help::debug(GENERAL_DEBUG, ERROR_DEBUG, "--iteration argument needs to be greater than or equal to 0");
+                        return 1;
+                    }
+                } else {
+                    Help::debug(GENERAL_DEBUG, ERROR_DEBUG, "--iteration requires integer argument");
                     return 1;  // Indiquer une erreur
                 }
                 break;
@@ -105,6 +142,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    Gate::setMaxIteration(iteration_value);
     Help::setVerboseLevel(verbose_level);
     // Vérifier que toutes les options requises sont spécifiées
     if (!jsonSpecified) {
@@ -124,7 +162,7 @@ int main(int argc, char* argv[]) {
 
     // Process remaining non-option arguments (if any)
     for (int i = optind; i < argc; ++i) {
-        std::cout << "Non-option argument: " << argv[i] << std::endl;
+        Help::debug(GENERAL_DEBUG, WARNING_DEBUG,"Non-option argument detected");
     }
 
     Help::debug(GENERAL_DEBUG, INFO_DEBUG,"Json file: " + json_path);
