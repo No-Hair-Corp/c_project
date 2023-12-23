@@ -10,7 +10,7 @@ file_path(file_path) {
     this->error_code = JSON_SUCCESS;
 
     if(json_file.fail()) {
-        cout << "Error: An error happened while opening " << file_path << " please check file's path." <<  endl;
+        Help::debug(JSON_DEBUG, ERROR_DEBUG, "An error happened while opening " + file_path + " please check file's path."); 
         this->error_code = JSON_FILE_READ_ERROR;
         return;
     }
@@ -26,11 +26,11 @@ file_path(file_path) {
 
     // No usable signal found
     if(!this->json_clean_array.size()) {
-        cout << "[JSON] Error: No suitable signal was found in the given JSON. This might be a JSON syntax issue." << endl;
+        Help::debug(JSON_DEBUG, ERROR_DEBUG, "No suitable signal was found in the given JSON. This might be a JSON syntax issue."); 
         this->error_code = JSON_NB_SIGNAL_ERROR;
         return;
     }
-    cout << "[JSON] Info: Found " << this->json_clean_array.size() << " potential signals." << endl; 
+    Help::debug(JSON_DEBUG, INFO_DEBUG, "Found " + to_string(this->json_clean_array.size()) + " potential signals."); 
 
     if(this->consistencyAndPrepare()) { // check signals, exit program if errors
         this->error_code = JSON_PREPARE_ERROR;
@@ -88,12 +88,12 @@ int Json::setSignals(Signals *new_signals) {
 int Json::assertJsonIntegrity(void) {
     // Checks that file as "signal" main structure
     if(!(*json_dict)["signal"].exists()) {
-        cout << "[JSON] Error: WaveDrom file should include `signal` key." <<  endl;
+        Help::debug(JSON_DEBUG, ERROR_DEBUG, "WaveDrom file should include `signal` key.");
         return 1;
     }
 
     if((*json_dict)["signal"].size() < 1) {
-        cout << "[JSON] Error: WaveDrom should contains at least 1 signal." <<  endl;
+        Help::debug(JSON_DEBUG, ERROR_DEBUG, "WaveDrom should contains at least 1 signal.");
         return 1;
     }
 
