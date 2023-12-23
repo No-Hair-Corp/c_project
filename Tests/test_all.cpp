@@ -216,24 +216,25 @@ int main() {
     //portes_elementaires
     Test TC2_Portes_Elementaires("Portes Elementaires (Simulation)");
         //Setup
-        string dot_path1 = "Tests/database/Examen/and2.dot";
-        string dot_path2 = "Tests/database/Examen/direct_connection.dot";
-        string dot_path3 = "Tests/database/Examen/FlipFlop.dot";
-        string dot_path4 = "Tests/database/Examen/Mux_explicit.dot";
-        string dot_path5 = "Tests/database/Examen/nand2.dot";
-        string dot_path6 = "Tests/database/Examen/nor2.dot";
-        string dot_path7 = "Tests/database/Examen/not.dot";
-        string dot_path8 = "Tests/database/Examen/or2.dot";
-        string dot_path9 = "Tests/database/Examen/xnor2.dot";
-        string dot_path10 = "Tests/database/Examen/xor2.dot";
+        string dot_path1 = "Tests/database/Examen/portes_elementaires/and2.dot";
+        string dot_path2 = "Tests/database/Examen/portes_elementaires/direct_connection.dot";
+        string dot_path3 = "Tests/database/Examen/portes_elementaires/FlipFlop.dot";
+        string dot_path4 = "Tests/database/Examen/portes_elementaires/Mux_explicit.dot";
+        string dot_path5 = "Tests/database/Examen/portes_elementaires/nand2.dot";
+        string dot_path6 = "Tests/database/Examen/portes_elementaires/nor2.dot";
+        string dot_path7 = "Tests/database/Examen/portes_elementaires/not.dot";
+        string dot_path8 = "Tests/database/Examen/portes_elementaires/or2.dot";
+        string dot_path9 = "Tests/database/Examen/portes_elementaires/xnor2.dot";
+        string dot_path10 = "Tests/database/Examen/portes_elementaires/xor2.dot";
 
-        string json_path1 = "Tests/database/json/one_input.json";
-        string json_path2 = "Tests/database/json/two_inputs.json";
-        string json_path3 = "Tests/database/json/three_input.json";
+        string json_path1 = "Tests/database/Examen/stimuli/one_input.json";
+        string json_path2 = "Tests/database/Examen/stimuli/two_inputs.json";
+        string json_path3 = "Tests/database/Examen/stimuli/three_inputs.json";
+        string json_path4 = "Tests/database/Examen/stimuli/full_adder.json";
 
         Simulator and2(dot_path1,json_path2);
         Simulator direct_connection(dot_path2,json_path1);
-        Simulator FlipFlop(dot_path3,json_path1);
+        //Simulator FlipFlop(dot_path3,json_path1);
         Simulator Mux_explicit(dot_path4,json_path3);
         Simulator nand2(dot_path5,json_path2);
         Simulator nor2(dot_path6,json_path2);
@@ -244,14 +245,14 @@ int main() {
 
         //Test
 
-        // map<string, string> expected_values1; //ouput names (gateid), output values
-        // for(gates : outputs){
-        // if(gate.to_str() == expected_values1[gate.getGateId()]){
-        //     cout << gate.getGateId() << "test passed" << endl;
-        // }
-        // else{
-        //     cout << gate.getGateId() << "test failed" << endl;
-        // }
+        map<string, string> expected_values1; //ouput names (gateid), output values
+        for(gates : outputs){
+        if(gate.to_str() == expected_values1[gate.getGateId()]){
+            cout << gate.getGateId() << "test passed" << endl;
+        }
+        else{
+            cout << gate.getGateId() << "test failed" << endl;
+        }
 
     //structure_ok
     Test TC2_Structure_OK("Structure Ok (Simulation)");
@@ -283,7 +284,7 @@ int main() {
         //Setup
         string dot_path20 = "Tests/database/Examen/circuits/full_adder.dot";
 
-        Simulator fa(dot_path20,json_path3);
+        Simulator fa(dot_path20,json_path4);
 
         //Test
 
