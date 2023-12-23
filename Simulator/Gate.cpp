@@ -127,20 +127,20 @@ int Gate::setValue(int clock_count, int value) {
 int Gate::getValue(int clock_count, int *value) {
     if(loop_error) return 2;
 
+    // detect to many iteration
     if(Gate::values_history_iterator >= Gate::max_iterations) {
         Gate::loop_error = true;
         return 2;
     }
 
-    if(!this->getHadCalculatedValue()) {
-        if(this->getName() != "Input") {
-            this->incrementClockCount(); 
+    if(!this->getHadCalculatedValue()) { // check if we already tried to calculate the value
+        if(this->getName() != "Input") { // bypass if its an input
+            this->incrementClockCount();  // increment clock count
             this->setHadCalculatedValue(true);
         }
 
         if(clock_count < this->values.size()) { // the value is in the past 
             *value = this->values.at(clock_count); // -> we just give it
-
             return 0; // no further thing to check
         } else if (clock_count > this->values.size() + 1) {
             Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Trying to get a value that is in the future.");
@@ -151,47 +151,58 @@ int Gate::getValue(int clock_count, int *value) {
             *value = calculated_value;
         }
     } else { // we already were is this gate
-        // 
-        if(Gate::values_history_iterator == 0) {// we never started the cycle iterator,
-            if(clock_count == 0) { // first clock, we can't get previous value
-                *value = -1; // -> return x
-            } else {
-                *value = this->values[clock_count - 1];  // get the value at previous clock
-            }
-    
-            Gate::values_history_iterator++; // increment the values iterator
-        } else { // we need to take the value calculated before but at that clock count
-            // if inputs has change -> recalulate
+        // TODO: Sequential loop
+        // if(this->getIsSequential()) {
+        //     // its sequential -> return current value cause it wont change 
+        //     // cout << clock_count << " " << this->gate_id << " " << *this << endl;
+        //     if(clock_count == 0) {
+        //         *value = -1;
+        //     } else {
+        //         *value = this->values[clock_count];
+        //     }
+        //     Gate::values_history_iterator++; // increment the values iterator
+        // } else {
+            if(Gate::values_history_iterator == 0) {// we never started the cycle iterator,
+                if(clock_count == 0) { // first clock, we can't get previous value
+                    *value = -1; // -> return x
+                } else {
+                    *value = this->values[clock_count];  // get the value at previous clock
+                }
+        
+                Gate::values_history_iterator++; // increment the values iterator
+            } else { // we need to take the value calculated before but at that clock count
+                // if inputs has change -> recalulate
 
-            Gate::values_history_iterator++; // increment the values iterator
+                Gate::values_history_iterator++; // increment the values iterator
 
-            bool gate_has_changed = false;
-            for(auto const& el : *this->getInputNodes()) {
-                Gate* prev_gate = el.second;
-                if(prev_gate->last_calculated_values.size() > 1) {
-                    int prev_value = prev_gate->last_calculated_values[prev_gate->last_calculated_values.size() - 2];
-                    if(prev_value != prev_gate->last_calculated_values.back()) {
-                        *value = this->calculateValue();
-                        gate_has_changed = true;
+                bool gate_has_changed = false;
+                for(auto const& el : *this->getInputNodes()) { // this loop checks if one of the gate value changed
+                    Gate* prev_gate = el.second;
+                    if(prev_gate->last_calculated_values.size() > 1) { // the input hasd some registered changes
+                        int prev_value = prev_gate->last_calculated_values[prev_gate->last_calculated_values.size() - 2];
+                        if(prev_value != prev_gate->last_calculated_values.back()) { // input's value actually changed
+                            *value = this->calculateValue();
+                            gate_has_changed = true;
+                        }
                     }
                 }
-            }
 
-            if(!gate_has_changed) {
-                *value = this->last_calculated_values.back();
+                if(!gate_has_changed) { // inputs changed, so we use the recalculated value
+                    *value = this->last_calculated_values.back();
+                }
             }
-        }
+        // }
     }
 
-    this->last_calculated_values.push_back(*value);
+    this->last_calculated_values.push_back(*value); // register the value to check later if it changed
     if(this->last_calculated_values.size() > 1) {
         int previous_value = this->last_calculated_values.at(this->last_calculated_values.size() - 2);
-        if(previous_value != *value) {
+        if(previous_value != *value) { // if the value changed we recalculate
             *value = this->calculateValue();
         }
     }
 
-    if(loop_error) return 2;
+    if(loop_error) return 2; //  we had an iteration error, we return an error
 
     return 0;
 }

@@ -14,7 +14,7 @@ file_path(file_path) {
         return;
     }
 
-    this->json_dict = new RSJresource(json_file);
+    this->json_dict = new RSJresource(json_file); // parse json using library
     this->json_dict->parse();
 
     if(this->assertJsonIntegrity()) { // check json is correct, exit program otherwise
@@ -118,7 +118,7 @@ void Json::eraseJsonCleanArray(void) {
 }
 
 int Json::consistencyAndPrepare(void) {
-    std::regex removeSideQuotes("^(\'|\")(.+)(\'|\")$");
+    std::regex removeSideQuotes("^(\'|\")(.+)(\'|\")$"); // regex to remove quotes
     unsigned int tmp_clock_counts = 0;
     bool has_clock_duplication = false;
     set<string> signal_names;
@@ -159,7 +159,6 @@ int Json::consistencyAndPrepare(void) {
         // if there is a P,p,n or an n in the signal -> we switch to clock duplication mode
         if(signal_wave.find_first_of("nNpP") != string::npos) {
             has_clock_duplication = true;
-            // TODO: uptate `signals`'s clock_counts ? or use `has_clock_duplication`in the needed steps
         }
 
         // checks that there is no several signals with the same name
@@ -197,11 +196,12 @@ int Json::consistencyAndPrepare(void) {
         //        becomes -> name: "addr[0]",  wave: "10"
         //                -> name: "addr[1]",  wave: "11"
         //                -> name: "addr[2]",  wave: "00"
-        //                -> name: "addr[3]",  wave: "02"
+        //                -> name: "addr[3]",  wave: "01"
 
         i++;
     }
 
+    if(has_clock_duplication) tmp_clock_counts *= 2;
     this->signals = new Signals(tmp_clock_counts, has_clock_duplication);
 
     return 0;
@@ -211,8 +211,7 @@ int Json::consistencyAndPrepare(void) {
 int Json::simplifyWaves(void) {
     // Allowed chars : ".pn10lh"
     // TODO: decide what to do with :
-    //      - z: high impedance -> ?
-    //      - u: dotted high -> ?;      - s: dotted low -> ?
+    //      - u: dotted high -> 1?;      - s: dotted low -> 0?
 
     for (RSJresource signal: json_clean_array) {
         string wave = signal["wave"].as_str(); // simplify var name
@@ -307,7 +306,7 @@ int Json::printJson(const string& file_path, set<Stimulus*> stimuli, bool overwr
         return 2;
     }
 
-    RSJresource json_out("{\"signal\": []}");
+    RSJresource json_out("{\"signal\": []}"); // create temp object using library to add signals
 
     unsigned int i = 0;
     for(Stimulus* const& stimulus : stimuli) {
@@ -320,7 +319,7 @@ int Json::printJson(const string& file_path, set<Stimulus*> stimuli, bool overwr
     Help::debug(JSON_DEBUG, INFO_DEBUG, "Saving output JSON to " + file_path);
 
 
-    output_file << json_out.as_str() << endl; 
+    output_file << json_out.as_str() << endl; // write to file
 
     output_file.close();
 

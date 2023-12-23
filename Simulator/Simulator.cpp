@@ -97,7 +97,7 @@ int Simulator::checkInputs(void) {
         string lower_name =  el.second->getGateType();
         transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
 
-        if(lower_name == "input") {
+        if(lower_name == "input") { // verify dot's input with json
             if(!input_names.count(el.second->getGateId())) {
                 Help::debug(SIMULATOR_DEBUG, ERROR_DEBUG, "Input " + el.second->getGateId() +
                     " doesn't exist in waveform file.");
@@ -142,7 +142,7 @@ int Simulator::checkAllGates(void) {
         // check if gate exists
         if(!Simulator::existing_gates.count(gate_type_match[1])) {
             string allowed_gates = "";
-            for(auto const& el : Simulator::existing_gates) {
+            for(auto const& el : Simulator::existing_gates) { // small loop just to show availables gates type
                 allowed_gates.push_back(' ');
                 allowed_gates += el.first;
             }
@@ -171,7 +171,6 @@ int Simulator::checkAllGates(void) {
 
         // Check if all inputs are filled by specified inputs 
         if(this->checkInputsNames(gate, el.second->getInputs())) {
-            // cout << " (Gate id: `" << el.second->getGateId() << "`)" << endl;
             return 4;
         }
 
@@ -184,8 +183,7 @@ int Simulator::checkAllGates(void) {
         this->gates_graph.insert({el.second->getGateId(), gate});
 
         if(lower_name == "output") {
-            hasOutput = true; // we ensure that we have at list one input
-        
+            hasOutput = true; // we ensure that we have at least one input
             this->output_gates.insert(gate);
         }
 
@@ -335,11 +333,14 @@ void Simulator::printSimulation(void) {
 void Simulator::saveToJson(const string& file_path, bool overwrite, vector<string> additional_outputs) {
     set<Stimulus*> stimuli;
     
+    // save outputs that were specified with -a option
     for(string node_name : additional_outputs) {
         if(this->gates_graph.count(node_name)) {
+
             Stimulus* tmp_stimulus = new Stimulus(this->gates_graph[node_name]->getGateId(),
-                this->gates_graph[node_name]->to_str());
-            stimuli.insert(tmp_stimulus);
+                this->gates_graph[node_name]->to_str()); // create tmp stimulus for the print
+
+            stimuli.insert(tmp_stimulus); // save in set
         } else {
             Help::debug(SIMULATOR_DEBUG, WARNING_DEBUG, "Node " + node_name + " doesn't exist in simulation, and "
                 + "won't be added to output JSON.");
@@ -347,12 +348,12 @@ void Simulator::saveToJson(const string& file_path, bool overwrite, vector<strin
     }
 
     for(Gate* const& gate : this->output_gates) {
-        Stimulus* tmp_stimulus = new Stimulus(gate->getGateId(), gate->to_str());
-        stimuli.insert(tmp_stimulus);
+        Stimulus* tmp_stimulus = new Stimulus(gate->getGateId(), gate->to_str()); // create tmp stimulus for the print
+        stimuli.insert(tmp_stimulus); // save to set
     }
     
 
-    Json::printJson(file_path, stimuli, overwrite);
+    Json::printJson(file_path, stimuli, overwrite); // call json function
 
     for(Stimulus* stimulus : stimuli) {
         delete stimulus; // clean memory
